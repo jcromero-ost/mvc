@@ -1,0 +1,48 @@
+
+:root {
+    /* Colores principales */
+    --color-primary: #009B8E;
+    --color-dark: #1B1B1B;
+  
+    /* Colores secundarios */
+    --color-light-bg: #F4F4F4;
+    --color-text: #2C2C2C;
+    --color-border: #B0B0B0;
+  
+    /* Estados */
+    --color-success: #28a745;
+    --color-warning: #ffc107;
+    --color-danger: #dc3545;
+    --color-link: #007bff;
+  }
+  
+  /* Estilos generales */
+  body {
+    background-color: var(--color-light-bg);
+    color: var(--color-text);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  a {
+    color: var(--color-link);
+  }
+  
+  a:hover {
+    color: var(--color-primary);
+  }
+  
+  .btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  
+  .btn-primary:hover {
+    background-color: #007f76;
+    border-color: #007066;
+  }
+  
+  header, footer {
+    background-color: var(--color-dark);
+    color: white;
+  }
+  
