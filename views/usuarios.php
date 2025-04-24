@@ -1,17 +1,12 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+ 
+if (session_status() === PHP_SESSION_NONE) 
+session_start(); 
 
-// Cargar el modelo Usuario
 require_once(__DIR__ . '/../models/Usuario.php');
 
-// Instancia del modelo
 $usuarioModel = new Usuario();
-$usuarios = $usuarioModel->getAllUsuarios(); // Asegúrate que esta función existe
+$usuarios = $usuarioModel->getAllUsuarios();
 
-// Define la vista interna que se va a incluir dentro del layout
-$view = './usuarios_content.php';
-
-// Carga layout principal
+$view = 'usuarios_content.php';
 include __DIR__ . '/layout.php';

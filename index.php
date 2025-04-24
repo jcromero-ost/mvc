@@ -1,8 +1,12 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: views/login.php");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-header("Location: views/dashboard.php");
-exit();
+
+require_once __DIR__ . '/Router.php';
+
+$router = new Router();
+
+require_once __DIR__ . '/routes/web.php';
+
+$router->resolve();

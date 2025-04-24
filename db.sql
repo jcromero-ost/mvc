@@ -18,11 +18,10 @@ VALUES (
 );
 
 
-CREATE TABLE departamentos (
+CREATE TABLE IF NOT EXISTS departamentos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL
 );
-
 
 ALTER TABLE usuarios ADD departamento_id INT,
 ADD FOREIGN KEY (departamento_id) REFERENCES departamentos(id);
@@ -34,3 +33,10 @@ CREATE TABLE permisos_especiales (
   valor BOOLEAN DEFAULT TRUE,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+ALTER TABLE usuarios 
+ADD alias VARCHAR(100),
+ADD telefono VARCHAR(50),
+ADD fecha_ingreso DATE,
+ADD activo BOOLEAN DEFAULT 1,
+ADD foto VARCHAR(255);

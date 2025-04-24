@@ -1,19 +1,38 @@
 <?php
 require_once __DIR__ . '/../controllers/UsuarioController.php';
+require_once __DIR__ . '/../controllers/AuthController.php';
+require_once __DIR__ . '/../controllers/SessionController.php';
+require_once __DIR__ . '/../controllers/DepartamentoController.php';
 
-$r = $_GET['r'] ?? 'usuarios';
-$controller = new UsuarioController();
+// Ruta raíz
+$router->get('/', function () {
+    session_start();
+    if (isset($_SESSION['user'])) {
+        header('Location: /usuarios');
+    } else {
+        header('Location: /login');
+    }
+    exit();
+});
 
-switch ($r) {
-    case 'usuarios':
-        $controller->index();
-        break;
-    case 'crear_usuario':
-        $controller->create();
-        break;
-    case 'store_usuario':
-        $controller->store();
-        break;
-    default:
-        echo "Página no encontrada";
-}
+// Login / Logout
+$router->get('/login', function () {
+    require __DIR__ . '/../views/login.php';
+});
+$router->post('/login', 'AuthController@login');
+$router->get('/logout', 'SessionController@logout');
+
+// Usuarios
+$router->get('/usuarios', 'UsuarioController@index');
+$router->get('/crear_usuario', 'UsuarioController@create');
+$router->post('/store_usuario', 'UsuarioController@store');
+
+// Departamentos
+$router->post('/crear_departamento', 'DepartamentoController@store');
+$router->post('/editar_departamento', 'DepartamentoController@update');
+$router->post('/eliminar_departamento', 'DepartamentoController@delete');
+
+// Dashboard
+require_once __DIR__ . '/../controllers/DashboardController.php';
+
+$router->get('/dashboard', 'DashboardController@index');
