@@ -1,25 +1,17 @@
-<?php require_once '../session.php';?>
-<?php include 'components/head.php'; ?>
-<?php include 'components/header.php'; ?>
-<?php include 'components/nav.php'; ?>
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+// Cargar el modelo Usuario
+require_once(__DIR__ . '/../models/Usuario.php');
 
-<h2>Listado de usuarios</h2>
-<a href="index.php?r=crear_usuario">Crear nuevo usuario</a>
-<table>
-    <thead>
-        <tr>
-            <th>Nombre</th><th>Email</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($usuarios as $usuario): ?>
-            <tr>
-                <td><?= htmlspecialchars($usuario['nombre']) ?></td>
-                <td><?= htmlspecialchars($usuario['email']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+// Instancia del modelo
+$usuarioModel = new Usuario();
+$usuarios = $usuarioModel->getAllUsuarios(); // Asegúrate que esta función existe
 
-<?php include 'components/footer.php'; ?>
+// Define la vista interna que se va a incluir dentro del layout
+$view = './usuarios_content.php';
+
+// Carga layout principal
+include __DIR__ . '/layout.php';

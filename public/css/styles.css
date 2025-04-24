@@ -7,3 +7,16 @@ footer {
     text-align: center;
     color: #777;
 }
+
+.nav-link i {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  

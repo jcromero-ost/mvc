@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once 'models/Database.php';
 
@@ -19,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // Éxito: guardar datos en sesión
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['nombre'];
             $_SESSION['user_email'] = $user['email'];
@@ -33,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     } catch (PDOException $e) {
-        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Error en la conexión a la base de datos.'];
+        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Error en la base de datos.'];
         header("Location: views/login.php");
         exit();
     }

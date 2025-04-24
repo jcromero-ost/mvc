@@ -22,4 +22,4 @@ require_once 'components/nav.php';
 </main>
 
 
-<?php require_once 'components/footer.php'; ?>
+

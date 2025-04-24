@@ -16,3 +16,21 @@ VALUES (
     '$2y$10$4y3ab6AjzWkNTswc4zM4P.EEC2OLoBrO8NkU.5fPSrb7De6cChU/y', -- hash de 'admin123'
     'webmaster'
 );
+
+
+CREATE TABLE departamentos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+
+ALTER TABLE usuarios ADD departamento_id INT,
+ADD FOREIGN KEY (departamento_id) REFERENCES departamentos(id);
+
+CREATE TABLE permisos_especiales (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT,
+  permiso VARCHAR(100) NOT NULL,
+  valor BOOLEAN DEFAULT TRUE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
