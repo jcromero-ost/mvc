@@ -1,4 +1,20 @@
 <div class="container mt-4">
+<?php if (isset($_SESSION['success'])): ?>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <?= htmlspecialchars($_SESSION['success']) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+  <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <?= htmlspecialchars($_SESSION['error']) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+  <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
   <h2 class="mb-4">Gestión de Departamentos</h2>
 
   <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#crearDepartamentoModal">

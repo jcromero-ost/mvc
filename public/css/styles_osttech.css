@@ -1,79 +1,144 @@
-
 :root {
-    /* Colores principales */
-    --color-primary: #009B8E;
-    --color-dark: #1B1B1B;
-  
-    /* Colores secundarios */
-    --color-light-bg: #F4F4F4;
-    --color-text: #2C2C2C;
-    --color-border: #B0B0B0;
-  
-    /* Estados */
-    --color-success: #28a745;
-    --color-warning: #ffc107;
-    --color-danger: #dc3545;
-    --color-link: #007bff;
-  }
-  
-  /* Estilos generales */
-  body {
-    background-color: var(--color-light-bg);
-    color: var(--color-text);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  a {
-    color: var(--color-link);
-  }
-  
-  a:hover {
-    color: var(--color-primary);
-  }
-  
-  .btn-primary {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-  }
-  
-  .btn-primary:hover {
-    background-color: #007f76;
-    border-color: #007066;
-  }
-  
-  header, footer {
-    background-color: var(--color-dark);
-    color: white;
-  }
-  
-  .sidebar-osttech .nav-link {
-    border-radius: 4px 0 0 4px;
-    margin: 4px 0;
-  }
-  
-  .sidebar-osttech .nav-link:hover,
-  .sidebar-osttech .nav-link.active {
-    background-color: rgba(0, 155, 142, 0.15);
-    color: var(--color-primary);
-  }
-  
-  .sidebar-osttech hr {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 1rem 0;
-  }
-  
-  .nav-link.dropdown-toggle {
-    color: #2F8C78 !important;
-  }
-  
-  .nav-link.dropdown-toggle:hover,
-  .nav-link.dropdown-toggle:focus {
-    color: #46a58e !important; /* un tono más claro para hover */
-  }
-  
-  .dropdown-menu .dropdown-item:active {
-    background-color: #2F8C78 !important;
-    color: #fff !important;
-  }
-  
+  /* Colores principales */
+  --color-primary: #009B8E;
+  --color-dark: #1B1B1B;
+
+  /* Colores secundarios */
+  --color-light-bg: #F4F4F4;
+  --color-text: #2C2C2C;
+  --color-border: #B0B0B0;
+
+  /* Estados */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-link: #007bff;
+}
+
+/* Estilos generales */
+body {
+  background-color: var(--color-light-bg);
+  color: var(--color-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+  color: var(--color-link);
+}
+
+a:hover {
+  color: var(--color-primary);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: #007f76;
+  border-color: #007066;
+}
+
+header, footer {
+  background-color: var(--color-dark);
+  color: white;
+}
+
+/* Sidebar OSTTECH ajustes */
+.sidebar-osttech {
+  font-size: 0.85rem; /* Reducimos el tamaño de texto solo del nav */
+}
+
+
+/* Sidebar OSTTECH */
+.sidebar-osttech .nav-link,
+.sidebar-osttech .dropdown-toggle {
+  border-radius: 4px;
+  margin: 4px 0;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-osttech .nav-link i,
+.sidebar-osttech .dropdown-toggle i {
+  color: var(--color-primary);
+  margin-right: 8px;
+}
+
+.sidebar-osttech .nav-link:hover,
+.sidebar-osttech .dropdown-toggle:hover {
+  background-color: rgba(0, 155, 142, 0.1);
+  color: var(--color-primary);
+}
+
+.sidebar-osttech .nav-link:hover i,
+.sidebar-osttech .dropdown-toggle:hover i {
+  color: var(--color-primary);
+}
+
+.sidebar-osttech .nav-link.active,
+.sidebar-osttech .dropdown-toggle.active {
+  background-color: rgba(0, 155, 142, 0.2);
+  color: var(--color-primary);
+}
+
+.sidebar-osttech .nav-link.active i,
+.sidebar-osttech .dropdown-toggle.active i {
+  color: var(--color-primary);
+}
+
+.sidebar-osttech hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1rem 0;
+}
+
+/* Dropdown menu dentro del sidebar */
+.sidebar-osttech .dropdown-menu .dropdown-item:active {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+/* Otras tarjetas */
+.card {
+  border-radius: 1rem;
+  background: white;
+}
+
+/* Estilos de reloj y cronómetro */
+#reloj {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+#cronometro {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+/* Animación suave en sidebar */
+.sidebar-osttech .nav-link,
+.sidebar-osttech .dropdown-toggle,
+.sidebar-osttech .nav-link i,
+.sidebar-osttech .dropdown-toggle i {
+    transition: all 0.3s ease;
+}
+
+
+
+
+.page-item .page-link {
+  background-color: white;
+  color: var(--color-primary);
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+}
+
+.page-item.active .page-link {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}

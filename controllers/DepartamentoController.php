@@ -3,10 +3,19 @@ require_once(__DIR__ . '/../models/Departamento.php');
 
 class DepartamentoController {
 
+    public function index() {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        $departamentoModel = new Departamento();
+        $departamentos = $departamentoModel->getAll();
+
+        require_once(__DIR__ . '/../views/departamentos.php');
+    }
+
     public function store() {
         if (session_status() === PHP_SESSION_NONE) 
             session_start(); 
-
 
         $nombre = $_POST['nombre'] ?? null;
 
@@ -23,7 +32,8 @@ class DepartamentoController {
     }
 
     public function update() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
 
         $id = $_POST['id'] ?? null;
         $nombre = $_POST['nombre'] ?? null;
@@ -41,7 +51,8 @@ class DepartamentoController {
     }
 
     public function delete() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
 
         $id = $_POST['id'] ?? null;
 

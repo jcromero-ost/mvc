@@ -22,10 +22,12 @@
           <tr>
             <td>
               <div class="d-flex align-items-center">
-                <img src="/public/images/<?= htmlspecialchars($usuario['foto'] ?? 'default.jpeg') ?>"
-                     alt="Foto"
-                     class="rounded-circle me-2"
-                     style="width: 45px; height: 45px; object-fit: cover;">
+                <?php if (!empty($usuario['foto']) && str_starts_with($usuario['foto'], 'data:image')): ?>
+    <img src="<?= $usuario['foto'] ?>" class="rounded-circle" style="height: 40px;">
+<?php else: ?>
+  <img src="/public/images/<?= $usuario['foto'] ?? 'default.jpeg' ?>" class="rounded-circle" style="height: 40px;">
+<?php endif; ?>
+
                 <div>
                   <strong><?= htmlspecialchars($usuario['nombre']) ?></strong><br>
                   <small class="text-muted"><?= htmlspecialchars($usuario['alias'] ?? '') ?></small>
@@ -41,11 +43,12 @@
             </td>
             <td class="text-center">
 
-              <button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
-                data-usuario='<?= json_encode($usuario, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
-                title="Editar">
-                <i class="bi bi-pencil-square"></i>
-              </button>
+            <button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
+              data-usuario='<?= json_encode($usuario, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
+              title="Editar">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+
 
               <button type="button" class="btn btn-sm btn-danger btn-eliminar"
                 data-id="<?= $usuario['id'] ?>"
@@ -61,62 +64,7 @@
     </table>
   </div>
   <!-- Modal editar usuario -->
-<div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="formEditarUsuario" method="POST" action="/controllers/UsuarioController.php">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEditarUsuarioLabel">Editar usuario</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="accion" value="editar">
-          <input type="hidden" name="id" id="edit_id">
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Nombre</label>
-              <input type="text" class="form-control" name="nombre" id="edit_nombre" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Alias</label>
-              <input type="text" class="form-control" name="alias" id="edit_alias">
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Correo</label>
-              <input type="email" class="form-control" name="email" id="edit_email" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Teléfono</label>
-              <input type="text" class="form-control" name="telefono" id="edit_telefono">
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Fecha de ingreso</label>
-              <input type="date" class="form-control" name="fecha_ingreso" id="edit_fecha_ingreso">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Estado</label>
-              <select class="form-select" name="activo" id="edit_activo">
-                <option value="1">Activo</option>
-                <option value="0">Inactivo</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Guardar cambios</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+  <?php include_once __DIR__ . '/components/modal_editar_usuario.php'; ?>
 
 
 <!-- Modal confirmación de eliminación -->
@@ -146,5 +94,7 @@
 </div>
 
 </div>
-<script src="/public/js/usuarios.js"></script>
+<script src="/public/js/cropper_util.js"></script>
+<script src="/public/js/usuarios_editar.js"></script>
 <script src="/public/js/usuarios_eliminar.js"></script>
+

@@ -40,3 +40,5 @@ ADD telefono VARCHAR(50),
 ADD fecha_ingreso DATE,
 ADD activo BOOLEAN DEFAULT 1,
 ADD foto VARCHAR(255);
+
+ALTER TABLE usuarios MODIFY foto MEDIUMTEXT;

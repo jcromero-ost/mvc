@@ -6,17 +6,22 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Departamento.php';
 
-class UsuarioController {
-
-    public function index() {
-        $usuarios = Usuario::all();
-        require_once __DIR__ . '/../views/usuarios.php';
-    }
+class TicketController {
 
     public function create() {
         $departamentoModel = new Departamento();
         $departamentos = $departamentoModel->getAll();
-        require_once __DIR__ . '/../views/crear_usuario.php';
+        require_once __DIR__ . '/../views/crear_ticket.php';
+    }
+
+    public function ticketsPendientes() {
+        $tickets = Usuario::all();
+        require_once __DIR__ . '/../views/tickets_pendientes.php';
+    }
+
+    public function index() {
+        $tickets = Usuario::all();
+        require_once __DIR__ . '/../views/tickets.php';
     }
 
     public function update() {
@@ -54,7 +59,7 @@ class UsuarioController {
                     $datos['foto'] = $foto;
                 }
     
-                if (Usuario::update($datos)) {
+                if (Ticket::update($datos)) {
                     $_SESSION['success'] = "Usuario actualizado correctamente.";
                 } else {
                     $_SESSION['error'] = "Error al actualizar el usuario.";

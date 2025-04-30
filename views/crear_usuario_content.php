@@ -96,3 +96,4 @@
 </div>
 
 <script src="/public/js/crear_usuario.js" defer></script>
+<script src="/public/js/cropper_util.js"></script>

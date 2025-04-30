@@ -18,26 +18,27 @@ class Usuario {
     // Crear nuevo usuario
     public function create($data) {
         $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-
+    
         $stmt = $this->db->prepare("
             INSERT INTO usuarios 
                 (nombre, alias, email, telefono, fecha_ingreso, password, departamento_id, activo, foto)
             VALUES 
                 (:nombre, :alias, :email, :telefono, :fecha_ingreso, :password, :departamento_id, :activo, :foto)
         ");
-
-        $stmt->bindParam(':nombre', $data['nombre'], PDO::PARAM_STR);
-        $stmt->bindParam(':alias', $data['alias'], PDO::PARAM_STR);
-        $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
-        $stmt->bindParam(':telefono', $data['telefono'], PDO::PARAM_STR);
-        $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso'], PDO::PARAM_STR);
-        $stmt->bindParam(':password', $hash, PDO::PARAM_STR);
-        $stmt->bindParam(':departamento_id', $data['departamento_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':activo', $data['activo'], PDO::PARAM_INT);
-        $stmt->bindParam(':foto', $data['foto'], PDO::PARAM_STR);
-
+    
+        $stmt->bindParam(':nombre', $data['nombre']);
+        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':telefono', $data['telefono']);
+        $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso']);
+        $stmt->bindParam(':password', $hash);
+        $stmt->bindParam(':departamento_id', $data['departamento_id']);
+        $stmt->bindParam(':activo', $data['activo']);
+        $stmt->bindParam(':foto', $data['foto']);
+    
         return $stmt->execute();
     }
+    
 
     // (Opcional) Buscar por email
     public function findByEmail($email) {
@@ -67,17 +68,40 @@ class Usuario {
     
     public static function update($data) {
         $db = Database::connect();
-        $stmt = $db->prepare("UPDATE usuarios SET nombre = :nombre, alias = :alias, email = :email, telefono = :telefono, fecha_ingreso = :fecha_ingreso, activo = :activo WHERE id = :id");
-        return $stmt->execute([
-            ':id' => $data['id'],
-            ':nombre' => $data['nombre'],
-            ':alias' => $data['alias'],
-            ':email' => $data['email'],
-            ':telefono' => $data['telefono'],
-            ':fecha_ingreso' => $data['fecha_ingreso'],
-            ':activo' => $data['activo']
-        ]);
+    
+        $sql = "UPDATE usuarios SET 
+                    nombre = :nombre,
+                    alias = :alias,
+                    email = :email,
+                    telefono = :telefono,
+                    fecha_ingreso = :fecha_ingreso,
+                    departamento_id = :departamento_id,
+                    activo = :activo";
+    
+        if (!empty($data['foto'])) {
+            $sql .= ", foto = :foto";
+        }
+    
+        $sql .= " WHERE id = :id";
+    
+        $stmt = $db->prepare($sql);
+    
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':nombre', $data['nombre']);
+        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':telefono', $data['telefono']);
+        $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso']);
+        $stmt->bindParam(':departamento_id', $data['departamento_id']);
+        $stmt->bindParam(':activo', $data['activo']);
+    
+        if (!empty($data['foto'])) {
+            $stmt->bindParam(':foto', $data['foto']);
+        }
+    
+        return $stmt->execute();
     }
+    
     
     public static function delete($id) {
         $db = Database::connect();
@@ -85,6 +109,20 @@ class Usuario {
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
+
+    public function obtenerUsuariosActivos()
+{
+    $conexion = Database::connect();
+    $query = "SELECT id, nombre FROM usuarios WHERE activo = 1 ORDER BY nombre ASC";
+    //                                  🔵 Correcto campo usado: activo
+
+    $stmt = $conexion->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+    
     
     
 }
