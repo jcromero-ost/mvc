@@ -9,7 +9,7 @@ export function getPaginaActual() {
     return paginaActual;
 }
 
-function formatearFechaInput(fecha) {
+export function formatearFechaInput(fecha) {
     if (!fecha) return '';
     const partes = fecha.split('/');
     if (partes.length === 3) {
@@ -17,6 +17,7 @@ function formatearFechaInput(fecha) {
     }
     return fecha;
 }
+
 
 
 export async function cargarRegistros() {

@@ -42,6 +42,8 @@ $router->get('/registro-horario/listado', 'RegistroHorarioController@listado');
 $router->post('/registro-horario/buscar', 'RegistroHorarioController@buscar');
 $router->get('/usuarios/activos', 'UsuarioController@usuariosActivos');
 $router->post('/registro-horario/buscar-jornadas', 'RegistroHorarioController@buscarJornadas');
+$router->get('/registro-horario/imprimir', 'RegistroHorarioController@imprimir');
+
 
 // Tickets
 $router->get('/crear_ticket', 'TicketController@create');

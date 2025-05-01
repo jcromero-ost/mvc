@@ -17,6 +17,7 @@ $current = basename($_SERVER['REQUEST_URI']);
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="tiempoDropdown">
         <li><a class="dropdown-item" href="/registro_horario"><i class="bi bi-clock me-2"></i>Registro horario</a></li>
         <li><a class="dropdown-item" href="/registro-horario/listado"><i class="bi bi-clipboard-data me-2"></i>Informe de registro horario</a></li>
+        <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
       </ul>
     </li>
 
@@ -43,6 +44,8 @@ $current = basename($_SERVER['REQUEST_URI']);
         <li><a class="dropdown-item" href="/tickets"><i class="bi bi-view-stacked me-2"></i>Lista de tickets</a></li>
       </ul>
     </li>
+
+    
 
     <!-- CERRAR SESIÓN -->
     <li class="nav-item mt-3">

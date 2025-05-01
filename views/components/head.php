@@ -14,6 +14,10 @@
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="/public/css/styles.css">
     <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2">
+    <link rel="stylesheet" href="/public/css/print.css" media="print">
+    <link rel="stylesheet" href="/public/css/styles.css" media="print">
+    <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2" media="print">
+
 
     <!-- Cropper.js CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>

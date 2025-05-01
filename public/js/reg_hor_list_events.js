@@ -1,4 +1,4 @@
-import { cargarRegistros, setPaginaActual } from './reg_hor_list_core.js';
+import { cargarRegistros, setPaginaActual, formatearFechaInput } from './reg_hor_list_core.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarRegistros();
@@ -7,6 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
         setPaginaActual(1);
         cargarRegistros();
     });
+
+    document.getElementById('btn-imprimir').addEventListener('click', () => {
+        const usuario = document.getElementById('usuario').value;
+        const fechaDesde = document.getElementById('fecha_desde').value;
+        const fechaHasta = document.getElementById('fecha_hasta').value;
+    
+        const desdeFormateada = formatearFechaInput(fechaDesde);  // usa tu función si es necesario
+        const hastaFormateada = formatearFechaInput(fechaHasta);
+    
+        const url = `/registro-horario/imprimir?usuario=${encodeURIComponent(usuario)}&desde=${encodeURIComponent(desdeFormateada)}&hasta=${encodeURIComponent(hastaFormateada)}`;
+    
+        window.open(url, '_blank');
+    });
+    
+    
 
     document.getElementById('cantidad').addEventListener('change', () => {
         setPaginaActual(1);
@@ -45,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     });
                                     sugerencias.appendChild(item);
                                 });
+                                sugerencias.style.width = inputUsuario.offsetWidth + "px";
+
                         }
                     });
             }, 300);
@@ -52,4 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             sugerencias.innerHTML = '';
         }
     });
+    inputUsuario.addEventListener('blur', () => {
+        setTimeout(() => {
+            sugerencias.innerHTML = '';
+        }, 200); // espera para permitir hacer clic
+    });
+    
 });

@@ -1,27 +1,31 @@
 <div class="mb-4">
-  <h1>Listado de Registros Horarios</h1>
+<h1 id="titulo-registros">Listado de Registros Horarios</h1>
+
 </div>
 
 <div class="card p-4 mb-4">
 <div class="row align-items-end">
-  <div class="col-md-3 position-relative">
-    <label for="usuario-buscador" class="form-label">Usuario</label>
-    <input type="text" id="usuario-buscador" class="form-control" placeholder="Buscar usuario..." autocomplete="off">
-    <input type="hidden" id="usuario">
-    <div id="sugerencias-usuarios" class="list-group position-absolute w-100 z-3"></div>
-  </div>
+<div class="col-md-3 position-relative">
+  <label for="usuario" class="form-label">Usuario</label>
+  <input type="text" id="usuario-buscador" class="form-control" placeholder="Buscar usuario...">
+  <input type="hidden" id="usuario">
+  <div id="sugerencias-usuarios" class="list-group"></div>
+</div>
 
-  <div class="col-md-3 mb-3">
+
+
+  <div class="col-md-3">
     <label for="fecha_desde" class="form-label">Fecha desde</label>
     <input type="date" id="fecha_desde" class="form-control">
   </div>
 
-  <div class="col-md-3 mb-3">
+  <div class="col-md-3">
     <label for="fecha_hasta" class="form-label">Fecha hasta</label>
     <input type="date" id="fecha_hasta" class="form-control">
   </div>
 
-  <div class="col-md-3 mb-3">
+  <div class="col-md-3 d-flex align-items-center">
+  <div class="me-auto ms-4">
     <label for="cantidad" class="form-label">Registros por página</label>
     <select id="cantidad" class="form-select">
       <option value="10" selected>10</option>
@@ -30,16 +34,20 @@
       <option value="100">100</option>
     </select>
   </div>
+  <div class="ms-2 align-self-end">
+    <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
+      <i class="bi bi-funnel"></i> Filtrar
+    </button>
+  </div>
+  <div class="ms-2 align-self-end">
+    <button id="btn-imprimir" class="btn btn-secondary btn-sm-custom">
+      <i class="bi bi-printer"></i> Imprimir
+    </button>
+  </div>
 </div>
 
-<div class="d-flex justify-content-end mb-3">
-  <button id="btn-filtrar" class="btn btn-primary me-2">
-    <i class="bi bi-funnel"></i> Filtrar
-  </button>
-  <button id="btn-imprimir" class="btn btn-secondary">
-    <i class="bi bi-printer"></i> Imprimir
-  </button>
 </div>
+
 
 
   <div class="table-responsive">

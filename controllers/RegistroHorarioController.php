@@ -113,4 +113,20 @@ public function buscarJornadas()
     
 }
 
+public function imprimir()
+{
+    $usuario = $_GET['usuario'] ?? null;
+    $fechaDesde = $_GET['desde'] ?? null;
+    $fechaHasta = $_GET['hasta'] ?? null;
+
+    $registro = new RegistroHorario();
+    $resultado = $registro->obtenerJornadasFiltradas($usuario, $fechaDesde, $fechaHasta, 1, 9999); // traer todos
+
+    $jornadas = $resultado['jornadas'];
+
+    
+
+    require __DIR__ . '/../views/reg_hor_list_print.php';
+}
+
 }
