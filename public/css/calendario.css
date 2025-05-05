@@ -1,0 +1,54 @@
+/* Estilo para el contenedor del calendario mensual */
+.cal-mensual-container {
+  height: calc(100vh - 220px); /* ajusta si tienes header/nav */
+  overflow: hidden;
+}
+
+/* Contenido dentro de cada celda del calendario */
+.contenido-dia {
+  font-size: 0.65rem;
+  text-align: left;
+  padding-left: 2px;
+  color: #555;
+}
+
+/* Estilos generales para cada mes en la vista anual */
+.cal-anual-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+  grid-template-rows: repeat(3, 1fr);    /* 3 filas */
+  gap: 0.5rem;
+  height: calc(100vh - 220px); /* ajusta según header/nav */
+  overflow: hidden;
+}
+
+.cal-mes {
+  font-size: 0.7rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  text-align: center;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.cal-mes .nombre-mes {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.cal-mes table {
+  flex: 1;
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.cal-mes th,
+.cal-mes td {
+  text-align: center;
+  padding: 0.15rem;
+  vertical-align: middle;
+}

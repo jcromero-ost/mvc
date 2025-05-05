@@ -44,6 +44,13 @@ $router->get('/usuarios/activos', 'UsuarioController@usuariosActivos');
 $router->post('/registro-horario/buscar-jornadas', 'RegistroHorarioController@buscarJornadas');
 $router->get('/registro-horario/imprimir', 'RegistroHorarioController@imprimir');
 
+// Calendario Laboral
+$router->get('/calendario_laboral', 'CalendarioLaboralController@index');
+
+// Clientes
+$router->get('/crear_cliente', 'ClienteController@create');
+$router->get('/clientes', 'ClienteController@index');
+$router->post('/store_cliente', 'ClienteController@store');
 
 // Tickets
 $router->get('/crear_ticket', 'TicketController@create');

@@ -33,13 +33,24 @@ $current = basename($_SERVER['REQUEST_URI']);
       </ul>
     </li>
 
+    <!-- MENU CLIENTES -->
+    <li class="nav-item dropdown <?php echo (in_array($current, ['crear_cliente', 'clientes']) ? 'active' : ''); ?>">
+      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_cliente', 'clientes']) ? 'active' : ''); ?>" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-person-square me-2"></i>Clientes
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="clientesDropdown">
+        <li><a class="dropdown-item" href="/crear_cliente"><i class="bi bi-person-plus me-2"></i>Crear cliente</a></li>
+        <li><a class="dropdown-item" href="/clientes"><i class="bi bi-person-vcard me-2"></i>Gestionar clientes</a></li>
+      </ul>
+    </li>
+
     <!-- MENU TICKETS -->
     <li class="nav-item dropdown <?php echo (in_array($current, ['crear_ticket', 'tickets_pendientes', 'tickets']) ? 'active' : ''); ?>">
       <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_ticket', 'tickets_pendientes', 'tickets']) ? 'active' : ''); ?>" href="#" id="ticketsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-card-checklist me-2"></i>Tickets
       </a>
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ticketsDropdown">
-        <li><a class="dropdown-item" href="/crear_ticket"><i class="bi bi-clipboard-plus-fill me-2"></i>Crear ticket</a></li>
+        <li><a class="dropdown-item" href="/crear_ticket"><i class="bi bi-clipboard-plus me-2"></i>Crear ticket</a></li>
         <li><a class="dropdown-item" href="/tickets_pendientes"><i class="bi bi-view-list me-2"></i>Tickets pendientes</a></li>
         <li><a class="dropdown-item" href="/tickets"><i class="bi bi-view-stacked me-2"></i>Lista de tickets</a></li>
       </ul>

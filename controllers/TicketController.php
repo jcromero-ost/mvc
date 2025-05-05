@@ -4,13 +4,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../models/Usuario.php';
-require_once __DIR__ . '/../models/Departamento.php';
+require_once __DIR__ . '/../models/MediosComunicacion.php';
 
 class TicketController {
 
     public function create() {
-        $departamentoModel = new Departamento();
-        $departamentos = $departamentoModel->getAll();
+        $mediosModel = new MedioComunicacion();
+        $medios_comunicacion = $mediosModel->getAll();
         require_once __DIR__ . '/../views/crear_ticket.php';
     }
 

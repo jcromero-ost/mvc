@@ -5,18 +5,33 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="nombre" class="form-label">Cliente</label>
-        <input type="text" class="form-control" id="cliente" name="cliente" required>
+        <div class="d-flex align-items-center">
+          <input type="text" class="form-control me-2" id="cliente" name="cliente" required readonly>
+          <button class="btn btn-outline-secondary" type="button" id="botonBuscarCliente">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
       </div>
       <div class="col-md-6">
-        <label for="alias" class="form-label">Medio de comunicación</label>
-        <input type="text" class="form-control" id="incidencia" name="incidencia">
+        <label for="incidente" class="form-label">Medio de comunicación</label>
+        <select id="incidente" name="incidente" class="form-select" required>
+            <option value="">Seleccione un medio</option>
+            <?php foreach ($medios_comunicacion as $medio): ?>
+              <option value="<?= $medio['id'] ?>"><?= htmlspecialchars($medio['nombre']) ?></option>
+            <?php endforeach; ?>
+        </select>
       </div>
     </div>
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <label for="email" class="form-label">Técnico</label>
-        <input type="email" class="form-control" id="email" name="email" required>
+        <label for="tecnico" class="form-label">Técnico</label>
+        <select id="tecnico" name="tecnico" class="form-select" required>
+            <option value="">Seleccione un tecnico</option>
+            <?php foreach ($tecnicos as $tec): ?>
+              <option value="<?= $tec['id'] ?>"><?= htmlspecialchars($tec['nombre']) ?></option>
+            <?php endforeach; ?>
+        </select>
       </div>
       <div class="col-md-6">
         <label for="telefono" class="form-label">Fecha Inicio Ticket</label>
@@ -33,9 +48,8 @@
       </div>
     </div>
 
-    <button type="submit" name="accion" value="crear" class="btn btn-primary">Guardar usuario</button>
+    <button type="submit" name="accion" value="crear" class="btn btn-primary">Guardar ticket</button>
   </form>
 </div>
 
 <script src="/public/js/crear_usuario.js" defer></script>
-<script src="/public/js/cropper_util.js"></script>

@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="/public/css/print.css" media="print">
     <link rel="stylesheet" href="/public/css/styles.css" media="print">
     <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2" media="print">
+    <link rel="stylesheet" href="/public/css/calendario.css">
+    <link rel="stylesheet" href="/public/css/pagination.css">
+
 
 
     <!-- Cropper.js CSS -->

@@ -1,0 +1,29 @@
+:root {
+  /* Colores principales */
+  --color-primary: #009B8E;
+  --color-dark: #1B1B1B;
+
+  /* Colores secundarios */
+  --color-light-bg: #F4F4F4;
+  --color-text: #2C2C2C;
+  --color-border: #B0B0B0;
+
+  /* Estados */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-link: #007bff;
+}
+
+.page-item .page-link {
+    background-color: var(--color-primary);
+    color: white;
+    border: 1px;
+    border-radius: 0.375rem;
+    margin-right: 0.25rem;
+  }
+  
+  .page-item.active .page-link {
+    background-color: var(--color-dark);
+    color: white;
+  }
