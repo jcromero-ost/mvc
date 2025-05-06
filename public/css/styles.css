@@ -100,3 +100,12 @@ footer {
   padding: 0.3rem 0.75rem;
   font-size: 0.875rem;
 }
+
+.modal-custom-size {
+  max-width: 75%;
+  height: auto;
+  margin: auto;
+}
+.modal-custom-size .modal-content {
+  height: 100%;
+}

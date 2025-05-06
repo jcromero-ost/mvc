@@ -3,6 +3,7 @@ export function getFechaDesdeURL() {
   return {
     anio: parseInt(url.searchParams.get('anio')) || new Date().getFullYear(),
     mes: parseInt(url.searchParams.get('mes')) || (new Date().getMonth() + 1),
+    vista: url.searchParams.get('vista') || 'mensual'
   };
 }
 
@@ -19,8 +20,7 @@ export function redirigirVista(anio, mes, modo) {
   }
 }
 
-// Ayuda: función para calcular semana ISO
-function getNumeroSemana(fecha) {
+export function getNumeroSemana(fecha) {
   const temp = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()));
   const dayNum = temp.getUTCDay() || 7;
   temp.setUTCDate(temp.getUTCDate() + 4 - dayNum);
@@ -28,7 +28,10 @@ function getNumeroSemana(fecha) {
   return Math.ceil((((temp - yearStart) / 86400000) + 1) / 7);
 }
 
-
+export function getMaxSemanasAnio(anio) {
+  const d = new Date(anio, 11, 31); // 31 de diciembre
+  return getNumeroSemana(d);
+}
 
 export const nombresMes = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

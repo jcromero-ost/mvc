@@ -1,9 +1,52 @@
-<div class="container mt-4">
+<div class="container-fluid mt-2">
+
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Listado de clientes</h2>
     <a href="/crear_cliente" class="btn btn-primary">
       <i class="bi bi-person-plus-fill"></i> Crear nuevo cliente
     </a>
+  </div>
+
+  <div class="row g-3 align-items-end mb-4">
+    <div class="col-md-3">
+      <label for="filtrar_nombre" class="form-label">Nombre</label>
+      <input type="text" id="filtrar_nombre" class="form-control">
+      <div id="sugerencias-nombre" class="list-group"></div>
+    </div>
+
+    <div class="col-md-1">
+      <label for="filtrar_id" class="form-label">ID</label>
+      <input type="text" id="filtrar_id" class="form-control">
+    </div>
+
+    <div class="col-md-2">
+      <label for="filtrar_telefono" class="form-label">Telefono</label>
+      <input type="text" id="filtrar_telefono" class="form-control">
+    </div>
+
+    <div class="col-md-2">
+      <label for="filtrar_dni" class="form-label">DNI</label>
+      <input type="text" id="filtrar_dni" class="form-control">
+    </div>
+
+    <div class="col-md-2">
+      <label for="cantidad" class="form-label">Registros por página</label>
+      <select id="cantidad" class="form-select">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+
+    <div class="col-md-2 d-flex gap-2">
+      <button id="btn-filtrar" class="btn btn-primary w-100">
+        <i class="bi bi-funnel"></i> Filtrar
+      </button>
+      <button id="btn-imprimir" class="btn btn-secondary w-100">
+        <i class="bi bi-printer"></i> Imprimir
+      </button>
+    </div>
   </div>
 
   <div class="table-responsive">
@@ -85,5 +128,7 @@
 </div>
 
 </div>
-<script src="/public/js/clientes.js"></script>
+<script src="/public/js/clientes/clientes.js"></script>
+<script src="/public/js/clientes/clientes_filtrado.js"></script>
+
 

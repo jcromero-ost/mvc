@@ -7,7 +7,7 @@
         <label for="nombre" class="form-label">Cliente</label>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control me-2" id="cliente" name="cliente" required readonly>
-          <button class="btn btn-outline-secondary" type="button" id="botonBuscarCliente">
+          <button class="btn btn-outline-secondary btn-lupa" type="button" id="botonBuscarCliente">
             <i class="bi bi-search"></i>
           </button>
         </div>
@@ -35,7 +35,7 @@
       </div>
       <div class="col-md-6">
         <label for="telefono" class="form-label">Fecha Inicio Ticket</label>
-        <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio">
+        <input type="datetime-local" class="form-control" id="fecha_inicio" name="fecha_inicio" value="<?php echo date('Y-m-d\TH:i'); ?>" readonly>      
       </div>
     </div>
 
@@ -52,4 +52,8 @@
   </form>
 </div>
 
-<script src="/public/js/crear_usuario.js" defer></script>
+<!-- Modal Cliente -->
+<?php include_once __DIR__ . '/components/modal_cliente_ticket.php'; ?>
+
+
+<script src="/public/js/tickets/tickets_crear.js" defer></script>

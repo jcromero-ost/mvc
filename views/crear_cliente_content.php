@@ -71,4 +71,4 @@
 	</form>
 </div>
 
-<script src="/public/js/clientes_crear.js" defer></script>
+<script src="/public/js/clientes/clientes_crear.js" defer></script>

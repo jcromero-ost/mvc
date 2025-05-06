@@ -12,5 +12,10 @@ require_once(__DIR__ . '/../models/Usuario.php');
 $tecnicosModel = new Usuario();
 $tecnicos = $tecnicosModel->getAllUsuarios();
 
+require_once(__DIR__ . '/../models/Cliente.php');
+
+$clienteModel = new Cliente();
+$clientes = $clienteModel->getAllClientes();
+
 $view = './crear_ticket_content.php';
 include __DIR__ . '/layout.php';

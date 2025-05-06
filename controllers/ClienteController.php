@@ -114,7 +114,6 @@ class ClienteController {
 
 
             $_SESSION['success'] = 'Cliente creado correctamente.';
-            header('Location: /clientes');
             exit;
         }
 

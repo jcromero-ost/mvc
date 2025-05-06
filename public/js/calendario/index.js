@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSiguiente = document.getElementById('btnMesSiguiente');
   const tituloMes = document.getElementById('tituloMes');
 
-  let { anio, mes } = getFechaDesdeURL();
+  let { anio, mes, vista } = getFechaDesdeURL();
+
+  // 👇 Esto corrige el selector de vista con lo que viene en la URL
+  if (modoVista && vista) {
+    modoVista.value = vista;
+  }
 
   const actualizarVista = () => {
     document.getElementById('vistaMensual')?.classList.add('d-none');
@@ -31,19 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+
   // Botón Hoy
-btnHoy?.addEventListener('click', () => {
+  btnHoy?.addEventListener('click', () => {
     const hoy = new Date();
     const modo = modoVista.value;
     redirigirVista(hoy.getFullYear(), hoy.getMonth() + 1, modo);
   });
-  
+
   // Botón Anterior
   btnAnterior?.addEventListener('click', () => {
     let nuevoAnio = anio;
     let nuevoMes = mes;
     const modo = modoVista.value;
-  
+
     if (modo === 'anual') {
       nuevoAnio--;
     } else {
@@ -53,16 +59,16 @@ btnHoy?.addEventListener('click', () => {
         nuevoAnio--;
       }
     }
-  
+
     redirigirVista(nuevoAnio, nuevoMes, modo);
   });
-  
+
   // Botón Siguiente
   btnSiguiente?.addEventListener('click', () => {
     let nuevoAnio = anio;
     let nuevoMes = mes;
     const modo = modoVista.value;
-  
+
     if (modo === 'anual') {
       nuevoAnio++;
     } else {
@@ -72,11 +78,15 @@ btnHoy?.addEventListener('click', () => {
         nuevoAnio++;
       }
     }
-  
+
     redirigirVista(nuevoAnio, nuevoMes, modo);
   });
-  
 
-  modoVista?.addEventListener('change', actualizarVista);
+  // Cambiar vista → actualiza la URL para mantenerla sincronizada
+  modoVista?.addEventListener('change', () => {
+    redirigirVista(anio, mes, modoVista.value);
+  });
+
+  // Mostrar vista inicial
   actualizarVista();
 });

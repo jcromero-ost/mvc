@@ -9,7 +9,7 @@ class Cliente {
     }
 
     // Obtener todos los usuarios
-    public function getAllUsuarios() {
+    public function getAllClientes() {
         $stmt = $this->db->prepare("SELECT CCODCL, CNOM, CTEL1, CDNI, CMAIL1, CDOM, CPOB, CCODPO, CPAIS FROM fccli001");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -94,5 +94,5 @@ class Cliente {
         $stmt = $db->prepare("DELETE FROM fccli001 WHERE CCODCL = :id");
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
-    }    
+    }
 }
