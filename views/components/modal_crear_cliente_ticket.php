@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalCrearCliente" tabindex="-1" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
-      <form id="formCrearCliente" method="POST"  action="/store_cliente" enctype="multipart/form-data">
+      <form id="formCrearCliente" method="POST"  action="/store_cliente_ticket" enctype="multipart/form-data">
         <div class="modal-header">
           <h5 class="modal-title" id="modalCrearClienteLabel">Crear cliente</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -75,7 +75,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success btn-primary" data-bs-dismiss="modal">Guardar cambios</button>
+          <button type="submit" class="btn btn-success btn-primary">Guardar cambios</button>
           <button type="button" class="btn btn-secondary btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </form>

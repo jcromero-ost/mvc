@@ -1,18 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const inputSeleccionCliente = document.getElementById('seleccionCliente');
+const inputSeleccionCliente = document.getElementById('seleccionCliente');
 
-    const modalCrearCliente = new bootstrap.Modal(document.getElementById('modalCrearCliente'));
+// Realiza las operaciones cuando se pulsa el boton
+document.querySelectorAll('.btn-seleccionar').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const cliente = JSON.parse(btn.dataset.cliente);
 
-    // Realiza las operaciones cuando se pulsa el boton
-    document.querySelectorAll('.btn-seleccionar').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const cliente = JSON.parse(btn.dataset.cliente);
-
-            console.log(cliente.CCODCL);
-
-            inputSeleccionCliente.value = cliente.CNOM;
-        });
+        inputSeleccionCliente.value = cliente.CNOM;
     });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const modalCrearCliente = new bootstrap.Modal(document.getElementById('modalCrearCliente'));
 
     // Realiza las operaciones cuando se pulsa el boton
     document.querySelectorAll('.btn-crear-cliente').forEach(btn => {

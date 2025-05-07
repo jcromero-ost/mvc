@@ -51,11 +51,14 @@ $router->get('/calendario_laboral', 'CalendarioLaboralController@index');
 $router->get('/crear_cliente', 'ClienteController@create');
 $router->get('/clientes', 'ClienteController@index');
 $router->post('/store_cliente', 'ClienteController@store');
+$router->post('/store_cliente_ticket', 'ClienteController@storeTickets');
 
 // Tickets
 $router->get('/crear_ticket', 'TicketController@create');
 $router->get('/tickets_pendientes', 'TicketController@ticketsPendientes');
 $router->get('/tickets', 'TicketController@index');
+$router->post('/store_ticket', 'TicketController@store');
+
 
 
 

@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/Ticket.php';
 require_once __DIR__ . '/../models/MediosComunicacion.php';
 
 class TicketController {
@@ -75,15 +75,13 @@ class TicketController {
         }
     }
     
-    
-    
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
             $id = $_POST['id'] ?? null;
             if ($id) {
-                Usuario::delete($id);
-                $_SESSION['mensaje'] = "Usuario eliminado correctamente.";
-                header("Location: ../views/usuarios.php");
+                Ticket::delete($id);
+                $_SESSION['mensaje'] = "Ticket eliminado correctamente.";
+                header("Location: ../views/tickets.php");
                 exit;
 
             } else {
@@ -95,80 +93,47 @@ class TicketController {
     
 
     public function store() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nombre = $_POST['nombre'] ?? '';
-            $alias = $_POST['alias'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $telefono = $_POST['telefono'] ?? '';
-            $fecha_ingreso = $_POST['fecha_ingreso'] ?? '';
-            $departamento_id = $_POST['departamento_id'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $confirm_password = $_POST['confirm_password'] ?? '';
-            $activo = $_POST['activo'] ?? 1;
-            $foto = 'default.jpeg';
+            $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
+            $cliente = $_POST['cliente'] ?? '';
+            $tecnico = $_POST['tecnico'] ?? '';
+            $fecha_inicio = $_POST['fecha_inicio'] ?? '';
+            $descripcion = $_POST['descripcion'] ?? '';
 
-            // Validaciones
-            if ($password !== $confirm_password) {
-                $_SESSION['error'] = 'Las contraseñas no coinciden.';
-                header('Location: /crear_usuario');
+            // Validaciones mínimas
+            if (empty($medio_comunicacion) || empty($cliente) || empty($tecnico) || empty($fecha_inicio) || empty($descripcion)) {
+                $_SESSION['error'] = 'Todos los campos son obligatorios.';
+                header('Location: /crear_ticket');
                 exit;
             }
 
-            if (empty($nombre) || empty($email) || empty($password) || empty($departamento_id)) {
-                $_SESSION['error'] = 'Todos los campos obligatorios deben completarse.';
-                header('Location: /crear_usuario');
-                exit;
-            }
-
-            // Procesar imagen recortada en base64
-            if (!empty($_POST['foto_recortada'])) {
-                $foto = $_POST['foto_recortada']; // Base64 completa
-            } else {
-                $foto = 'default.jpeg'; // O podrías guardar null
-            }
-            
-
-
-            $usuario = new Usuario();
-            $usuario->create([
-                'nombre' => $nombre,
-                'alias' => $alias,
-                'email' => $email,
-                'telefono' => $telefono,
-                'fecha_ingreso' => $fecha_ingreso,
-                'password' => $password,
-                'departamento_id' => $departamento_id,
-                'activo' => $activo,
-                'foto' => $foto
+            $ticket = new Ticket();
+            $ticket->create([
+                'medio_comunicacion' => $medio_comunicacion,
+                'cliente' => $cliente,
+                'tecnico' => $tecnico,
+                'fecha_inicio' => $fecha_inicio,
+                'descripcion' => $descripcion
             ]);
 
 
-            $_SESSION['success'] = 'Usuario creado correctamente.';
-            header('Location: /usuarios');
+            $_SESSION['success'] = 'Ticket creado correctamente.';
+            header('Location: /tickets_pendientes');
             exit;
         }
 
         // Si entra por GET o sin POST válido, redirigir
-        header('Location: /usuarios');
+        header('Location: /tickets_pendientes');
         exit;
     }
 
-    public function usuariosActivos()
-{
-    header('Content-Type: application/json');
-
-    $usuario = new Usuario();
-    $usuarios = $usuario->obtenerUsuariosActivos();
-
-    echo json_encode(['success' => true, 'data' => $usuarios]);
-}
-
-
 }
 if (isset($_POST['accion'])) {
-    $controller = new UsuarioController();
+    $controller = new TicketController();
     
     switch ($_POST['accion']) {
         case 'editar':

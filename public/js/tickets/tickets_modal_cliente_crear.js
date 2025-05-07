@@ -7,11 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
         btn.addEventListener('click', () => {
             const inputNombreCliente = document.getElementById('nombre');
 
+            console.log(inputNombreCliente.value);
+
             const inputClienteForm = document.getElementById('cliente');
 
             inputClienteForm.value = inputNombreCliente.value;
         });
     });
+
+    
 
 
 });

@@ -79,7 +79,9 @@ class ClienteController {
     
 
     public function store() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? '';
@@ -114,11 +116,59 @@ class ClienteController {
 
 
             $_SESSION['success'] = 'Cliente creado correctamente.';
+            header('Location: /clientes');
             exit;
         }
 
         // Si entra por GET o sin POST válido, redirigir
         header('Location: /clientes');
+        exit;
+    }
+
+    public function storeTickets() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? '';
+            $nombre = $_POST['nombre'] ?? '';
+            $telefono = $_POST['telefono'] ?? '';
+            $dni = $_POST['dni'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $direccion = $_POST['direccion'] ?? '';
+            $ciudad = $_POST['ciudad'] ?? '';
+            $cp = $_POST['cp'] ?? '';
+            $provincia = $_POST['provincia'] ?? '';
+
+            // Validaciones
+            if (empty($nombre) || empty($telefono) || empty($dni) || empty($email)) {
+                $_SESSION['error'] = 'Todos los campos obligatorios deben completarse.';
+                header('Location: /crear_cliente');
+                exit;
+            }
+
+            $cliente = new Cliente();
+            $cliente->create([
+                'id' => $id,
+                'nombre' => $nombre,
+                'telefono' => $telefono,
+                'dni' => $dni,
+                'email' => $email,
+                'direccion' => $direccion,
+                'ciudad' => $ciudad,
+                'cp' => $cp,
+                'provincia' => $provincia
+            ]);
+
+
+            $_SESSION['success'] = 'Cliente creado correctamente.';
+            header('Location: /crear_ticket');
+            exit;
+        }
+
+        // Si entra por GET o sin POST válido, redirigir
+        header('Location: /crear_ticket');
         exit;
     }
 }
