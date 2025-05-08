@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../models/Ticket.php';
+require_once __DIR__ . '/../models/Cliente.php';
 require_once __DIR__ . '/../models/MediosComunicacion.php';
 
 class TicketController {
@@ -15,64 +16,15 @@ class TicketController {
     }
 
     public function ticketsPendientes() {
-        $tickets = Usuario::all();
         require_once __DIR__ . '/../views/tickets_pendientes.php';
     }
 
     public function index() {
-        $tickets = Usuario::all();
         require_once __DIR__ . '/../views/tickets.php';
     }
 
-    public function update() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar') {
-            $id = $_POST['id'] ?? null;
-            $nombre = $_POST['nombre'] ?? null;
-            $alias = $_POST['alias'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $telefono = $_POST['telefono'] ?? null;
-            $fecha_ingreso = $_POST['fecha_ingreso'] ?? null;
-            $departamento_id = $_POST['departamento_id'] ?? null;
-            $activo = $_POST['activo'] ?? 1;
-    
-            // Procesar imagen recortada en base64 (si existe)
-            if (!empty($_POST['foto_recortada']) && strpos($_POST['foto_recortada'], 'data:image') === 0) {
-                $foto = $_POST['foto_recortada']; // Base64 válida
-                $datos['foto'] = $foto;
-            }
-            
-    
-            if ($id && $nombre && $email) {
-                $datos = [
-                    'id' => $id,
-                    'nombre' => $nombre,
-                    'alias' => $alias,
-                    'email' => $email,
-                    'telefono' => $telefono,
-                    'fecha_ingreso' => $fecha_ingreso,
-                    'departamento_id' => $departamento_id,
-                    'activo' => $activo
-                ];
-    
-                // Solo incluir 'foto' si se subió una nueva
-                if (!empty($foto)) {
-                    $datos['foto'] = $foto;
-                }
-    
-                if (Ticket::update($datos)) {
-                    $_SESSION['success'] = "Usuario actualizado correctamente.";
-                } else {
-                    $_SESSION['error'] = "Error al actualizar el usuario.";
-                }
-    
-                header("Location: ../views/usuarios.php");
-                exit;
-            } else {
-                $_SESSION['error'] = "Faltan datos obligatorios.";
-                header("Location: ../views/usuarios.php");
-                exit;
-            }
-        }
+    public function edit() {
+        require_once __DIR__ . '/../views/editar_ticket.php';
     }
     
     public function delete() {
@@ -90,7 +42,6 @@ class TicketController {
             }
         }
     }
-    
 
     public function store() {
         if (session_status() === PHP_SESSION_NONE) {
@@ -99,13 +50,23 @@ class TicketController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
-            $cliente = $_POST['cliente'] ?? '';
+            $nombreCliente = $_POST['cliente'] ?? '';
             $tecnico = $_POST['tecnico'] ?? '';
             $fecha_inicio = $_POST['fecha_inicio'] ?? '';
             $descripcion = $_POST['descripcion'] ?? '';
 
+            // Sacar el id del usuario logueado
+            $usuario_creador_completo = $_SESSION['user'] ?? null;
+
+            // Accede a la propiedad 'id' directamente
+            $usuario_creador = $usuario_creador_completo['id'] ?? null; // Si 'id' no está definida, será null
+
+            $cliente = new Cliente();
+            // Obtener el ID del cliente
+            $idCliente = $cliente->getIdByCliente($nombreCliente);
+
             // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($cliente) || empty($tecnico) || empty($fecha_inicio) || empty($descripcion)) {
+            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($tecnico) || empty($fecha_inicio) || empty($descripcion)) {
                 $_SESSION['error'] = 'Todos los campos son obligatorios.';
                 header('Location: /crear_ticket');
                 exit;
@@ -114,10 +75,11 @@ class TicketController {
             $ticket = new Ticket();
             $ticket->create([
                 'medio_comunicacion' => $medio_comunicacion,
-                'cliente' => $cliente,
+                'cliente' => $idCliente,
                 'tecnico' => $tecnico,
                 'fecha_inicio' => $fecha_inicio,
-                'descripcion' => $descripcion
+                'descripcion' => $descripcion,
+                'usuario_creador' => $usuario_creador
             ]);
 
 
@@ -131,14 +93,90 @@ class TicketController {
         exit;
     }
 
+    public function storeEdit() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
+            $nombreCliente = $_POST['cliente'] ?? '';
+            $tecnico = $_POST['tecnico'] ?? '';
+            $descripcion = $_POST['descripcion'] ?? '';
+            $id = $_POST['id'] ?? '';
+
+            $cliente = new Cliente();
+            // Obtener el ID del cliente
+            $idCliente = $cliente->getIdByCliente($nombreCliente);
+
+            // Validaciones mínimas
+            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($tecnico) || empty($descripcion)) {
+                $_SESSION['error'] = 'Todos los campos son obligatorios.';
+                header('Location: /editar_ticket');
+                exit;
+            }
+
+            $ticket = new Ticket();
+            $ticket->update([
+                'medio_comunicacion' => $medio_comunicacion,
+                'cliente' => $idCliente,
+                'tecnico' => $tecnico,
+                'descripcion' => $descripcion,
+                'id' => $id
+            ]);
+
+                $_SESSION['success'] = "Ticket actualizado correctamente.";
+                header("Location: /editar_ticket?id=" . $_POST['id']);
+                exit;
+        }
+
+        // Si entra por GET u otra cosa que no sea POST
+        $_SESSION['error'] = 'Acceso no válido.';
+        header("Location: /editar_ticket?id=" . $_POST['id']);
+        exit;
+
+    }
+
+    public function storeComentarios() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? '';
+            $fecha_hora = $_POST['fecha_hora'] ?? '';
+            $contenido = $_POST['contenido'] ?? '';
+
+            // Validaciones mínimas
+            if (empty($ticket_id) || empty($fecha_hora) || empty($contenido)) {
+                $_SESSION['error'] = 'Todos los campos son obligatorios.';
+                header("Location: /editar_ticket?id=" . $_POST['id']);
+                exit;
+            }
+
+            $ticket = new Ticket();
+            $ticket->createComentario([
+                'ticket_id' => $ticket_id,
+                'fecha_hora' => $fecha_hora,
+                'contenido' => $contenido
+            ]);
+
+
+            $_SESSION['success'] = 'Ticket creado correctamente.';
+            header("Location: /editar_ticket?id=" . $_POST['id']);
+            exit;
+        }
+
+        // Si entra por GET o sin POST válido, redirigir
+        header("Location: /editar_ticket?id=" . $_POST['id']);
+        exit;
+    }
+
 }
 if (isset($_POST['accion'])) {
     $controller = new TicketController();
     
     switch ($_POST['accion']) {
-        case 'editar':
-            $controller->update();
-            break;
         case 'eliminar':
             $controller->delete();
             break;

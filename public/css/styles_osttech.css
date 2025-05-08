@@ -127,9 +127,6 @@ header, footer {
     transition: all 0.3s ease;
 }
 
-
-
-
 .page-item .page-link {
   background-color: white;
   color: var(--color-primary);
@@ -142,4 +139,10 @@ header, footer {
   background-color: var(--color-primary);
   color: white;
   border-color: var(--color-primary);
+}
+
+.btn-extra-small {
+  padding: 0.15rem 0.3rem;
+  font-size: 0.75rem;
+  line-height: 1;
 }

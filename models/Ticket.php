@@ -22,14 +22,19 @@ class Ticket {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Crear nuevo usuario
-    public function create($data) {
-        // Sacar el id del usuario logueado
-        $usuario_creador = $_SESSION['id'] ?? null;
+    // (Opcional) Obtener por ID
+    public function getById($id) {
+        $stmt = $this->db->prepare("SELECT * FROM tickets WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
+    // Crear nuevo ticket
+    public function create($data) {
         $stmt = $this->db->prepare("
             INSERT INTO tickets 
-                (medio_id, cliente_nombre, tecnico_id, fecha_inicio, descripcion, usuario_creador_id)
+                (medio_id, cliente_id, tecnico_id, fecha_inicio, descripcion, usuario_creador_id)
             VALUES 
                 (:medio_comunicacion, :cliente, :tecnico, :fecha_inicio, :descripcion, :usuario_creador_id)
         ");
@@ -39,7 +44,7 @@ class Ticket {
         $stmt->bindParam(':tecnico', $data['tecnico']);
         $stmt->bindParam(':fecha_inicio', $data['fecha_inicio']);
         $stmt->bindParam(':descripcion', $data['descripcion']);
-        $stmt->bindParam(':usuario_creador_id', $usuario_creador);
+        $stmt->bindParam(':usuario_creador_id', $data['usuario_creador']);
     
         return $stmt->execute();
     }
@@ -47,35 +52,20 @@ class Ticket {
     public static function update($data) {
         $db = Database::connect();
     
-        $sql = "UPDATE usuarios SET 
-                    nombre = :nombre,
-                    alias = :alias,
-                    email = :email,
-                    telefono = :telefono,
-                    fecha_ingreso = :fecha_ingreso,
-                    departamento_id = :departamento_id,
-                    activo = :activo";
-    
-        if (!empty($data['foto'])) {
-            $sql .= ", foto = :foto";
-        }
-    
-        $sql .= " WHERE id = :id";
+        $sql = "UPDATE tickets SET 
+                    medio_id = :medio_comunicacion,
+                    cliente_id = :cliente,
+                    tecnico_id = :tecnico,
+                    descripcion = :descripcion
+                WHERE id = :id";
     
         $stmt = $db->prepare($sql);
     
+        $stmt->bindParam(':medio_comunicacion', $data['medio_comunicacion']);
+        $stmt->bindParam(':cliente', $data['cliente']);
+        $stmt->bindParam(':tecnico', $data['tecnico']);
+        $stmt->bindParam(':descripcion', $data['descripcion']);
         $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':alias', $data['alias']);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':telefono', $data['telefono']);
-        $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso']);
-        $stmt->bindParam(':departamento_id', $data['departamento_id']);
-        $stmt->bindParam(':activo', $data['activo']);
-    
-        if (!empty($data['foto'])) {
-            $stmt->bindParam(':foto', $data['foto']);
-        }
     
         return $stmt->execute();
     }
@@ -85,6 +75,21 @@ class Ticket {
         $db = Database::connect();
         $stmt = $db->prepare("DELETE FROM tickets WHERE id = :id");
         $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    // Crear nuevo comentario
+    public function createComentario($data) {
+        $stmt = $this->db->prepare("
+            INSERT INTO comentarios 
+                (ticket_id, fecha_hora, contenido)
+            VALUES 
+                (:ticket_id, :fecha_hora, :contenido)
+        ");
+    
+        $stmt->bindParam(':ticket_id', $data['id']);
+        $stmt->bindParam(':fecha_hora', $data['cliente']);
+        $stmt->bindParam(':contenido', $data['tecnico']);    
         return $stmt->execute();
     }
 }

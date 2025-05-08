@@ -57,6 +57,17 @@ class Cliente {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Obtener el ID del cliente por su nombre
+    public function getIdByCliente($nombreCliente) {
+        $stmt = $this->db->prepare("SELECT CCODCL FROM fccli001 WHERE CNOM = :nombre");
+        $stmt->bindParam(':nombre', $nombreCliente, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Si se encuentra el cliente, devolver el ID
+        return $result ? $result['CCODCL'] : null; // Retorna el ID o null si no se encuentra
+    }
     
     public static function update($data) {
         $db = DatabaseXGEST::connect();

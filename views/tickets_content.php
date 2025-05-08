@@ -29,8 +29,13 @@
     </div>
 
     <div class="col-md-2">
-      <label for="filtrar_fecha_inicio" class="form-label">Fecha inicio</label>
-      <input type="date" id="filtrar_fecha_inicio" class="form-control">
+      <label for="filtrar_estado" class="form-label">Estado</label>
+      <select id="filtrar_estado" class="form-select">
+            <option value="">Seleccione un estado</option>
+            <option value="">Pendiente</option>
+            <option value="">En Revisión</option>
+            <option value="">Finalizado</option>
+      </select>
     </div>
 
     <div class="col-md-2">
@@ -71,8 +76,17 @@
       </thead>
       <?php
         require_once(__DIR__ . '/../models/Database.php');
+        require_once(__DIR__ . '/../models/DatabaseXGEST.php');
 
         $db = Database::connect();
+
+        $db2 = DatabaseXGEST::connect();
+
+        function obtenerNombreCliente($cliente_id, $db2) {
+          $stmt = $db2->prepare("SELECT CNOM FROM fccli001 WHERE CCODCL = ?");
+          $stmt->execute([$cliente_id]);
+          return $stmt->fetchColumn();
+        }
 
         function obtenerNombreMedio($medio_id, $db) {
           $stmt = $db->prepare("SELECT nombre FROM medios_comunicacion WHERE id = ?");
@@ -141,14 +155,21 @@
       <tbody>
         <?php foreach ($tickets as $ticket): ?>
             <tr>
-                <td><?= htmlspecialchars($ticket['cliente_nombre']) ?></td>
+                <td><?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db2)) ?></td>
                 <td><?= htmlspecialchars($ticket['id']) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreMedio($ticket['medio_id'], $db)) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
                 <td><?= htmlspecialchars($ticket['fecha_inicio']) ?></td>
                 <td>
                   <?= htmlspecialchars(implode(' ', array_slice(explode(' ', $ticket['descripcion']), 0, 45))) ?>
-                  <a class="btn btn-primary btn-sm">...ver más</a>
+                  <a 
+                    class="btn btn-primary btn-extra-small btn-descripcion-completa" 
+                    data-id="<?= $ticket['id'] ?>" 
+                    data-descripcion="<?= htmlspecialchars($ticket['descripcion'], ENT_QUOTES) ?>"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalDescripcionCompleta">
+                    ...ver más
+                  </a>
                 </td>
                 <td><?= htmlspecialchars(obtenerTiempoTranscurrido($ticket['fecha_inicio'])) ?></td>
                 <td>
@@ -163,13 +184,13 @@
               </td>
 
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
+                    <a href="/editar_ticket?id=<?= $ticket['id'] ?>"><button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
                         data-ticket='<?= json_encode($ticket, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
                         title="Editar">
                         <i class="bi bi-pencil-square"></i>
-                    </button>
+                    </button></a>
 
-                    <button type="button" class="btn btn-sm btn-danger btn-eliminar"
+                    <button type="button" class="btn btn-sm btn-danger btn-eliminar d-none"
                         data-id="<?= $ticket['id'] ?>"
                         title="Eliminar">
                         <i class="bi bi-trash"></i>
@@ -182,35 +203,14 @@
   </div>
   <div id="paginacion" class="mt-3"></div>
 
-  <!-- Modal editar usuario -->
-  <?php include_once __DIR__ . '/components/modal_editar_usuario.php'; ?>
+  <!-- Modal editar ticket -->
+  <?php include_once __DIR__ . '/components/modal_tickets/modal_editar_ticket.php'; ?>
 
+  <!-- Modal eliminar ticket -->
+  <?php include_once __DIR__ . '/components/modal_tickets/modal_eliminar_ticket.php'; ?>
 
-<!-- Modal confirmación de eliminación -->
-<div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-labelledby="modalEliminarUsuarioLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="POST" action="/controllers/UsuarioController.php">
-        <input type="hidden" name="accion" value="eliminar">
-        <input type="hidden" name="id" id="delete_id">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEliminarUsuarioLabel">Eliminar usuario</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-
-        <div class="modal-body">
-          <p>¿Estás seguro que deseas eliminar al usuario <strong id="delete_nombre"></strong>?</p>
-        </div>
-
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+  <!-- Modal descripcion -->
+  <?php include_once __DIR__ . '/components/modal_tickets/modal_descripcion_ticket.php'; ?>
 
 </div>
 <script src="/public/js/tickets/tickets_tabla.js"></script>

@@ -29,8 +29,12 @@
     </div>
 
     <div class="col-md-2">
-      <label for="filtrar_fecha_inicio" class="form-label">Fecha inicio</label>
-      <input type="date" id="filtrar_fecha_inicio" class="form-control">
+      <label for="filtrar_estado" class="form-label">Estado</label>
+      <select id="filtrar_estado" class="form-select">
+            <option value="">Seleccione un estado</option>
+            <option value="">Pendiente</option>
+            <option value="">En Revisión</option>
+      </select>
     </div>
 
     <div class="col-md-2">
@@ -71,8 +75,17 @@
       </thead>
       <?php
         require_once(__DIR__ . '/../models/Database.php');
+        require_once(__DIR__ . '/../models/DatabaseXGEST.php');
 
         $db = Database::connect();
+
+        $db2 = DatabaseXGEST::connect();
+
+        function obtenerNombreCliente($cliente_id, $db2) {
+          $stmt = $db2->prepare("SELECT CNOM FROM fccli001 WHERE CCODCL = ?");
+          $stmt->execute([$cliente_id]);
+          return $stmt->fetchColumn();
+        }
 
         function obtenerNombreMedio($medio_id, $db) {
           $stmt = $db->prepare("SELECT nombre FROM medios_comunicacion WHERE id = ?");
@@ -141,7 +154,7 @@
       <tbody>
         <?php foreach ($tickets as $ticket): ?>
             <tr>
-                <td><?= htmlspecialchars($ticket['cliente_nombre']) ?></td>
+                <td><?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db2)) ?></td>
                 <td><?= htmlspecialchars($ticket['id']) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreMedio($ticket['medio_id'], $db)) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
@@ -149,7 +162,7 @@
                 <td>
                   <?= htmlspecialchars(implode(' ', array_slice(explode(' ', $ticket['descripcion']), 0, 45))) ?>
                   <a 
-                    class="btn btn-primary btn-sm btn-descripcion-completa" 
+                    class="btn btn-primary btn-extra-small btn-descripcion-completa" 
                     data-id="<?= $ticket['id'] ?>" 
                     data-descripcion="<?= htmlspecialchars($ticket['descripcion'], ENT_QUOTES) ?>"
                     data-bs-toggle="modal" 
@@ -170,11 +183,11 @@
               </td>
 
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
+                    <a href="/editar_ticket?id=<?= $ticket['id'] ?>"><button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
                         data-ticket='<?= json_encode($ticket, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
                         title="Editar">
                         <i class="bi bi-pencil-square"></i>
-                    </button>
+                    </button></a>
 
                     <button type="button" class="btn btn-sm btn-danger btn-eliminar d-none"
                         data-id="<?= $ticket['id'] ?>"

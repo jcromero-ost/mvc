@@ -57,7 +57,11 @@ $router->post('/store_cliente_ticket', 'ClienteController@storeTickets');
 $router->get('/crear_ticket', 'TicketController@create');
 $router->get('/tickets_pendientes', 'TicketController@ticketsPendientes');
 $router->get('/tickets', 'TicketController@index');
+$router->get('/editar_ticket', 'TicketController@edit');
 $router->post('/store_ticket', 'TicketController@store');
+$router->post('/store_ticket_editar', 'TicketController@storeEdit');
+$router->post('/store_ticket_comentarios', 'TicketController@storeComentarios');
+
 
 
 

@@ -55,5 +55,4 @@
 <!-- Modal Cliente -->
 <?php include_once __DIR__ . '/components/modal_cliente_ticket.php'; ?>
 
-
 <script src="/public/js/tickets/tickets_crear.js" defer></script>
