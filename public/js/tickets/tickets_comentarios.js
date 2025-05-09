@@ -1,23 +1,35 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Id ticket
+    const ticket_id = document.getElementById('id').value;
     // Div comentarios pagina principal  
     const comentariosDiv = document.getElementById('comentariosDiv');
+
+    // Alerta comentarios
+    const mensajeComentarios = document.getElementById('comentario-mensaje');
 
     const nuevoComentarioBtn = document.getElementById('nuevoComentarioBtn');
 
     nuevoComentarioBtn.addEventListener('click', function() {
+        nuevoComentarioBtn.disabled = true;
         const comentarioIndividualDiv = document.createElement('div');
         comentarioIndividualDiv.classList.add('m-4');
 
         // Crear textarea donde ira el comentario
         const newTextarea = document.createElement('textarea');
-        newTextarea.classList.add('form-control');
+        newTextarea.classList.add('form-control', 'bg-dark', 'bg-opacity-10');
         newTextarea.placeholder = "Escribe un comentario...";
 
-        // Crear botón para eliminar el textarea
-        const botonDeleteComentario = document.createElement('button');
-        botonDeleteComentario.classList.add('btn', 'btn-danger', 'me-2', 'btn-sm', 'mt-1');
-        botonDeleteComentario.textContent = "Eliminar Comentario";
-        botonDeleteComentario.setAttribute('type', 'button');
+        // Crear botón para cancelar el textarea
+        const botonCancelarComentario = document.createElement('button');
+        botonCancelarComentario.classList.add('btn', 'btn-danger', 'me-2', 'btn-sm', 'mt-1');
+        botonCancelarComentario.textContent = "Cancelar Comentario";
+        botonCancelarComentario.setAttribute('type', 'button');
+
+        // Crear botón para editar el textarea
+        const botonEditComentario = document.createElement('button');
+        botonEditComentario.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-1');
+        botonEditComentario.textContent = "Editar Comentario";
+        botonEditComentario.setAttribute('type', 'button');
 
         // Crear boton para guardar el comentario
         const botonSaveComentario = document.createElement('button');
@@ -46,26 +58,43 @@ document.addEventListener("DOMContentLoaded", function () {
         // Agregar el textarea y la fecha al div contenedor
         comentarioIndividualDiv.appendChild(fechaHora);
         comentarioIndividualDiv.appendChild(newTextarea);
-        comentarioIndividualDiv.appendChild(botonDeleteComentario);
+        comentarioIndividualDiv.appendChild(botonCancelarComentario);
         comentarioIndividualDiv.appendChild(botonSaveComentario);
 
-        //Agregar el div individual al div de la pagina principal
-        comentariosDiv.appendChild(comentarioIndividualDiv);
+        console.log(comentariosDiv.firstChild); // Verifica qué tiene firstChild
 
-        // Agregar funcionalidad al botón de eliminar
-        botonDeleteComentario.addEventListener('click', function() {
+        // Agregar el nuevo comentario arriba de los existentes
+        if (comentariosDiv.firstChild) {
+            comentariosDiv.insertBefore(comentarioIndividualDiv, comentariosDiv.firstChild); // Insertar antes del primer hijo
+        } else {
+            comentariosDiv.appendChild(comentarioIndividualDiv); // Si no hay comentarios, agregar normalmente
+        }
+
+        // Agregar funcionalidad al botón de cancelar
+        botonCancelarComentario.addEventListener('click', function() {
             comentariosDiv.removeChild(comentarioIndividualDiv); // Eliminar el div completo
+            nuevoComentarioBtn.disabled = false;
         });
 
         // Agregar funcionalidad al botón de guardar
-        botonSaveComentario.addEventListener('click', function() {
+        botonSaveComentario.addEventListener('click', function() { 
+            if (newTextarea.value.trim() === '') {
+                mensajeComentarios.textContent = 'El comentario no puede estar vacío';
+                mensajeComentarios.classList.add('text-black');
+                mensajeComentarios.classList.add('bg-opacity-25');
+                mensajeComentarios.classList.remove('bg-success');
+                mensajeComentarios.classList.add('bg-danger');
+
+                // Ocultar después de 2 segundos (2000 ms)
+                setTimeout(() => {
+                    mensajeComentarios.classList.add('d-none');
+                }, 2000);
+            }
             // Crear FormData con los datos que se necesitan enviar
             const formData = new FormData();
-            formData.append('id_ticket', 2); // ID Ticket
-            formData.append('fecha', dateTimeFormatted); // Fecha y hora actual en formato ISO
+            formData.append('id', ticket_id); // ID Ticket
+            formData.append('fecha_hora', dateTimeFormatted); // Fecha y hora actual en formato ISO
             formData.append('contenido', newTextarea.value); // El comentario
-
-            console.log(formData);
 
             fetch('/store_ticket_comentarios', {
                 method: 'POST',
@@ -73,16 +102,170 @@ document.addEventListener("DOMContentLoaded", function () {
             }).then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Comentario guardado correctamente');
+                    mensajeComentarios.textContent = 'Comentario guardado correctamente.';
+                    mensajeComentarios.classList.add('text-black');
+                    mensajeComentarios.classList.add('bg-opacity-25');
+                    mensajeComentarios.classList.remove('bg-danger');
+                    mensajeComentarios.classList.add('bg-success');
+                    nuevoComentarioBtn.disabled = false;
+
+                    cargarComentarios(ticket_id);
                 } else {
-                    alert('Error al guardar comentario: ' + data.error);
+                    mensajeComentarios.textContent = data.error;
+                    mensajeComentarios.classList.add('text-black');
+                    mensajeComentarios.classList.add('bg-opacity-25');
+                    mensajeComentarios.classList.remove('bg-success');
+                    mensajeComentarios.classList.add('bg-danger');
                 }
+
+                mensajeComentarios.classList.remove('d-none');
+
+                // Ocultar después de 2 segundos (2000 ms)
+                setTimeout(() => {
+                    mensajeComentarios.classList.add('d-none');
+                }, 2000);
             })
             .catch(error => {
                 console.error('Error en la petición:', error);
             });
+
+            newTextarea.classList.remove('bg-dark', 'bg-opacity-10');
         });
     });
+    
+    function cargarComentarios(ticket_id) {
+        fetch('/get_comentarios', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${encodeURIComponent(ticket_id)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            comentariosDiv.innerHTML = ''; // Limpiar contenido anterior
 
+            if (data.success && data.comentarios.length > 0) {
+            data.comentarios.forEach(comentario => {
+                const comentarioIndividualDiv = document.createElement('div');
+                comentarioIndividualDiv.classList.add('m-4');
+    
+                const newTextarea = document.createElement('textarea');
+                newTextarea.classList.add('form-control');
+                newTextarea.value = comentario.contenido;
+    
+                const botonDeleteComentario = document.createElement('button');
+                botonDeleteComentario.classList.add('btn', 'btn-danger', 'me-2', 'btn-sm', 'mt-1');
+                botonDeleteComentario.textContent = "Eliminar Comentario";
+                botonDeleteComentario.setAttribute('type', 'button');
+    
+                const botonEditComentario = document.createElement('button');
+                botonEditComentario.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-1');
+                botonEditComentario.textContent = "Editar Comentario";
+                botonEditComentario.setAttribute('type', 'button');
+    
+                const fechaHora = document.createElement('span');
+                fechaHora.textContent = `Fecha y Hora: ${comentario.fecha_hora}`;
+                fechaHora.classList.add('block', 'mt-2', 'text-sm', 'text-gray-500');
+    
+                comentarioIndividualDiv.appendChild(fechaHora);
+                comentarioIndividualDiv.appendChild(newTextarea);
+                comentarioIndividualDiv.appendChild(botonDeleteComentario);
+                comentarioIndividualDiv.appendChild(botonEditComentario);
+    
+                comentariosDiv.appendChild(comentarioIndividualDiv);
+
+                // Agregar funcionalidad al botón de eliminar
+                botonDeleteComentario.addEventListener('click', function() {
+                    comentariosDiv.removeChild(comentarioIndividualDiv); // Eliminar el div completo
+
+                    // Crear FormData con los datos que se necesitan enviar
+                    const formData = new FormData();
+                    formData.append('id', comentario.id); // ID Ticket
+
+                    fetch('/delete_comentarios', {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.json())
+                    .then(data => {        
+                        if (data.success) {
+                            mensajeComentarios.textContent = 'Comentario eliminado correctamente.';
+                            mensajeComentarios.classList.add('text-black');
+                            mensajeComentarios.classList.add('bg-opacity-25');
+                            mensajeComentarios.classList.remove('bg-success');
+                            mensajeComentarios.classList.add('bg-danger');
+                        } else {
+                            mensajeComentarios.textContent = 'Error al guardar comentario: ' + data.error;
+                            mensajeComentarios.classList.add('text-black');
+                            mensajeComentarios.classList.add('bg-opacity-100');
+                            mensajeComentarios.classList.remove('bg-success');
+                            mensajeComentarios.classList.add('bg-danger');
+                        }
+        
+                        mensajeComentarios.classList.remove('d-none');
+        
+                        // Ocultar después de 2 segundos (2000 ms)
+                        setTimeout(() => {
+                            mensajeComentarios.classList.add('d-none');
+                        }, 2000);
+                    })
+                    .catch(error => {
+                        console.error('Error en la petición:', error);
+                    });
+                });
+
+                // Agregar funcionalidad al botón de editar
+                botonEditComentario.addEventListener('click', function() {
+                    // Crear FormData con los datos que se necesitan enviar
+                    const formData = new FormData();
+                    formData.append('contenido', comentario.contenido); // ID Ticket
+                    formData.append('id', comentario.id); // ID Ticket
+
+                    console.log(comentario.id);
+                    console.log(comentario.contenido);
+
+                    fetch('/update_comentarios', {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => response.json())
+                    .then(data => {        
+                        if (data.success) {
+                            mensajeComentarios.textContent = 'Comentario editado correctamente.';
+                            mensajeComentarios.classList.add('text-black');
+                            mensajeComentarios.classList.add('bg-opacity-25');
+                            mensajeComentarios.classList.remove('bg-danger');
+                            mensajeComentarios.classList.add('bg-success');
+                        } else {
+                            mensajeComentarios.textContent = 'Error al editar comentario: ' + data.error;
+                            mensajeComentarios.classList.add('text-black');
+                            mensajeComentarios.classList.add('bg-opacity-100');
+                            mensajeComentarios.classList.remove('bg-danger');
+                            mensajeComentarios.classList.add('bg-success');
+                        }
+        
+                        mensajeComentarios.classList.remove('d-none');
+        
+                        // Ocultar después de 2 segundos (2000 ms)
+                        setTimeout(() => {
+                            mensajeComentarios.classList.add('d-none');
+                        }, 2000);
+                    })
+                    .catch(error => {
+                        console.error('Error en la petición:', error);
+                    });
+
+                    nuevoComentarioBtn.disabled = false;
+                });
+            });
+            } else {
+            comentariosDiv.innerHTML = '';
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar los comentarios:', error);
+        });
+    }
+
+    cargarComentarios(ticket_id);
 });
   

@@ -87,9 +87,34 @@ class Ticket {
                 (:ticket_id, :fecha_hora, :contenido)
         ");
     
-        $stmt->bindParam(':ticket_id', $data['id']);
-        $stmt->bindParam(':fecha_hora', $data['cliente']);
-        $stmt->bindParam(':contenido', $data['tecnico']);    
+        $stmt->bindParam(':ticket_id', $data['ticket_id']);
+        $stmt->bindParam(':fecha_hora', $data['fecha_hora']);
+        $stmt->bindParam(':contenido', $data['contenido']);    
+        return $stmt->execute();
+    }
+
+    // Obtener comentarios por id
+    public function getAllComentarios($ticket_id) {
+        $stmt = $this->db->prepare("SELECT * FROM comentarios WHERE ticket_id = :ticket_id ORDER BY fecha_hora DESC");
+        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Borrar comentarios
+    public static function deleteComentarios($id) {
+        $db = Database::connect();
+        $stmt = $db->prepare("DELETE FROM comentarios WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    // Actualizar comentarios
+    public static function updateComentarios() {
+        $db = Database::connect();
+        $stmt = $db->prepare("UPDATE comentarios SET contenido = :contenido WHERE id = :id");
+        $stmt->bindParam(':contenido', $data['contenido']);
+        $stmt->bindParam(':id', $data['id']);
         return $stmt->execute();
     }
 }

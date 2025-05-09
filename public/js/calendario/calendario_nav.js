@@ -3,6 +3,7 @@ export function getFechaDesdeURL() {
   return {
     anio: parseInt(url.searchParams.get('anio')) || new Date().getFullYear(),
     mes: parseInt(url.searchParams.get('mes')) || (new Date().getMonth() + 1),
+    semana: parseInt(url.searchParams.get('semana')) || null,
     vista: url.searchParams.get('vista') || 'mensual'
   };
 }

@@ -141,35 +141,114 @@ class TicketController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ticket_id = $_POST['id'] ?? '';
             $fecha_hora = $_POST['fecha_hora'] ?? '';
             $contenido = $_POST['contenido'] ?? '';
-
-            // Validaciones mínimas
+    
             if (empty($ticket_id) || empty($fecha_hora) || empty($contenido)) {
-                $_SESSION['error'] = 'Todos los campos son obligatorios.';
-                header("Location: /editar_ticket?id=" . $_POST['id']);
-                exit;
+                $this->responderJson(['success' => false, 'error' => 'El comentario no puede estar vacío']);
+                return;
             }
-
+    
             $ticket = new Ticket();
-            $ticket->createComentario([
+            $exito = $ticket->createComentario([
                 'ticket_id' => $ticket_id,
                 'fecha_hora' => $fecha_hora,
                 'contenido' => $contenido
             ]);
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+    
+    private function responderJson($data) {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 
-
-            $_SESSION['success'] = 'Ticket creado correctamente.';
-            header("Location: /editar_ticket?id=" . $_POST['id']);
-            exit;
+    public function obtenerComentariosPorTicket() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
 
-        // Si entra por GET o sin POST válido, redirigir
-        header("Location: /editar_ticket?id=" . $_POST['id']);
-        exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? ''; // Asegúrate de que 'id' esté correctamente enviado
+
+            // Obtener los comentarios por ticket_id
+            $ticket = new Ticket();
+            $comentarios = $ticket->getAllComentarios($ticket_id);
+
+            if ($comentarios) {
+                $this->responderJson(['success' => true, 'comentarios' => $comentarios]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'No se encontraron comentarios.']);
+            }
+            return;
+        }
+
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
+    // Borrar comentarios
+    public function deleteComentarios() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? '';
+
+            $ticket = new Ticket();
+            $exito = $ticket->deleteComentarios($ticket_id);
+
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
+    // Actualizar comentarios
+    public function updateComentarios() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? '';
+            $contenido = $_POST['contenido'] ?? '';
+
+            $ticket = new Ticket();
+            $exito = $ticket->updateComentarios([
+                'contenido' => $contenido,
+                'id' => $id
+            ]);
+
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
 }

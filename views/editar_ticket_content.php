@@ -111,12 +111,16 @@
     <div class="row mb-3">
       <div class="col-md-12">
         <label for="comentarios" class="form-label d-block">Comentarios</label>
+        <div id="comentario-mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
         <button id="nuevoComentarioBtn" type="button" name="accion" value="crear" class="btn btn-primary">Nuevo comentario</button>
         <div id="comentariosDiv" class="mt-2"></div>
       </div>
     </div>
+    <script>
+      const comentarios = <?php echo json_encode($comentarios); ?>;
+    </script>
 <hr>
-    <input type="hidden" name="id" value="<?= htmlspecialchars($ticket['id']) ?>"> <!-- ID del ticket -->
+    <input type="hidden" id="id" name="id" value="<?= htmlspecialchars($ticket['id']) ?>"> <!-- ID del ticket -->
     <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Aplicar cambios</button>
         <div class="d-flex">

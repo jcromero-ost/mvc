@@ -30,5 +30,8 @@ if (!$ticket_id) {
 $ticketModel = new Ticket();
 $ticket = $ticketModel->getById($ticket_id);
 
+$comentarios = $ticketModel->getAllComentarios($ticket_id);
+
+
 $view = './editar_ticket_content.php';
 include __DIR__ . '/layout.php';

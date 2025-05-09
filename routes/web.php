@@ -47,6 +47,12 @@ $router->get('/registro-horario/imprimir', 'RegistroHorarioController@imprimir')
 // Calendario Laboral
 $router->get('/calendario_laboral', 'CalendarioLaboralController@index');
 
+// Festivos
+$router->get('/festivos', 'FestivoController@index');
+$router->post('/festivos/store', 'FestivoController@store');
+$router->post('/festivos/delete', 'FestivoController@delete');
+
+
 // Clientes
 $router->get('/crear_cliente', 'ClienteController@create');
 $router->get('/clientes', 'ClienteController@index');
@@ -61,10 +67,15 @@ $router->get('/editar_ticket', 'TicketController@edit');
 $router->post('/store_ticket', 'TicketController@store');
 $router->post('/store_ticket_editar', 'TicketController@storeEdit');
 $router->post('/store_ticket_comentarios', 'TicketController@storeComentarios');
+$router->post('/delete_comentarios', 'TicketController@deleteComentarios');
+$router->post('/update_comentarios', 'TicketController@updateComentarios');
+$router->post('/get_comentarios', 'TicketController@obtenerComentariosPorTicket');
 
 
 
-
+// Contratos Laborales
+$router->get('/contratos_laborales', 'ContratoLaboralController@index');
+$router->post('/contratos_laborales/guardar', 'ContratoLaboralController@guardar');
 
 
 
