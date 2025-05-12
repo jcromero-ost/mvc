@@ -5,9 +5,8 @@ class FestivoController
 {
     public static function index()
     {
-        $anio = $_GET['anio'] ?? date('Y');
-        $festivos = Festivo::allByYear($anio);
-        include __DIR__ . '/../views/components/tabla_festivos.php';
+        // Solo incluimos la vista principal, que ya carga layout y contenido
+        include __DIR__ . '/../views/festivos.php';
     }
 
     public static function store()

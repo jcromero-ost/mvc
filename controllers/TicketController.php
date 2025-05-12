@@ -146,6 +146,7 @@ class TicketController {
             $ticket_id = $_POST['id'] ?? '';
             $fecha_hora = $_POST['fecha_hora'] ?? '';
             $contenido = $_POST['contenido'] ?? '';
+            $tipo = $_POST['tipo'] ?? '';
     
             if (empty($ticket_id) || empty($fecha_hora) || empty($contenido)) {
                 $this->responderJson(['success' => false, 'error' => 'El comentario no puede estar vacío']);
@@ -156,7 +157,8 @@ class TicketController {
             $exito = $ticket->createComentario([
                 'ticket_id' => $ticket_id,
                 'fecha_hora' => $fecha_hora,
-                'contenido' => $contenido
+                'contenido' => $contenido,
+                'tipo' => $tipo
             ]);
     
             if ($exito) {
@@ -238,7 +240,33 @@ class TicketController {
                 'contenido' => $contenido,
                 'id' => $id
             ]);
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
 
+    // Actualizar estado ticket
+    public function updateEstado() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? '';
+            $estado = $_POST['estado'] ?? '';
+
+            $ticket = new Ticket();
+            $exito = $ticket->updateEstado([
+                'estado' => $estado,
+                'id' => $id
+            ]);
     
             if ($exito) {
                 $this->responderJson(['success' => true]);

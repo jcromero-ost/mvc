@@ -1,4 +1,5 @@
 <div class="container-fluid mt-2">
+    <div id="mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="mb-1">Editar ticket ID: <?= htmlspecialchars($ticket['id']) ?></h2>
@@ -41,7 +42,7 @@
                 $estado = $ticket['estado'];
                 $estadoInfo = obtenerEstadoBadge($estado);
             ?>
-        <span class="badge bg-<?= $estadoInfo['badgeClass'] ?> mb-4">
+        <span id="estadoBadge" class="badge bg-<?= $estadoInfo['badgeClass'] ?> mb-4">
             <?= $estadoInfo['texto'] ?>
         </span>
     </div>
@@ -84,7 +85,7 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="tecnico" class="form-label">Técnico</label>
-        <select id="tecnico" name="tecnico" class="form-select" required>
+        <select id="tecnico" name="tecnico" class="form-select" required disabled>
             <option value="">Seleccione un técnico</option>
             <?php foreach ($tecnicos as $tec): ?>
                 <option value="<?= $tec['id'] ?>" <?= ($ticket['tecnico_id'] == $tec['id']) ? 'selected' : '' ?>>
@@ -113,6 +114,7 @@
         <label for="comentarios" class="form-label d-block">Comentarios</label>
         <div id="comentario-mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
         <button id="nuevoComentarioBtn" type="button" name="accion" value="crear" class="btn btn-primary">Nuevo comentario</button>
+        <button id="nuevoComentarioInternoBtn" type="button" name="accion" value="crear" class="btn btn-secondary">Nuevo comentario Interno</button>
         <div id="comentariosDiv" class="mt-2"></div>
       </div>
     </div>
@@ -121,11 +123,13 @@
     </script>
 <hr>
     <input type="hidden" id="id" name="id" value="<?= htmlspecialchars($ticket['id']) ?>"> <!-- ID del ticket -->
+    <input type="hidden" id="estado" name="id" value="<?= htmlspecialchars($ticket['estado']) ?>"> <!-- estado del ticket -->
+
     <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Aplicar cambios</button>
         <div class="d-flex">
-            <button type="button" name="accion" class="btn btn-success">Finalizar ticket</button>
-            <button type="button" name="accion" class="btn btn-danger d-none">Marcar como pendiente</button>
+            <button type="button" id="botonFinalizarTicket" name="botonFinalizarTicket" class="btn btn-success">Finalizar ticket</button>
+            <button type="button" id="botonPendienteTicket" name="botonPendienteTicket" class="btn btn-danger d-none">Marcar como pendiente</button>
         </div>
     </div>
   </form>
@@ -134,6 +138,11 @@
 <!-- Modal Cliente -->
 <?php include_once __DIR__ . '/components/modal_cliente_ticket.php'; ?>
 
+<?php include_once __DIR__ . '/components/modal_tickets/modal_tiempo_ticket.php'; ?>
+
+
 
 <script src="/public/js/tickets/tickets_editar.js" defer></script>
 <script src="/public/js/tickets/tickets_comentarios.js" defer></script>
+<script src="/public/js/tickets/tickets_cronometro.js" defer></script>
+

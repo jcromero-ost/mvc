@@ -82,14 +82,16 @@ class Ticket {
     public function createComentario($data) {
         $stmt = $this->db->prepare("
             INSERT INTO comentarios 
-                (ticket_id, fecha_hora, contenido)
+                (ticket_id, fecha_hora, contenido, tipo)
             VALUES 
-                (:ticket_id, :fecha_hora, :contenido)
+                (:ticket_id, :fecha_hora, :contenido, :tipo)
         ");
     
         $stmt->bindParam(':ticket_id', $data['ticket_id']);
         $stmt->bindParam(':fecha_hora', $data['fecha_hora']);
-        $stmt->bindParam(':contenido', $data['contenido']);    
+        $stmt->bindParam(':contenido', $data['contenido']);
+        $stmt->bindParam(':tipo', $data['tipo']);    
+    
         return $stmt->execute();
     }
 
@@ -110,10 +112,19 @@ class Ticket {
     }
 
     // Actualizar comentarios
-    public static function updateComentarios() {
+    public function updateComentarios($data) {
         $db = Database::connect();
         $stmt = $db->prepare("UPDATE comentarios SET contenido = :contenido WHERE id = :id");
         $stmt->bindParam(':contenido', $data['contenido']);
+        $stmt->bindParam(':id', $data['id']);
+        return $stmt->execute();
+    }
+
+    // Actualizar estado ticket
+    public function updateEstado($data) {
+        $db = Database::connect();
+        $stmt = $db->prepare("UPDATE tickets SET estado = :estado WHERE id = :id");
+        $stmt->bindParam(':estado', $data['estado']);
         $stmt->bindParam(':id', $data['id']);
         return $stmt->execute();
     }

@@ -19,6 +19,7 @@ $current = basename($_SERVER['REQUEST_URI']);
         <li><a class="dropdown-item" href="/registro-horario/listado"><i class="bi bi-clipboard-data me-2"></i>Informe de registro horario</a></li>
         <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
         <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar3 me-2"></i>Form festivos</a></li>
+        <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-calendar3 me-2"></i>Resumen Horas</a></li>
       </ul>
     </li>
 

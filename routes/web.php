@@ -4,6 +4,8 @@ require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/SessionController.php';
 require_once __DIR__ . '/../controllers/DepartamentoController.php';
 require_once __DIR__ . '/../controllers/RegistroHorarioController.php';
+require_once __DIR__ . '/../controllers/ResumenHorasController.php';
+
 
 // Ruta raíz
 $router->get('/', function () {
@@ -52,6 +54,12 @@ $router->get('/festivos', 'FestivoController@index');
 $router->post('/festivos/store', 'FestivoController@store');
 $router->post('/festivos/delete', 'FestivoController@delete');
 
+//Resumen Horario
+$router->get('/resumen-horas', 'ResumenHorasController@index');
+$router->get('/resumen-horas/usuario', 'ResumenHorasController@resumenPorUsuario');
+
+
+
 
 // Clientes
 $router->get('/crear_cliente', 'ClienteController@create');
@@ -69,6 +77,7 @@ $router->post('/store_ticket_editar', 'TicketController@storeEdit');
 $router->post('/store_ticket_comentarios', 'TicketController@storeComentarios');
 $router->post('/delete_comentarios', 'TicketController@deleteComentarios');
 $router->post('/update_comentarios', 'TicketController@updateComentarios');
+$router->post('/update_estado', 'TicketController@updateEstado');
 $router->post('/get_comentarios', 'TicketController@obtenerComentariosPorTicket');
 
 

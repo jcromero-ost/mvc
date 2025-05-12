@@ -18,7 +18,7 @@
             <td><?= htmlspecialchars($f['descripcion']) ?></td>
             <td><?= htmlspecialchars($f['comunidad_autonoma']) ?></td>
             <td><?= htmlspecialchars($f['municipio']) ?></td>
-            <td><?= $f['activo'] ? 'Sí' : 'No' ?></td>
+            <td><?= isset($f['activo']) && $f['activo'] ? 'Sí' : 'No' ?></td>
             <td>
                 <button class="btn btn-sm btn-danger btn-eliminar" data-id="<?= $f['id'] ?>">Eliminar</button>
             </td>

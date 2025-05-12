@@ -1,8 +1,14 @@
 <?php
 $anio = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
+
+// IMPORTANTE: aquí cargamos los festivos antes de incluir la tabla
+require_once __DIR__ . '/../models/Festivo.php';
+$festivos = Festivo::allByYear($anio);
 ?>
 
 <div class="mb-4">
+<div id="alerta-festivo" class="alert d-none" role="alert"></div>
+
     <form id="form-agregar-festivo" class="row g-3">
         <div class="col-md-2">
             <label for="fecha" class="form-label">Fecha</label>
@@ -47,3 +53,5 @@ $anio = isset($_GET['anio']) ? $_GET['anio'] : date('Y');
 <div id="tabla-festivos">
     <?php include 'components/tabla_festivos.php'; ?>
 </div>
+
+<script src="/public/js/festivos/festivos.js"></script>
