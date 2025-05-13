@@ -43,6 +43,7 @@ $current = basename($_SERVER['REQUEST_URI']);
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="clientesDropdown">
         <li><a class="dropdown-item" href="/crear_cliente"><i class="bi bi-person-plus me-2"></i>Crear cliente</a></li>
         <li><a class="dropdown-item" href="/clientes"><i class="bi bi-person-vcard me-2"></i>Gestionar clientes</a></li>
+        <li><a class="dropdown-item" href="/clientes_historial"><i class="bi bi-list-columns-reverse me-2"></i>Historial clientes</a></li>
       </ul>
     </li>
 
@@ -61,7 +62,7 @@ $current = basename($_SERVER['REQUEST_URI']);
     <!-- MENU CONFIGURACIÓN -->
     <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="configuracionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Configuración
+        <i class="bi bi-gear"></i>Configuración
     </a>
     <ul class="dropdown-menu" aria-labelledby="configuracionDropdown">
         <li><a class="dropdown-item" href="/contratos_laborales">Contratos Laborales</a></li>

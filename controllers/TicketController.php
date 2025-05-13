@@ -279,6 +279,91 @@ class TicketController {
         $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
+    // Crear cronometro
+    public function storeCronometro() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['ticket_id'] ?? '';
+            $fecha = $_POST['fecha'] ?? '';
+            $tiempo = $_POST['tiempo'] ?? '';
+            $usuario_id = $_SESSION['user']['id'];
+            $hora_inicio = $_POST['hora_inicio'] ?? '';
+            $hora_fin = $_POST['hora_fin'] ?? '';
+    
+            $ticket = new Ticket();
+            $exito = $ticket->createCronometro([
+                'ticket_id' => $ticket_id,
+                'fecha' => $fecha,
+                'tiempo' => $tiempo,
+                'usuario_id' => $usuario_id,
+                'hora_inicio' => $hora_inicio,
+                'hora_fin' => $hora_fin
+            ]);
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
+    public function obtenerCronometroPorTicket() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? ''; // Asegúrate de que 'id' esté correctamente enviado
+
+            // Obtener los comentarios por ticket_id
+            $ticket = new Ticket();
+            $cronometro_registros = $ticket->getAllCronometro($ticket_id);
+
+            if ($cronometro_registros) {
+                $this->responderJson(['success' => true, 'cronometro_registros' => $cronometro_registros]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'No se encontraron registros de tiempo.']);
+            }
+            return;
+        }
+
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
+    // Actualizar estado ticket
+    public function updateTecnico() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? '';
+            $tecnico_id = $_POST['tecnico_id'] ?? '';
+
+            $ticket = new Ticket();
+            $exito = $ticket->updateTecnico([
+                'tecnico_id' => $tecnico_id,
+                'id' => $id
+            ]);
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
 }
 if (isset($_POST['accion'])) {
     $controller = new TicketController();

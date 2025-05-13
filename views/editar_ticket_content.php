@@ -140,6 +140,9 @@
 
 <?php include_once __DIR__ . '/components/modal_tickets/modal_tiempo_ticket.php'; ?>
 
+<?php include_once __DIR__ . '/components/modal_tickets/modal_traspasar_ticket.php'; ?>
+
+
 
 
 <script src="/public/js/tickets/tickets_editar.js" defer></script>

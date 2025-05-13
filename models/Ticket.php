@@ -128,4 +128,46 @@ class Ticket {
         $stmt->bindParam(':id', $data['id']);
         return $stmt->execute();
     }
+
+    // Crear nuevo tiempo
+    public function createCronometro($data) {
+        $stmt = $this->db->prepare("
+            INSERT INTO cronometro 
+                (ticket_id, fecha, tiempo, usuario_id, hora_inicio, hora_fin)
+            VALUES 
+                (:ticket_id, :fecha, :tiempo, :usuario_id, :hora_inicio, :hora_fin)
+        ");
+    
+        $stmt->bindParam(':ticket_id', $data['ticket_id']);
+        $stmt->bindParam(':fecha', $data['fecha']);
+        $stmt->bindParam(':tiempo', $data['tiempo']);
+        $stmt->bindParam(':usuario_id', $data['usuario_id']);
+        $stmt->bindParam(':hora_inicio', $data['hora_inicio']);
+        $stmt->bindParam(':hora_fin', $data['hora_fin']);
+    
+    
+        return $stmt->execute();
+    }
+
+    // Obtener cronometro por id de ticket
+    public function getAllCronometro($ticket_id) {
+        $stmt = $this->db->prepare("
+            SELECT c.tiempo, u.nombre as nombre_usuario
+            FROM cronometro c
+            JOIN usuarios u ON c.usuario_id = u.id
+            WHERE c.ticket_id = :ticket_id
+        ");
+        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Actualizar tecnico
+    public function updateTecnico($data) {
+        $db = Database::connect();
+        $stmt = $db->prepare("UPDATE tickets SET tecnico_id = :tecnico_id WHERE id = :id");
+        $stmt->bindParam(':tecnico_id', $data['tecnico_id']);
+        $stmt->bindParam(':id', $data['id']);
+        return $stmt->execute();
+    }
 }

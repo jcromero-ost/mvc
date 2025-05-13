@@ -15,6 +15,10 @@ class ClienteController {
         require_once __DIR__ . '/../views/clientes.php';
     }
 
+    public function clientes_historial() {
+        require_once __DIR__ . '/../views/clientes_historial.php';
+    }
+
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar') {
             $id = $_POST['id'] ?? null;

@@ -18,7 +18,7 @@
   
   <!-- Recuadro con el tiempo -->
   <div id="timer" class="fs-4 bg-secondary rounded text-center py-2 mt-5">
-    <p class="m-1">00:00:00</p>
+    <p class="mt-1">00:00:00</p>
   </div>
 
   <!-- Botones del cronómetro -->
@@ -47,7 +47,7 @@
   <!-- Tabla de últimos registros -->
   <div id="ultimasModificaciones" class="bg-dark p-2 rounded">
     <h3 class="fs-6 text-white mb-2">Últimos Registros</h3>
-    <div class="overflow-auto">
+    <div class="overflow-auto" style="max-height: 300px;">
       <table class="table table-sm table-bordered text-white mb-0">
         <thead class="table-secondary text-dark">
           <tr>

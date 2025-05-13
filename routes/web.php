@@ -64,6 +64,7 @@ $router->get('/resumen-horas/usuario', 'ResumenHorasController@resumenPorUsuario
 // Clientes
 $router->get('/crear_cliente', 'ClienteController@create');
 $router->get('/clientes', 'ClienteController@index');
+$router->get('/clientes_historial', 'ClienteController@clientes_historial');
 $router->post('/store_cliente', 'ClienteController@store');
 $router->post('/store_cliente_ticket', 'ClienteController@storeTickets');
 
@@ -79,6 +80,13 @@ $router->post('/delete_comentarios', 'TicketController@deleteComentarios');
 $router->post('/update_comentarios', 'TicketController@updateComentarios');
 $router->post('/update_estado', 'TicketController@updateEstado');
 $router->post('/get_comentarios', 'TicketController@obtenerComentariosPorTicket');
+
+$router->post('/store_ticket_cronometro', 'TicketController@storeCronometro');
+$router->post('/get_cronometro', 'TicketController@obtenerCronometroPorTicket');
+
+$router->post('/update_tecnico', 'TicketController@updateTecnico');
+
+
 
 
 
