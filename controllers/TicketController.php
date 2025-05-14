@@ -92,49 +92,43 @@ class TicketController {
         header('Location: /tickets_pendientes');
         exit;
     }
-
+    
+    // Actualizar comentarios
     public function storeEdit() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
-            $nombreCliente = $_POST['cliente'] ?? '';
             $tecnico = $_POST['tecnico'] ?? '';
             $descripcion = $_POST['descripcion'] ?? '';
             $id = $_POST['id'] ?? '';
 
-            $cliente = new Cliente();
-            // Obtener el ID del cliente
-            $idCliente = $cliente->getIdByCliente($nombreCliente);
-
             // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($tecnico) || empty($descripcion)) {
-                $_SESSION['error'] = 'Todos los campos son obligatorios.';
-                header('Location: /editar_ticket');
-                exit;
+            if (empty($medio_comunicacion) || empty($tecnico) || empty($descripcion)) {
+                // Enviar error como respuesta JSON
+                echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
+                exit;  // Detener la ejecución
             }
 
             $ticket = new Ticket();
-            $ticket->update([
+            $exito = $ticket->update([
                 'medio_comunicacion' => $medio_comunicacion,
-                'cliente' => $idCliente,
                 'tecnico' => $tecnico,
                 'descripcion' => $descripcion,
                 'id' => $id
             ]);
-
-                $_SESSION['success'] = "Ticket actualizado correctamente.";
-                header("Location: /editar_ticket?id=" . $_POST['id']);
-                exit;
+    
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
         }
-
-        // Si entra por GET u otra cosa que no sea POST
-        $_SESSION['error'] = 'Acceso no válido.';
-        header("Location: /editar_ticket?id=" . $_POST['id']);
-        exit;
-
+    
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
     public function storeComentarios() {
@@ -361,6 +355,48 @@ class TicketController {
             return;
         }
     
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+    }
+
+    public function storeAlbaran() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $cliente_albaranar = $_POST['cliente_albaranar'] ?? '';
+            $fecha_albaranar = $_POST['fecha_albaranar'] ?? '';
+            $codigo_articulo_albaranar = $_POST['codigo_articulo_albaranar'] ?? '';
+            $cantidad_albaranar = $_POST['cantidad_albaranar'] ?? '';
+            $precio_albaranar = $_POST['precio_albaranar'] ?? '';
+            $descripcion_amplia_albaranar = $_POST['descripcion_amplia_albaranar'] ?? '';
+
+            // Validaciones
+            if (empty($cliente_albaranar) || empty($fecha_albaranar) || empty($codigo_articulo_albaranar) || empty($cantidad_albaranar) || empty($precio_albaranar) || empty($descripcion_amplia_albaranar)) {
+                // Enviar error como respuesta JSON
+                echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
+                exit;  // Detener la ejecución
+            }
+
+            $ticket = new Ticket();
+            $exito = $ticket->createAlbaran([
+                'cliente_albaranar' => $cliente_albaranar,
+                'fecha_albaranar' => $fecha_albaranar,
+                'codigo_articulo_albaranar' => $codigo_articulo_albaranar,
+                'cantidad_albaranar' => $cantidad_albaranar,
+                'precio_albaranar' => $precio_albaranar,
+                'descripcion_amplia_albaranar' => $descripcion_amplia_albaranar
+            ]);
+
+
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+
         $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 

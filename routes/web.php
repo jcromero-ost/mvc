@@ -86,6 +86,9 @@ $router->post('/get_cronometro', 'TicketController@obtenerCronometroPorTicket');
 
 $router->post('/update_tecnico', 'TicketController@updateTecnico');
 
+$router->post('/store_albaranar', 'TicketController@storeAlbaran');
+
+
 
 
 

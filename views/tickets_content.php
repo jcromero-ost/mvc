@@ -34,7 +34,8 @@
             <option value="">Seleccione un estado</option>
             <option value="">Pendiente</option>
             <option value="">En Revisión</option>
-            <option value="">Finalizado</option>
+            <option value="">Finalizado/Albaranado</option>
+            <option value="">Albaranado</option>
       </select>
     </div>
 
@@ -113,6 +114,10 @@
             case 'finalizado':
                 $badgeClass = 'success'; // Verde
                 $texto = 'Finalizado';
+                break;
+            case 'albaranado':
+                $badgeClass = 'primario'; // Verde
+                $texto = 'Albaranado';
                 break;
             default:
                 $badgeClass = 'secondary'; // Gris

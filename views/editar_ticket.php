@@ -32,6 +32,15 @@ $ticket = $ticketModel->getById($ticket_id);
 
 $comentarios = $ticketModel->getAllComentarios($ticket_id);
 
+$tiempo_total = $ticketModel->getTiempoTotal($ticket_id);
+$segundos = (int) $tiempo_total['tiempo_total'];
+
+$horas = floor($segundos / 3600);
+$minutos = floor(($segundos % 3600) / 60);
+$restoSegundos = $segundos % 60;
+
+$tiempoFormateado = sprintf('%02d:%02d:%02d', $horas, $minutos, $restoSegundos);
+
 
 $view = './editar_ticket_content.php';
 include __DIR__ . '/layout.php';

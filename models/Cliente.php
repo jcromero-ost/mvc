@@ -28,9 +28,9 @@ class Cliente {
         // Preparar la consulta de inserción
         $stmt = $this->db->prepare("
             INSERT INTO fccli001 
-                (CCODCL, CNOM, CTEL1, CDNI, CMAIL1, CDOM, CPOB, CCODPO, CPAIS)
+                (CCODCL, CNOM, CTEL1, CDNI, CMAIL1, CDOM, CPOB, CCODPO, CPAIS, CDOMFIS, CDOMENVFRA, CDOMENVMAT, COBS, COBSORD, CACCIONIS, CADMINIS)
             VALUES 
-                (:id, :nombre, :telefono, :dni, :email, :direccion, :ciudad, :cp, :provincia)
+                (:id, :nombre, :telefono, :dni, :email, :direccion, :ciudad, :cp, :provincia, '', '', '', '', '', '', '')
         ");
 
         // Asignar el nuevo ID al array de datos

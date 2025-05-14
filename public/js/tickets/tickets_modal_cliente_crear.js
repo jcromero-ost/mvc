@@ -14,8 +14,4 @@ document.addEventListener("DOMContentLoaded", function () {
             inputClienteForm.value = inputNombreCliente.value;
         });
     });
-
-    
-
-
 });

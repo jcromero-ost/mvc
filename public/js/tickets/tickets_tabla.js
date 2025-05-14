@@ -120,19 +120,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const cliente = document.getElementById("filtrar_cliente").value.toLowerCase();
         const id = document.getElementById("filtrar_id").value.toLowerCase();
         const tecnico = document.getElementById("filtrar_tecnico").value.toLowerCase();
-        const fecha_inicio = document.getElementById("filtrar_fecha_inicio").value.toLowerCase();
+        const estado = document.getElementById("filtrar_estado").value.toLowerCase();
 
         // Filtrar filas basadas en los valores
         filteredRows = rows.filter(fila => {
             const tdCliente = fila.children[0].textContent.toLowerCase();
             const tdId = fila.children[1].textContent.toLowerCase();
             const tdTecnico = fila.children[3].textContent.toLowerCase();
-            const tdFecha = fila.children[4].textContent.toLowerCase();
+            const tdEstado = fila.children[7].textContent.toLowerCase();
 
             const coincideId = id === "" || tdId === id;  // Si ID está vacío, no se aplica filtro de ID
             const coincideTecnico = tecnico === "" || tdTecnico === tecnico;  // Si técnico está vacío, no se aplica filtro de técnico
+            const coincideEstado = estado === "" || tdEstado === estado;
 
-            return tdCliente.includes(cliente) && coincideId && coincideTecnico && tdFecha.includes(fecha_inicio);
+            return tdCliente.includes(cliente) && coincideId && coincideTecnico && coincideEstado;
         });
 
         currentPage = 1;  // Reiniciar a la primera página después de filtrar

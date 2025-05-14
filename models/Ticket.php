@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/Database.php');
+require_once(__DIR__ . '/DatabaseXGEST.php');
 
 class Ticket {
     private $db;
@@ -30,6 +31,14 @@ class Ticket {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Obtener por ID de cliente
+    public function getByIdCliente($cliente_id) {
+        $stmt = $this->db->prepare("SELECT * FROM tickets WHERE cliente_id = :cliente_id");
+        $stmt->bindParam(':cliente_id', $cliente_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Crear nuevo ticket
     public function create($data) {
         $stmt = $this->db->prepare("
@@ -54,7 +63,6 @@ class Ticket {
     
         $sql = "UPDATE tickets SET 
                     medio_id = :medio_comunicacion,
-                    cliente_id = :cliente,
                     tecnico_id = :tecnico,
                     descripcion = :descripcion
                 WHERE id = :id";
@@ -62,7 +70,6 @@ class Ticket {
         $stmt = $db->prepare($sql);
     
         $stmt->bindParam(':medio_comunicacion', $data['medio_comunicacion']);
-        $stmt->bindParam(':cliente', $data['cliente']);
         $stmt->bindParam(':tecnico', $data['tecnico']);
         $stmt->bindParam(':descripcion', $data['descripcion']);
         $stmt->bindParam(':id', $data['id']);
@@ -162,12 +169,53 @@ class Ticket {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Obtener cronometro por id de ticket
+    public function getTiempoTotal($ticket_id) {
+        $stmt = $this->db->prepare("
+            SELECT SUM(tiempo) AS tiempo_total
+            FROM cronometro
+            WHERE ticket_id = :ticket_id
+        ");
+        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); // <- cambio aquí
+    }
+
     // Actualizar tecnico
     public function updateTecnico($data) {
         $db = Database::connect();
         $stmt = $db->prepare("UPDATE tickets SET tecnico_id = :tecnico_id WHERE id = :id");
         $stmt->bindParam(':tecnico_id', $data['tecnico_id']);
         $stmt->bindParam(':id', $data['id']);
+        return $stmt->execute();
+    }
+
+    public function createAlbaran($data) {
+        $db = DatabaseXGEST::connect();
+
+        $stmt = $db->query("SELECT MAX(LALBA) AS max_id FROM fclia001");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $ultimoId = $result['max_id'];
+        $nuevoId = is_numeric($ultimoId) ? (int)$ultimoId + 1 : 1;
+
+        $stmt = $db->prepare("
+            INSERT INTO fclia001 (
+                LALBA, LLINEA, LALMACEN, LCODCL, LFECHA, LITEM, LCODAR, LDIFPREC, LCANTI, LPRECI,
+                LNUMPED, LLINPED, CALIDA, LMARCAS, LMEDIDAS, LAMPDES, LOBSINT
+            ) VALUES (
+                :id, 1, 0, :cliente, :fecha, '', :codigo, 'N', :cantidad, :precio,
+                0, 0, '', '', '', :descripcion, ''
+            )
+        ");
+
+        $stmt->bindValue(':id', $nuevoId);
+        $stmt->bindValue(':cliente', $data['cliente_albaranar']);
+        $stmt->bindValue(':fecha', $data['fecha_albaranar']);
+        $stmt->bindValue(':codigo', $data['codigo_articulo_albaranar']);
+        $stmt->bindValue(':cantidad', $data['cantidad_albaranar']);
+        $stmt->bindValue(':precio', $data['precio_albaranar']);
+        $stmt->bindValue(':descripcion', $data['descripcion_amplia_albaranar']);
+
         return $stmt->execute();
     }
 }

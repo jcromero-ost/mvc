@@ -35,6 +35,10 @@ a:hover {
   border-color: var(--color-primary);
 }
 
+.bg-primario {
+  background-color: var(--color-primary);
+}
+
 .btn-primary:hover {
   background-color: #007f76;
   border-color: #007066;
@@ -146,3 +150,25 @@ header, footer {
   font-size: 0.75rem;
   line-height: 1;
 }
+
+/* Estilos personalizados para los botones de las pestañas */
+.custom-nav-btn {
+    background-color: transparent !important; /* Fondo transparente para los botones no activos */
+    color: #343a40 !important; /* Texto oscuro para los botones no activos */
+    border: none;
+    border-radius: 0.25rem;
+}
+
+/* Estilo para el botón activo */
+.custom-nav-btn.active {
+    background-color: #343a40 !important; /* Fondo negro para el botón activo */
+    color: white !important; /* Texto blanco para el botón activo */
+}
+
+/* Cambiar el color cuando se pasa el cursor por encima en botones no activos */
+.custom-nav-btn:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+

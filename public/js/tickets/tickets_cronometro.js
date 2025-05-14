@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var horaInicio = null;
 
     const ticket_id = document.getElementById('id').value;
+    const ticket_estado = document.getElementById('estado').value;
 
     const mensaje = document.getElementById('mensaje');
     const badge = document.getElementById('estadoBadge');
@@ -83,6 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Actualizar estado
         const botonFinalizarTicket = document.getElementById('botonFinalizarTicket');
         const botonPendienteTicket = document.getElementById('botonPendienteTicket');
+        const botonAlbaranarTicket = document.getElementById('botonAlbaranarTicket');
+
         // Crear FormData con los datos que se necesitan enviar
         const formData = new FormData();
         formData.append('estado', 'en_revision'); // ID Ticket
@@ -99,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 botonFinalizarTicket.classList.remove('d-none');
                 botonPendienteTicket.classList.add('d-none');
+                botonAlbaranarTicket.classList.add('d-none');
             } else {
                 mensaje.textContent = 'Error al actualizar el estado: ' + data.error;
                 mensaje.classList.add('text-black');
@@ -311,4 +315,13 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error en la petición:', error);
         });
     })
+
+    const agregarRegistroBtn = document.getElementById('agregarRegistroBtn');
+    const timer = document.getElementById('timer');
+
+    if(ticket_estado === 'albaranado'){
+        document.querySelectorAll('button').forEach(el => el.classList.add('d-none'));
+
+        timer.classList.add('d-none');
+    } 
 });

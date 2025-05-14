@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Id ticket
     const ticket_id = document.getElementById('id').value;
+
+    // Estado ticket
+    const ticket_estado = document.getElementById('estado').value;
+
     // Div comentarios pagina principal  
     const comentariosDiv = document.getElementById('comentariosDiv');
     // Alerta comentarios
@@ -277,14 +281,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
-
-
-
-
-
-
-    
     function cargarComentarios(ticket_id) {
         fetch('/get_comentarios', {
             method: 'POST',
@@ -337,6 +333,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if(comentario.tipo === 'interno'){
                     newTextarea.classList.add('bg-primary', 'bg-opacity-25');
+                }
+
+                if(ticket_estado === 'albaranado'){
+                    botonEditComentario.classList.add('d-none');
+                    botonDeleteComentario.classList.add('d-none');
                 }
 
                 // Agregar funcionalidad al botón de eliminar

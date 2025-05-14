@@ -113,6 +113,10 @@
                 $badgeClass = 'success'; // Verde
                 $texto = 'Finalizado';
                 break;
+            case 'albaranado':
+                $badgeClass = 'primario'; // Verde
+                $texto = 'Albaranado';
+                break;
             default:
                 $badgeClass = 'secondary'; // Gris
                 $texto = 'Desconocido';

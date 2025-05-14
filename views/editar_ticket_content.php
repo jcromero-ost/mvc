@@ -31,6 +31,10 @@
                         $badgeClass = 'success'; // Verde
                         $texto = 'Finalizado';
                         break;
+                    case 'albaranado':
+                        $badgeClass = 'primario'; // Verde
+                        $texto = 'Albaranado';
+                        break;
                     default:
                         $badgeClass = 'secondary'; // Gris
                         $texto = 'Desconocido';
@@ -47,7 +51,7 @@
         </span>
     </div>
   <?php include_once __DIR__ . '/components/alerts.php'; ?>
-  <form id="formEditarTicket" method="POST" action="/store_ticket_editar" enctype="multipart/form-data">
+  <form id="formEditarTicket" method="POST" enctype="multipart/form-data">
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="editar_cliente" class="form-label">Cliente</label>
@@ -64,9 +68,6 @@
         ?>
         <div class="d-flex align-items-center">
           <input type="text" class="form-control me-2" id="cliente" name="cliente" value="<?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db)) ?>" required readonly>
-          <button class="btn btn-outline-secondary btn-lupa" type="button" id="botonBuscarCliente">
-            <i class="bi bi-search"></i>
-          </button>
         </div>
       </div>
       <div class="col-md-6">
@@ -85,7 +86,7 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="tecnico" class="form-label">Técnico</label>
-        <select id="tecnico" name="tecnico" class="form-select" required disabled>
+        <select id="tecnico" name="tecnico" class="form-select" required readonly>
             <option value="">Seleccione un técnico</option>
             <?php foreach ($tecnicos as $tec): ?>
                 <option value="<?= $tec['id'] ?>" <?= ($ticket['tecnico_id'] == $tec['id']) ? 'selected' : '' ?>>
@@ -123,24 +124,25 @@
     </script>
 <hr>
     <input type="hidden" id="id" name="id" value="<?= htmlspecialchars($ticket['id']) ?>"> <!-- ID del ticket -->
-    <input type="hidden" id="estado" name="id" value="<?= htmlspecialchars($ticket['estado']) ?>"> <!-- estado del ticket -->
+    <input type="hidden" id="estado" name="estado" value="<?= htmlspecialchars($ticket['estado']) ?>"> <!-- estado del ticket -->
 
     <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary">Aplicar cambios</button>
+        <button id="botonFormulario" type="submit" class="btn btn-primary">Aplicar cambios</button>
         <div class="d-flex">
             <button type="button" id="botonFinalizarTicket" name="botonFinalizarTicket" class="btn btn-success">Finalizar ticket</button>
+            <button type="button" id="botonAlbaranarTicket" name="botonAlbaranarTicket" class="btn btn-primary me-1">Albaranar ticket</button>
             <button type="button" id="botonPendienteTicket" name="botonPendienteTicket" class="btn btn-danger d-none">Marcar como pendiente</button>
         </div>
     </div>
   </form>
 </div>
 
-<!-- Modal Cliente -->
-<?php include_once __DIR__ . '/components/modal_cliente_ticket.php'; ?>
-
 <?php include_once __DIR__ . '/components/modal_tickets/modal_tiempo_ticket.php'; ?>
 
 <?php include_once __DIR__ . '/components/modal_tickets/modal_traspasar_ticket.php'; ?>
+
+<?php include_once __DIR__ . '/components/modal_tickets/modal_albaranar_ticket.php'; ?>
+
 
 
 
