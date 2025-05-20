@@ -151,8 +151,11 @@ document.addEventListener("DOMContentLoaded", function () {
             body: formData
         }).then(response => response.json())
         .then(data => {
-            if (!data.success) {
-                console.error('Error:', data.error); 
+            if (data.success) { 
+                                //Actualiza el tiempo
+                document.getElementById('tiempo-total').textContent = data.tiempo_total;
+            }else{
+                console.error('Error:', data.error);
             }
         })
         .catch(error => {
@@ -163,13 +166,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     //Cargar registros en la tabla
-    function cargarRegistrosCronometro($ticket_id) {
+    function cargarRegistrosCronometro(id_ticket) {
         fetch('/get_cronometro', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `id=${encodeURIComponent(ticket_id)}`
+            body: `id=${encodeURIComponent(id_ticket)}`
         }).then(response => response.json())
         .then(data => {
             if (data.success && data.cronometro_registros.length === 0) {
@@ -177,8 +180,8 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (data.success && data.cronometro_registros.length > 0) {
                 tablaModificaciones.innerHTML = data.cronometro_registros.map((registro, i) => `
                     <tr class="${i % 2 === 0 ? 'bg-white text-dark' : 'table-secondary text-dark'}">
-                        <td class="px-4 py-2">${registro.tiempo}</td>
-                        <td class="px-4 py-2">${registro.nombre_usuario}</td>
+                        <td>${registro.tiempo}</td>
+                        <td>${registro.nombre_usuario}</td>
                     </tr>
                 `).join("");
             }
@@ -202,6 +205,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!hora_inicio || !hora_fin) {
             console.error("Debe ingresar ambas horas de inicio y fin.");
+            return;
+        }
+
+        if (hora_inicio > hora_fin){
             return;
         }
 

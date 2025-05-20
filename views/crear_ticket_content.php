@@ -26,8 +26,9 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="tecnico" class="form-label">Técnico</label>
-        <select id="tecnico" name="tecnico" class="form-select" required>
+        <select id="tecnico" name="tecnico" class="form-select">
             <option value="">Seleccione un tecnico</option>
+            <option value="">Pendiente de asignar</option>
             <?php foreach ($tecnicos as $tec): ?>
               <option value="<?= $tec['id'] ?>"><?= htmlspecialchars($tec['nombre']) ?></option>
             <?php endforeach; ?>

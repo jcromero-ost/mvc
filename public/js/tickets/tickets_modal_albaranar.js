@@ -20,7 +20,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const descripcion_amplia_albaranar = document.getElementById('descripcion_amplia_albaranar');
     const descripcion = document.getElementById('descripcion').value;
 
-    descripcion_amplia_albaranar.value = `Motivo: ${descripcion}\n\n`;
+    fetch('/get_comentarios', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `id=${ticket_id}`
+    })
+    .then(response => response.json())
+    .then(data => {
+    let texto = `Motivo: ${descripcion}\n\n`;
+    if(data.success && data.comentarios.length > 0) {
+        data.comentarios.forEach((comentario, index) => {
+        texto += `Comentario ${index + 1}: ${comentario.contenido}\n\n`;
+        });
+    } else {
+        texto += 'No hay comentarios.';
+    }
+    descripcion_amplia_albaranar.value = texto;
+    })
+    .catch(error => {
+    console.error('Error al obtener comentarios:', error);
+    descripcion_amplia_albaranar.value = `Motivo: ${descripcion}\n\nError al cargar comentarios.`;
+    });
 
     botonConfirmAlbaranar.addEventListener('click', function(e){
         // Mostrar el modal

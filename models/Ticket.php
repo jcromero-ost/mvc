@@ -18,7 +18,7 @@ class Ticket {
 
     // Obtener todos los tickets no finalizados
     public function getAllTicketsNoFinalizados() {
-        $stmt = $this->db->prepare("SELECT * FROM tickets WHERE estado != 'finalizado' ORDER BY id DESC");
+    $stmt = $this->db->prepare("SELECT * FROM tickets WHERE estado NOT IN ('finalizado', 'albaranado') ORDER BY id DESC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -50,7 +50,12 @@ class Ticket {
     
         $stmt->bindParam(':medio_comunicacion', $data['medio_comunicacion']);
         $stmt->bindParam(':cliente', $data['cliente']);
-        $stmt->bindParam(':tecnico', $data['tecnico']);
+        // Asegura que si el técnico es null, se use PDO::PARAM_NULL
+        if ($data['tecnico'] === null) {
+            $stmt->bindValue(':tecnico', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(':tecnico', $data['tecnico'], PDO::PARAM_INT);
+        }
         $stmt->bindParam(':fecha_inicio', $data['fecha_inicio']);
         $stmt->bindParam(':descripcion', $data['descripcion']);
         $stmt->bindParam(':usuario_creador_id', $data['usuario_creador']);

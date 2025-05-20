@@ -81,6 +81,9 @@ $router->post('/update_comentarios', 'TicketController@updateComentarios');
 $router->post('/update_estado', 'TicketController@updateEstado');
 $router->post('/get_comentarios', 'TicketController@obtenerComentariosPorTicket');
 
+
+$router->post('/obtener_tickets_por_cliente', 'TicketController@obtenerTicketsPorCliente');
+
 $router->post('/store_ticket_cronometro', 'TicketController@storeCronometro');
 $router->post('/get_cronometro', 'TicketController@obtenerCronometroPorTicket');
 

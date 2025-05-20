@@ -78,6 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
         botonFinalizarTicket.classList.add('d-none');
         botonPendienteTicket.classList.remove('d-none');
         botonAlbaranarTicket.classList.remove('d-none');
+    }else if (ticket_estado === 'en_revision'){
+        botonFinalizarTicket.classList.remove('d-none');
+        botonPendienteTicket.classList.add('d-none');
+        botonAlbaranarTicket.classList.add('d-none');
     }else if (ticket_estado === 'albaranado'){
         desactivarEdicionFormulario();
     }
@@ -195,10 +199,5 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error en la petición:', error);
         });
     });
-
-    botonAlbaranarTicket.addEventListener('click', function() {
-
-    });
-
   });
   

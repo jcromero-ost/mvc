@@ -1,17 +1,25 @@
 <div class="modal fade" id="modalAlbaranarTicket" tabindex="-1" aria-labelledby="modalAlbaranarTicketLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <form id="formCrearCliente" method="POST"  action="/store_cliente_ticket" enctype="multipart/form-data">
+      <form id="formCrearCliente" method="POST" action="/store_albaranar" enctype="multipart/form-data">
         <div class="modal-header">
           <h5 class="modal-title" id="modalAlbaranarTicketLabel">Albaranar ticket</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
 
         <div class="modal-body">
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <label for="tiempo_empleado_albaranar" class="form-label">Tiempo empleado</label>
-                    <input type="text" class="form-control" id="tiempo_empleado_albaranar" name="tiempo_empleado_albaranar" required readonly value="<?= htmlspecialchars($tiempoFormateado) ?>">
+          <div class="row mb-3">
+              <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex">
+                        <i class="bi bi-clock me-2"></i>
+                        <h5 class="card-title">TIEMPO EMPLEADO</h5>
+                      </div>
+                      <h6 class="card-subtitle mb-2 text-body-secondary">HEXADECIMAL</h6>
+                      <p class="card-text"><span id="tiempo-total"><?= htmlspecialchars($tiempoFormateado) ?></span></p>
+                    </div>
+                  </div>
                 </div>
             </div>
 
@@ -30,11 +38,11 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="codigo_articulo_albaranar" class="form-label">Código de artículo</label>
-                    <input type="text" class="form-control" id="codigo_articulo_albaranar" name="codigo_articulo_albaranar" required>
+                    <input type="text" class="form-control" id="codigo_articulo_albaranar" name="codigo_articulo_albaranar" value="|ORD_HORA" readonly>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="cantidad_albaranar" class="form-label">Cantidad</label>
+                    <label for="cantidad_albaranar" class="form-label">Cantidad (Decimal)</label>
                     <input type="number" class="form-control" id="cantidad_albaranar" name="cantidad_albaranar" required>
                 </div>
 
@@ -48,7 +56,7 @@
                 <div class="col-md-12">
                     <label for="descripcion_amplia_albaranar" class="form-label">Descripción</label>
                     <div class="input-group">
-                    <textarea class="form-control" id="descripcion_amplia_albaranar" name="descripcion_amplia_albaranar" rows="10" required></textarea>
+                      <textarea class="form-control" id="descripcion_amplia_albaranar" name="descripcion_amplia_albaranar" rows="10" required></textarea>
                     </div>
                 </div>
             </div>

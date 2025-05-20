@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputSeleccionCliente = document.getElementById('seleccionCliente');
     const modalSeleccionarCliente = new bootstrap.Modal(document.getElementById('modalSeleccionarCliente'));
 
+    const modalCrearCliente = new bootstrap.Modal(document.getElementById('modalCrearCliente'));
+
     // Realiza las operaciones cuando se pulsa el boton
     document.querySelectorAll('.btn-success').forEach(btn => {
         btn.addEventListener('click', () => {

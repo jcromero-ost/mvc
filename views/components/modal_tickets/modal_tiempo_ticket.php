@@ -2,7 +2,7 @@
 <input type="checkbox" id="navbar-toggle" class="d-none" />
 
 <!-- Icono para mostrar el botón -->
-<div class="icon-container position-fixed bottom-0 end-0 m-4 z-3">
+<div class="icon-container position-fixed bottom-0 end-0 m-5 z-3">
   <label for="navbar-toggle" class="icon btn btn-secondary rounded-circle text-white fs-4">
     <i class="bi bi-clock"></i>
   </label>
@@ -14,7 +14,7 @@
 </div>
 
 <!-- Menú -->
-<div class="nav-menu p-3 position-fixed end-0 top-0 bg-dark text-white w-25 h-100 z-1 d-none flex-column mt-5 gap-3">
+<div class="nav-menu p-3 position-fixed end-0 top-0 bg-dark text-white h-100 z-1 d-none flex-column mt-5 gap-3">
   
   <!-- Recuadro con el tiempo -->
   <div id="timer" class="fs-4 bg-secondary rounded text-center py-2 mt-5">
@@ -47,11 +47,11 @@
   <!-- Tabla de últimos registros -->
   <div id="ultimasModificaciones" class="bg-dark p-2 rounded">
     <h3 class="fs-6 text-white mb-2">Últimos Registros</h3>
-    <div class="overflow-auto" style="max-height: 300px;">
-      <table class="table table-sm table-bordered text-white mb-0">
+    <div class="overflow-auto" style="max-height: 300px; max-width: 400px;">
+      <table class="table table-bordered text-white">
         <thead class="table-secondary text-dark">
           <tr>
-            <th>Tiempo Total</th>
+            <th>Tiempo</th>
             <th>Usuario</th>
           </tr>
         </thead>

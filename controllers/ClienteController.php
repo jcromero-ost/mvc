@@ -129,6 +129,12 @@ class ClienteController {
         exit;
     }
 
+    private function responderJson($data) {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
     public function storeTickets() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -147,13 +153,11 @@ class ClienteController {
 
             // Validaciones
             if (empty($nombre) || empty($telefono) || empty($dni) || empty($email)) {
-                $_SESSION['error'] = 'Todos los campos obligatorios deben completarse.';
-                header('Location: /crear_cliente');
-                exit;
+                $this->responderJson(['success' => false, 'error' => 'Faltan campos obligatorios']);
             }
 
             $cliente = new Cliente();
-            $cliente->create([
+            $exito = $cliente->create([
                 'id' => $id,
                 'nombre' => $nombre,
                 'telefono' => $telefono,
@@ -165,15 +169,15 @@ class ClienteController {
                 'provincia' => $provincia
             ]);
 
-
-            $_SESSION['success'] = 'Cliente creado correctamente.';
-            header('Location: /crear_ticket');
-            exit;
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
         }
-
         // Si entra por GET o sin POST válido, redirigir
-        header('Location: /crear_ticket');
-        exit;
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 }
 if (isset($_POST['accion'])) {

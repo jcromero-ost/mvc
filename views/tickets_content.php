@@ -32,10 +32,11 @@
       <label for="filtrar_estado" class="form-label">Estado</label>
       <select id="filtrar_estado" class="form-select">
             <option value="">Seleccione un estado</option>
-            <option value="">Pendiente</option>
-            <option value="">En Revisión</option>
-            <option value="">Finalizado/Albaranado</option>
-            <option value="">Albaranado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Revisión">En Revisión</option>
+            <option value="Finalizado">Finalizado</option>
+            <option value="Albaranado">Albaranado</option>
+
       </select>
     </div>
 

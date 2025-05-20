@@ -26,7 +26,32 @@ class TicketController {
     public function edit() {
         require_once __DIR__ . '/../views/editar_ticket.php';
     }
-    
+
+    public function obtenerTicketsPorCliente() {
+        header('Content-Type: application/json');
+
+        // Validar que recibimos el cliente_id vía POST (según tu condición)
+        if (isset($_POST['cliente_id'])) {
+            $cliente_id = intval($_POST['cliente_id']);
+
+            if ($cliente_id > 0) {
+                // Crear instancia del modelo Ticket (si no está creada)
+                $ticketModel = new Ticket();
+
+                // Obtener tickets para el cliente
+                $tickets = $ticketModel->getByIdCliente($cliente_id);
+
+                echo json_encode($tickets);
+            } else {
+                echo json_encode(['error' => 'cliente_id inválido']);
+            }
+        } else {
+            // No se recibió cliente_id en POST
+            echo json_encode(['error' => 'No se recibió cliente_id']);
+        }
+        exit;
+    }
+
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
             $id = $_POST['id'] ?? null;
@@ -52,6 +77,7 @@ class TicketController {
             $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
             $nombreCliente = $_POST['cliente'] ?? '';
             $tecnico = $_POST['tecnico'] ?? '';
+            $tecnico = ($tecnico === '') ? null : $tecnico;
             $fecha_inicio = $_POST['fecha_inicio'] ?? '';
             $descripcion = $_POST['descripcion'] ?? '';
 
@@ -66,7 +92,7 @@ class TicketController {
             $idCliente = $cliente->getIdByCliente($nombreCliente);
 
             // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($tecnico) || empty($fecha_inicio) || empty($descripcion)) {
+            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($fecha_inicio) || empty($descripcion)) {
                 $_SESSION['error'] = 'Todos los campos son obligatorios.';
                 header('Location: /crear_ticket');
                 exit;
@@ -273,12 +299,12 @@ class TicketController {
         $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
-    // Crear cronometro
+    //Crear cronometro
     public function storeCronometro() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ticket_id = $_POST['ticket_id'] ?? '';
             $fecha = $_POST['fecha'] ?? '';
@@ -286,7 +312,7 @@ class TicketController {
             $usuario_id = $_SESSION['user']['id'];
             $hora_inicio = $_POST['hora_inicio'] ?? '';
             $hora_fin = $_POST['hora_fin'] ?? '';
-    
+
             $ticket = new Ticket();
             $exito = $ticket->createCronometro([
                 'ticket_id' => $ticket_id,
@@ -296,17 +322,32 @@ class TicketController {
                 'hora_inicio' => $hora_inicio,
                 'hora_fin' => $hora_fin
             ]);
-    
+
             if ($exito) {
-                $this->responderJson(['success' => true]);
+                // Obtener nuevo tiempo total
+                $tiempo_total = $ticket->getTiempoTotal($ticket_id);
+                $segundos = (int) $tiempo_total['tiempo_total'];
+
+                $horas = floor($segundos / 3600);
+                $minutos = floor(($segundos % 3600) / 60);
+                $restoSegundos = $segundos % 60;
+
+                $tiempoFormateado = sprintf('%02d:%02d:%02d', $horas, $minutos, $restoSegundos);
+
+                $this->responderJson([
+                    'success' => true,
+                    'tiempo_total' => $tiempoFormateado
+                ]);
+                return;
             } else {
                 $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+                return;
             }
-            return;
         }
-    
+
         $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
+
 
     public function obtenerCronometroPorTicket() {
         if (session_status() === PHP_SESSION_NONE) {

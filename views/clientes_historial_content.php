@@ -10,12 +10,7 @@
    <div class="row g-3 align-items-end mb-4">
     <div class="col-md-12">
         <label for="cliente_historial" class="form-label">Cliente</label>
-        <div class="d-flex align-items-center">
-          <input type="text" class="form-control me-2" id="cliente_historial" name="cliente_historial" required readonly>
-          <button class="btn btn-outline-secondary btn-lupa" type="button" id="botonBuscarCliente">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
+        <input type="text" class="form-control me-2" id="cliente_historial" name="cliente_historial" required readonly>
     </div>
 
     <div class="row g-3 align-items-end mb-4 ms-1">
@@ -45,7 +40,6 @@
                       <th>Técnico</th>
                       <th>Fecha Inicio</th>
                       <th>Descripcion</th>
-                      <th>Tiempo</th>
                       <th>Estado</th>
                       <th class="text-center">Acciones</th>
                     </tr>
@@ -128,52 +122,8 @@
                       return $resultado;
                     }
                   ?>
-                  <tbody>
-                    <?php foreach ($tickets as $ticket): ?>
-                        <tr>
-                            <td><?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db2)) ?></td>
-                            <td><?= htmlspecialchars($ticket['id']) ?></td>
-                            <td><?= htmlspecialchars(obtenerNombreMedio($ticket['medio_id'], $db)) ?></td>
-                            <td><?= htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
-                            <td><?= htmlspecialchars($ticket['fecha_inicio']) ?></td>
-                            <td>
-                              <?= htmlspecialchars(implode(' ', array_slice(explode(' ', $ticket['descripcion']), 0, 45))) ?>
-                              <a 
-                                class="btn btn-primary btn-extra-small btn-descripcion-completa" 
-                                data-id="<?= $ticket['id'] ?>" 
-                                data-descripcion="<?= htmlspecialchars($ticket['descripcion'], ENT_QUOTES) ?>"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalDescripcionCompleta">
-                                ...ver más
-                              </a>
-                            </td>
-                            <td><?= htmlspecialchars(obtenerTiempoTranscurrido($ticket['fecha_inicio'])) ?></td>
-                            <td>
-                            <?php
-                              // Obtener el estado y los valores correspondientes
-                              $estado = $ticket['estado'];
-                              $estadoInfo = obtenerEstadoBadge($estado);
-                            ?>
-                            <span class="badge bg-<?= $estadoInfo['badgeClass'] ?>">
-                              <?= $estadoInfo['texto'] ?>
-                            </span>
-                          </td>
+                  <tbody id="tickets_tbody">
 
-                            <td class="text-center">
-                                <a href="/editar_ticket?id=<?= $ticket['id'] ?>"><button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
-                                    data-ticket='<?= json_encode($ticket, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
-                                    title="Editar">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button></a>
-
-                                <button type="button" class="btn btn-sm btn-danger btn-eliminar d-none"
-                                    data-id="<?= $ticket['id'] ?>"
-                                    title="Eliminar">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
                   </tbody>
                 </table>
               </div>
@@ -300,4 +250,5 @@
 
 </div>
 <script src="/public/js/clientes/clientes.js"></script>
+<script src="/public/js/clientes/clientes_historial.js"></script>
 

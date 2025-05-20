@@ -127,11 +127,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const tdCliente = fila.children[0].textContent.toLowerCase();
             const tdId = fila.children[1].textContent.toLowerCase();
             const tdTecnico = fila.children[3].textContent.toLowerCase();
-            const tdEstado = fila.children[7].textContent.toLowerCase();
+            const tdEstado = fila.children[7].textContent.trim().toLowerCase().replace(/\s+/g, ' ');
 
             const coincideId = id === "" || tdId === id;  // Si ID está vacío, no se aplica filtro de ID
             const coincideTecnico = tecnico === "" || tdTecnico === tecnico;  // Si técnico está vacío, no se aplica filtro de técnico
-            const coincideEstado = estado === "" || tdEstado === estado;
+            const coincideEstado = estado === "" || tdEstado.toLowerCase() === estado.toLowerCase();
 
             return tdCliente.includes(cliente) && coincideId && coincideTecnico && coincideEstado;
         });

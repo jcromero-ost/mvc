@@ -1,6 +1,6 @@
 <div class="container-fluid mt-2">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Listado de tickets no finalizados</h2>
+    <h2 class="mb-0">Listado de tickets pendientes</h2>
     <a href="/crear_ticket" class="btn btn-success btn-primary">
       <i class="bi bi-clipboard-plus"></i> Crear nuevo ticket
     </a>
@@ -32,8 +32,8 @@
       <label for="filtrar_estado" class="form-label">Estado</label>
       <select id="filtrar_estado" class="form-select">
             <option value="">Seleccione un estado</option>
-            <option value="">Pendiente</option>
-            <option value="">En Revisión</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Revisión">En Revisión</option>
       </select>
     </div>
 
