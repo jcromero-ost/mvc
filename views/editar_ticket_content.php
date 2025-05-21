@@ -87,7 +87,7 @@
       <div class="col-md-6">
         <label for="tecnico" class="form-label">Técnico</label>
         <select id="tecnico" name="tecnico" class="form-select" required readonly>
-            <option value="">Seleccione un técnico</option>
+            <option value="" <?= empty($ticket['tecnico_id']) ? 'selected' : '' ?>>Pendiente de asignar</option>
             <?php foreach ($tecnicos as $tec): ?>
                 <option value="<?= $tec['id'] ?>" <?= ($ticket['tecnico_id'] == $tec['id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($tec['nombre']) ?>

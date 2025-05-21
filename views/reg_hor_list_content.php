@@ -1,4 +1,5 @@
 <div class="mb-4">
+<div id="mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
 <h1 id="titulo-registros">Listado de Registros Horarios</h1>
 
 </div>
@@ -59,6 +60,9 @@
           <th>Hora Inicio</th>
           <th>Hora Fin</th>
           <th class="descansos-header">Descansos</th>
+          <?php if (isset($_SESSION['dept']) && $_SESSION['dept'] == 'webmaster'): ?>
+              <th>Acciones</th>
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -89,8 +93,34 @@
   </div>
 </div>
 
-<!-- Scripts -->
+<!-- Modal confirmación de edicion -->
+<div class="modal fade" id="modalEditarRegistroHorario" tabindex="-1" aria-labelledby="modalEditarRegistroHorarioLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="/controllers/TicketController.php">
+        <input type="hidden" name="accion" value="eliminar">
+        <input type="hidden" name="id" id="delete_id">
 
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarRegistroHorarioLabel">Editar Registro Horario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>Indica el motivo por el que quieres editar el registro</p>
+          <textarea class="w-100"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button id="botonConfirmarEditarRegistro" type="button" class="btn btn-success">Confirmar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
 <script type="module" src="/public/js/reg_hor_list_events.js"></script>
 <script type="module" src="/public/js/reg_hor_list_core.js"></script>
 <script type="module" src="/public/js/reg_hor_list_descansos.js"></script>

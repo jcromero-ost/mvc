@@ -45,6 +45,8 @@ $router->post('/registro-horario/buscar', 'RegistroHorarioController@buscar');
 $router->get('/usuarios/activos', 'UsuarioController@usuariosActivos');
 $router->post('/registro-horario/buscar-jornadas', 'RegistroHorarioController@buscarJornadas');
 $router->get('/registro-horario/imprimir', 'RegistroHorarioController@imprimir');
+$router->post('/registros_horarios/update', 'RegistroHorarioController@update_registro');
+
 
 // Calendario Laboral
 $router->get('/calendario_laboral', 'CalendarioLaboralController@index');

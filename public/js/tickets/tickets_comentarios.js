@@ -73,8 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         comentarioIndividualDiv.appendChild(botonCancelarComentario);
         comentarioIndividualDiv.appendChild(botonSaveComentario);
 
-        console.log(comentariosDiv.firstChild); // Verifica qué tiene firstChild
-
         // Agregar el nuevo comentario arriba de los existentes
         if (comentariosDiv.firstChild) {
             comentariosDiv.insertBefore(comentarioIndividualDiv, comentariosDiv.firstChild); // Insertar antes del primer hijo
@@ -206,8 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
         comentarioIndividualDiv.appendChild(newTextarea);
         comentarioIndividualDiv.appendChild(botonCancelarComentario);
         comentarioIndividualDiv.appendChild(botonSaveComentario);
-
-        console.log(comentariosDiv.firstChild); // Verifica qué tiene firstChild
 
         // Agregar el nuevo comentario arriba de los existentes
         if (comentariosDiv.firstChild) {

@@ -129,4 +129,30 @@ public function imprimir()
     require __DIR__ . '/../views/reg_hor_list_print.php';
 }
 
+    public function update_registro(){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            if (!isset($data['hora_inicio'], $data['hora_fin'])) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Faltan datos obligatorios']);
+                exit;
+            }
+
+            $resultado = RegistroHorario::update([
+                'id_inicio' => $data['id_inicio'],
+                'id_fin' => $data['id_fin'],
+                'hora_inicio' => $data['hora_inicio'],
+                'hora_fin' => $data['hora_fin']
+            ]);
+
+            if ($resultado) {
+                echo json_encode(['success' => true, 'message' => 'Actualización exitosa']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Error al actualizar']);
+            }
+        }
+    }
+
 }

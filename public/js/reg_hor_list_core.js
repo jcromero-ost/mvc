@@ -1,3 +1,5 @@
+const mensaje = document.getElementById('mensaje');
+
 let paginaActual = 1;
 let jornadasGlobal = [];
 
@@ -79,9 +81,9 @@ export function renderizarTabla(jornadas) {
                 <img src="${rutaImagen}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                 ${jornada.usuario}
             </td>
-            <td class="text-center align-middle">${jornada.fecha}</td>
-            <td class="text-center align-middle">${jornada.hora_inicio || '--:--'}</td>
-            <td class="text-center align-middle">${jornada.hora_fin || '--:--'}</td>
+            <td data-editable class="text-center align-middle">${jornada.fecha}</td>
+            <td data-editable class="editable-hora text-center align-middle">${jornada.hora_inicio || '--:--'}</td>
+            <td data-editable class="editable-hora text-center align-middle">${jornada.hora_fin || '--:--'}</td>
             <td class="text-center align-middle">
                 ${jornada.descansos && jornada.descansos.length > 0 ? `
                     <button class="btn btn-primary btn-sm rounded-circle border btn-ver-descansos px-2 py-1"
@@ -91,8 +93,196 @@ export function renderizarTabla(jornadas) {
                     </button>` : '-'}
             </td>
         `;
+        //Asignar boton de editar
+        const tdBoton = document.createElement('td');
+        tdBoton.className = 'text-center align-middle';
+
+        const botonEditar = document.createElement('button');
+        botonEditar.type = 'button';
+        botonEditar.className = 'btn btn-sm btn-primary me-1 btn-editar';
+        botonEditar.title = 'Editar';
+        botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
+
+        const botonCancelar = document.createElement('button');
+        botonCancelar.type = 'button';
+        botonCancelar.className = 'btn btn-sm btn-danger me-1 btn-cancelar d-none';
+        botonCancelar.title = 'Cncelar';
+        botonCancelar.innerHTML = '<i class="bi bi-x-square"></i>';
+
+        // Enlazar el evento manualmente
+        botonEditar.addEventListener('click', function () {
+            habilitarEdicion(this, botonCancelar);
+        });
+
+        // Evento de cancelar
+        botonCancelar.addEventListener('click', function () {
+            cancelarEdicion(this, botonEditar);
+            botonCancelar.classList.add('d-none');
+            botonEditar.classList.remove('d-none');
+        });
+
+        tdBoton.appendChild(botonEditar);
+        tdBoton.appendChild(botonCancelar);
+        fila.appendChild(tdBoton);
+
         tabla.appendChild(fila);
     });
+}
+
+//Definimos el modal
+const modalEditarRegistroHorario = new bootstrap.Modal(document.getElementById('modalEditarRegistroHorario'));
+const botonConfirmarEditarRegistro = document.getElementById('botonConfirmarEditarRegistro');
+
+// Guarda los valores originales antes de editar
+const valoresOriginalesPorFila = new WeakMap();
+
+export function habilitarEdicion(boton, botonCancelar) {
+    const fila = boton.closest('tr');
+    const celdasEditables = fila.querySelectorAll('td.editable-hora');
+    const valoresOriginales = [];
+
+    celdasEditables.forEach(celda => {
+        const valor = celda.innerText.trim();
+        console.log('valor para input:', valor);  // DEBUG
+        valoresOriginales.push(valor);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = valor;
+        input.className = 'form-control form-control-sm';
+        celda.innerHTML = '';
+        celda.appendChild(input);
+    });
+
+    valoresOriginalesPorFila.set(fila, valoresOriginales);
+
+    if (botonCancelar) {
+        botonCancelar.classList.remove('d-none');
+        botonCancelar.onclick = () => cancelarEdicion(fila, boton, botonCancelar);
+    }
+
+    // Remueve cualquier listener previo
+    const nuevoBotonGuardar = boton.cloneNode(true);
+    nuevoBotonGuardar.innerHTML = '<i class="bi bi-save"></i>';
+    nuevoBotonGuardar.title = 'Guardar';
+    nuevoBotonGuardar.classList.remove('btn-editar');
+    nuevoBotonGuardar.classList.add('btn-guardar');
+
+    // Reemplaza el botón en el DOM
+    boton.replaceWith(nuevoBotonGuardar);
+
+    // Asigna evento al nuevo botón
+    nuevoBotonGuardar.addEventListener('click', () => guardarEdicion(nuevoBotonGuardar));
+}
+
+let datosParaActualizar = {
+  idInicio: null,
+  idFin: null,
+  horaInicio: null,
+  horaFin: null
+};
+
+export function guardarEdicion(botonEditar) {
+    const fila = botonEditar.closest('tr');
+    const celdasEditables = fila.querySelectorAll('td.editable-hora');
+    const inputs = Array.from(celdasEditables).map(celda => celda.querySelector('input')).filter(Boolean);
+
+    console.log('Inputs detectados:', inputs.length);  // DEBUG
+
+    if (inputs.length !== 2) {
+        alert('Error: se esperaban 2 campos editables.');
+        return;
+    }
+
+    const nuevaHoraInicio = inputs[0].value.trim();
+    const nuevaHoraFin = inputs[1].value.trim();
+
+    if (nuevaHoraInicio > nuevaHoraFin){
+        mensaje.textContent = 'La hora de inicio no puede ser mayor que la hora fin';
+        mensaje.classList.remove('d-none');
+        mensaje.classList.add('text-black', 'bg-opacity-25', 'bg-danger');
+        mensaje.classList.remove('bg-success');
+
+        // Mostrar 3 segundos y luego ocultar
+        setTimeout(() => {
+            mensaje.classList.add('d-none');
+        }, 3000);
+        return;
+    }
+
+    const usuario = fila.querySelector('td').innerText.trim();
+    const fecha = fila.querySelector('td[data-editable]').textContent.trim();
+
+    const jornada = jornadasGlobal.find(j => j.usuario === usuario && j.fecha === fecha);
+
+    if (!jornada) {
+        alert('Error: no se encontró la jornada original.');
+        return;
+    }
+
+    // Combinar fecha + hora
+    const nuevaFechaHoraInicio = `${fecha} ${nuevaHoraInicio}`;
+    const nuevaFechaHoraFin = `${fecha} ${nuevaHoraFin}`;
+
+    datosParaActualizar = {
+        idInicio: jornada.id_inicio,
+        idFin: jornada.id_fin,
+        horaInicio: nuevaFechaHoraInicio,
+        horaFin: nuevaFechaHoraFin
+    };
+
+    modalEditarRegistroHorario.show();
+}
+
+botonConfirmarEditarRegistro.addEventListener('click', function () {
+    console.log('Enviando datos:', {
+    id_inicio: datosParaActualizar.idInicio,
+    id_fin: datosParaActualizar.idFin,
+    hora_inicio: datosParaActualizar.horaInicio,
+    hora_fin: datosParaActualizar.horaFin
+});
+
+    fetch('/registros_horarios/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_inicio: datosParaActualizar.idInicio,
+            id_fin: datosParaActualizar.idFin,
+            hora_inicio: datosParaActualizar.horaInicio,
+            hora_fin: datosParaActualizar.horaFin
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mensaje.textContent = 'Registro actualizado correctamente';
+            mensaje.classList.remove('d-none');
+            mensaje.classList.add('text-black', 'bg-opacity-25', 'bg-success');
+            mensaje.classList.remove('bg-danger');
+
+            // Mostrar 3 segundos y luego ocultar
+            setTimeout(() => {
+                mensaje.classList.add('d-none');
+            }, 3000);
+            modalEditarRegistroHorario.hide();
+            cargarRegistros();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error en la solicitud:', error);
+        alert('Error al procesar la solicitud');
+    });
+});
+
+export function cancelarEdicion(botonCancelar, botonEditar) {
+    botonCancelar.classList.add('d-none');
+    botonEditar.classList.remove('d-none');
+
+    cargarRegistros();
 }
 
 export function renderizarPaginacion(pagina, total, cantidad) {

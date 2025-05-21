@@ -152,8 +152,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(response => response.json())
         .then(data => {
             if (data.success) { 
-                                //Actualiza el tiempo
+                //Actualiza el tiempo
                 document.getElementById('tiempo-total').textContent = data.tiempo_total;
+                cargarRegistrosCronometro(ticket_id);
             }else{
                 console.error('Error:', data.error);
             }
@@ -161,8 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => {
             console.error('Error en la petición:', error);
         });
-
-        cargarRegistrosCronometro(ticket_id);
     });
 
     //Cargar registros en la tabla

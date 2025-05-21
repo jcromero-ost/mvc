@@ -10,16 +10,16 @@ $current = basename($_SERVER['REQUEST_URI']);
   <ul class="nav nav-pills flex-column mb-auto">
 
     <!-- MENU CONTROL DE TIEMPO -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['registro_horario', 'informe_registro_horario']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['registro_horario', 'informe_registro_horario']) ? 'active' : ''); ?>" href="#" id="tiempoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <li class="nav-item dropdown <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>">
+      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>" href="#" id="tiempoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-clock-history me-2"></i>Control de Tiempo
       </a>
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="tiempoDropdown">
         <li><a class="dropdown-item" href="/registro_horario"><i class="bi bi-clock me-2"></i>Registro horario</a></li>
         <li><a class="dropdown-item" href="/registro-horario/listado"><i class="bi bi-clipboard-data me-2"></i>Informe de registro horario</a></li>
         <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
-        <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar3 me-2"></i>Form festivos</a></li>
-        <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-calendar3 me-2"></i>Resumen Horas</a></li>
+        <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar-week me-2"></i>Form festivos</a></li>
+        <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-hourglass-split me-2"></i>Resumen Horas</a></li>
       </ul>
     </li>
 
@@ -36,8 +36,8 @@ $current = basename($_SERVER['REQUEST_URI']);
     </li>
 
     <!-- MENU CLIENTES -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['crear_cliente', 'clientes']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_cliente', 'clientes']) ? 'active' : ''); ?>" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <li class="nav-item dropdown <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>">
+      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-person-square me-2"></i>Clientes
       </a>
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="clientesDropdown">
@@ -60,17 +60,14 @@ $current = basename($_SERVER['REQUEST_URI']);
     </li>
 
     <!-- MENU CONFIGURACIÓN -->
-    <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="configuracionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-gear"></i>Configuración
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="configuracionDropdown">
-        <li><a class="dropdown-item" href="/contratos_laborales">Contratos Laborales</a></li>
-        <!-- Aquí puedes añadir más configuraciones en el futuro -->
-    </ul>
-</li>
-
-    
+    <li class="nav-item dropdown <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>">
+      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>" href="#" id="configuracionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-gear me-2"></i>Configuración
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="configuracionDropdown">
+        <li><a class="dropdown-item" href="/contratos_laborales"><i class="bi bi-newspaper me-2"></i>Contratos Laborales</a></li>
+      </ul>
+    </li>
 
     <!-- CERRAR SESIÓN -->
     <li class="nav-item mt-3">

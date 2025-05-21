@@ -22,6 +22,7 @@
       <label for="filtrar_tecnico" class="form-label">Técnico</label>
       <select id="filtrar_tecnico" class="form-select">
             <option value="">Seleccione un tecnico</option>
+            <option value="Pendiente de asignar">Sin tecnico asignado</option>
             <?php foreach ($tecnicos as $tec): ?>
               <option><?= htmlspecialchars($tec['nombre']) ?></option>
             <?php endforeach; ?>
@@ -164,7 +165,7 @@
                 <td><?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db2)) ?></td>
                 <td><?= htmlspecialchars($ticket['id']) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreMedio($ticket['medio_id'], $db)) ?></td>
-                <td><?= htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
+                <td><?= empty($ticket['tecnico_id']) ? 'Pendiente de asignar' : htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
                 <td><?= htmlspecialchars($ticket['fecha_inicio']) ?></td>
                 <td>
                   <?= htmlspecialchars(implode(' ', array_slice(explode(' ', $ticket['descripcion']), 0, 45))) ?>

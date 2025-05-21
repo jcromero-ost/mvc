@@ -132,9 +132,16 @@ class TicketController {
             $id = $_POST['id'] ?? '';
 
             // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($tecnico) || empty($descripcion)) {
+            if (empty($tecnico)) {
                 // Enviar error como respuesta JSON
-                echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
+                $this->responderJson(['success' => false, 'error' => 'Selecciona un tecnico antes de editar el ticket']);
+                exit;  // Detener la ejecución
+            }
+
+            // Validaciones mínimas
+            if (empty($medio_comunicacion) || empty($descripcion)) {
+                // Enviar error como respuesta JSON
+                $this->responderJson(['success' => false, 'error' => 'Faltan datos obligatorios']);
                 exit;  // Detener la ejecución
             }
 

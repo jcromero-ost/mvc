@@ -18,12 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append('descripcion', descripcion); // ID Ticket
         formData.append('id', ticket_id); // ID Ticket
 
-        console.log(medio_comunicacion);
-        console.log(tecnico);
-        console.log(descripcion);
-        console.log(ticket_id);
-
-
         fetch('/store_ticket_editar', {
             method: 'POST',
             body: formData
@@ -36,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 mensaje.classList.remove('bg-danger');
                 mensaje.classList.add('bg-success');
             } else {
-                mensaje.textContent = 'Error al editar el ticket: ' + data.error;
+                mensaje.textContent = data.error;
                 mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-100');
+                mensaje.classList.add('bg-opacity-25');
                 mensaje.classList.remove('bg-success');
                 mensaje.classList.add('bg-danger');
             }

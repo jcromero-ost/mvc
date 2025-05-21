@@ -24,6 +24,7 @@ class AuthController {
 
         if ($user) {
             $_SESSION['user'] = $user;
+            $_SESSION['dept'] = $user['rol'] ?? null;
             $_SESSION['success'] = 'Bienvenido, ' . htmlspecialchars($user['nombre'] ?? '');
             header('Location: /dashboard');
         } else {
