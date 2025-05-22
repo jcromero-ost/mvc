@@ -108,7 +108,8 @@
 
         <div class="modal-body">
           <p>Indica el motivo por el que quieres editar el registro</p>
-          <textarea class="w-100"></textarea>
+          <div id="mensaje_modal" class="text-success mt-2 d-none alert" role="alert"></div>
+          <textarea id="motivo_edicion_input" class="form-control w-100" required></textarea>
         </div>
 
         <div class="modal-footer">

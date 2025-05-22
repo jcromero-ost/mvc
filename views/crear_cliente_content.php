@@ -10,18 +10,22 @@
 	    <div class="row mb-3">
 			<div class="col-md-12">
 				<label for="nombre" class="form-label">Nombre completo</label>
-				<input type="text" class="form-control" id="nombre" name="nombre" required>
+				<input type="text" class="form-control text-uppercase" id="nombre" name="nombre" required>
 			</div>
 		</div>
 
 		<div class="row mb-3">
             <div class="col-md-3">
 				<label for="telefono" class="form-label">Teléfono</label>
-				<input type="text" class="form-control" id="telefono" name="telefono">
+				<input type="text" class="form-control" id="telefono" name="telefono" maxlength="9" required>
 			</div>
             <div class="col-md-3">
 				<label for="dni" class="form-label">DNI</label>
-				<input type="text" class="form-control" id="dni" name="dni">
+				<div class="input-group mb-2">
+					<input type="text" class="form-control" id="dni" name="dni" maxlength="9" required>
+					<button type="button" class="btn btn-outline-secondary" id="validarDNI">Validar DNI</button>
+				</div>
+				<small id="dniMensaje" class="form-text"></small>
 			</div>
 			<div class="col-md-6">
 				<label for="email" class="form-label">Correo electrónico</label>
@@ -38,22 +42,22 @@
         <div class="row mb-3">
             <div class="col-md-6">
 				<label for="direccion" class="form-label">Direccion</label>
-				<input type="text" class="form-control" id="direccion" name="direccion">
+				<input type="text" class="form-control text-uppercase" id="direccion" name="direccion">
 			</div>
 			<div class="col-md-6">
 				<label for="ciudad" class="form-label">Ciudad</label>
-				<input type="text" class="form-control" id="ciudad" name="ciudad" required>
+				<input type="text" class="form-control text-uppercase" id="ciudad" name="ciudad" required>
 			</div>
 		</div>
 
         <div class="row mb-3">
             <div class="col-md-6">
 				<label for="cp" class="form-label">Código Postal</label>
-				<input type="text" class="form-control" id="cp" name="cp">
+				<input type="number" class="form-control" id="cp" name="cp">
 			</div>
 			<div class="col-md-6">
 				<label for="ciudad" class="form-label">Provincia</label>
-				<input list="provincias" type="text" class="form-control" id="ciudad" name="ciudad" required>
+				<input list="provincias" type="text" class="form-control text-uppercase" id="ciudad" name="ciudad" required>
                 <datalist id="provincias">
                         <option value="ALMERIA">
                         <option value="CADIZ">

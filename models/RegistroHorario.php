@@ -253,19 +253,21 @@ class RegistroHorario
             $db = Database::connect();
 
             $sql_inicio = "UPDATE registro_horarios 
-                        SET fecha_hora = :inicio 
+                        SET fecha_hora = :inicio, motivo_edicion = :motivo_inicio 
                         WHERE id = :id_inicio";
 
             $sql_fin = "UPDATE registro_horarios 
-                        SET fecha_hora = :fin 
+                        SET fecha_hora = :fin, motivo_edicion = :motivo_fin  
                         WHERE id = :id_fin";
 
             $stmt_inicio = $db->prepare($sql_inicio);
             $stmt_inicio->bindParam(':inicio', $data['hora_inicio']);
+            $stmt_inicio->bindParam(':motivo_inicio', $data['motivo_inicio']);
             $stmt_inicio->bindParam(':id_inicio', $data['id_inicio']);
 
             $stmt_fin = $db->prepare($sql_fin);
             $stmt_fin->bindParam(':fin', $data['hora_fin']);
+            $stmt_fin->bindParam(':motivo_fin', $data['motivo_fin']);
             $stmt_fin->bindParam(':id_fin', $data['id_fin']);
 
             $db->beginTransaction();

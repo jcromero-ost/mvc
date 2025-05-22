@@ -178,9 +178,14 @@ export function habilitarEdicion(boton, botonCancelar) {
 let datosParaActualizar = {
   idInicio: null,
   idFin: null,
+  motivoInicio : null,
+  motivoFin: null,
   horaInicio: null,
   horaFin: null
 };
+
+//Guardamos el valor del input
+const motivo_edicion_input = document.getElementById('motivo_edicion_input');
 
 export function guardarEdicion(botonEditar) {
     const fila = botonEditar.closest('tr');
@@ -198,7 +203,7 @@ export function guardarEdicion(botonEditar) {
     const nuevaHoraFin = inputs[1].value.trim();
 
     if (nuevaHoraInicio > nuevaHoraFin){
-        mensaje.textContent = 'La hora de inicio no puede ser mayor que la hora fin';
+        mensaje.textContent = 'La hora de inicio no puede ser posterior a la hora fin';
         mensaje.classList.remove('d-none');
         mensaje.classList.add('text-black', 'bg-opacity-25', 'bg-danger');
         mensaje.classList.remove('bg-success');
@@ -226,7 +231,7 @@ export function guardarEdicion(botonEditar) {
 
     datosParaActualizar = {
         idInicio: jornada.id_inicio,
-        idFin: jornada.id_fin,
+        idFin: jornada.id_fin,  
         horaInicio: nuevaFechaHoraInicio,
         horaFin: nuevaFechaHoraFin
     };
@@ -235,12 +240,18 @@ export function guardarEdicion(botonEditar) {
 }
 
 botonConfirmarEditarRegistro.addEventListener('click', function () {
-    console.log('Enviando datos:', {
-    id_inicio: datosParaActualizar.idInicio,
-    id_fin: datosParaActualizar.idFin,
-    hora_inicio: datosParaActualizar.horaInicio,
-    hora_fin: datosParaActualizar.horaFin
-});
+    const motivo = motivo_edicion_input.value.trim();
+
+    const mensaje_modal = document.getElementById('mensaje_modal');
+
+    if (!motivo) {
+        mensaje_modal.textContent = 'Debes ingresar un motivo para la edición';
+        mensaje_modal.classList.remove('d-none');
+        mensaje_modal.classList.add('text-black', 'bg-opacity-25', 'bg-danger');
+        mensaje_modal.classList.remove('bg-success');
+        setTimeout(() => mensaje_modal.classList.add('d-none'), 3000);
+        return;
+    }
 
     fetch('/registros_horarios/update', {
         method: 'POST',
@@ -250,6 +261,8 @@ botonConfirmarEditarRegistro.addEventListener('click', function () {
         body: JSON.stringify({
             id_inicio: datosParaActualizar.idInicio,
             id_fin: datosParaActualizar.idFin,
+            motivo_inicio: motivo,
+            motivo_fin: motivo,
             hora_inicio: datosParaActualizar.horaInicio,
             hora_fin: datosParaActualizar.horaFin
         })
@@ -262,10 +275,7 @@ botonConfirmarEditarRegistro.addEventListener('click', function () {
             mensaje.classList.add('text-black', 'bg-opacity-25', 'bg-success');
             mensaje.classList.remove('bg-danger');
 
-            // Mostrar 3 segundos y luego ocultar
-            setTimeout(() => {
-                mensaje.classList.add('d-none');
-            }, 3000);
+            setTimeout(() => mensaje.classList.add('d-none'), 3000);
             modalEditarRegistroHorario.hide();
             cargarRegistros();
         } else {

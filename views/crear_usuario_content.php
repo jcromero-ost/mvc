@@ -27,7 +27,7 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="fecha_ingreso" class="form-label">Fecha de ingreso</label>
-				<input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso">
+				<input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" value="<?php echo date('Y-m-d'); ?>">
 			</div>
 			<div class="col-md-6">
 				<label for="departamento_id" class="form-label">Departamento</label>
@@ -41,7 +41,7 @@
 		</div>
 
 		<div class="mb-3">
-			<label for="foto" class="form-label">Foto de perfil (drag & drop o clic)</label>
+			<label for="foto" class="form-label">Foto de perfil</label>
 			<div id="drop-area" class="border border-secondary rounded p-4 text-center" style="background-color:#f8f9fa; cursor:pointer;">
 				<p id="drop-text">Arrastra la imagen aquí o haz clic para seleccionar</p>
 				<input type="file" id="foto" class="form-control d-none" accept="image/*">

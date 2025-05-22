@@ -63,17 +63,11 @@ class ClienteController {
         }
     }
     
-    
-    
-    public function delete() {
+    public function delete_cliente() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
             $id = $_POST['id'] ?? null;
             if ($id) {
                 Cliente::delete($id);
-                $_SESSION['mensaje'] = "Cliente eliminado correctamente.";
-                header("Location: ../views/clientes.php");
-                exit;
-
             } else {
                 
                 echo "ID no válido para eliminar.";
@@ -81,7 +75,6 @@ class ClienteController {
         }
     }
     
-
     public function store() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

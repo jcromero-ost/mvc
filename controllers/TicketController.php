@@ -288,10 +288,12 @@ class TicketController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? '';
             $estado = $_POST['estado'] ?? '';
+            $fecha_fin = date('Y-m-d H:i');
 
             $ticket = new Ticket();
             $exito = $ticket->updateEstado([
                 'estado' => $estado,
+                'fecha_fin' => $fecha_fin,
                 'id' => $id
             ]);
     

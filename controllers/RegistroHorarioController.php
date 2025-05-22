@@ -129,7 +129,7 @@ public function imprimir()
     require __DIR__ . '/../views/reg_hor_list_print.php';
 }
 
-    public function update_registro(){
+    public function update_registro() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
 
@@ -142,6 +142,8 @@ public function imprimir()
             $resultado = RegistroHorario::update([
                 'id_inicio' => $data['id_inicio'],
                 'id_fin' => $data['id_fin'],
+                'motivo_inicio' => $data['motivo_inicio'],
+                'motivo_fin' => $data['motivo_fin'],
                 'hora_inicio' => $data['hora_inicio'],
                 'hora_fin' => $data['hora_fin']
             ]);

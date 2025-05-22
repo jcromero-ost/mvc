@@ -33,10 +33,14 @@ class Ticket {
 
     // Obtener por ID de cliente
     public function getByIdCliente($cliente_id) {
-        $stmt = $this->db->prepare("SELECT * FROM tickets WHERE cliente_id = :cliente_id");
+        $stmt = $this->db->prepare("SELECT t.*, m.nombre AS medio_nombre, u.nombre AS tecnico_nombre
+                                        FROM tickets t
+                                        JOIN medios_comunicacion m ON t.medio_id = m.id
+                                        JOIN usuarios u ON t.tecnico_id = u.id
+                                        WHERE cliente_id = :cliente_id");
         $stmt->bindParam(':cliente_id', $cliente_id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Crear nuevo ticket
@@ -135,8 +139,9 @@ class Ticket {
     // Actualizar estado ticket
     public function updateEstado($data) {
         $db = Database::connect();
-        $stmt = $db->prepare("UPDATE tickets SET estado = :estado WHERE id = :id");
+        $stmt = $db->prepare("UPDATE tickets SET estado = :estado, fecha_fin = :fecha_fin WHERE id = :id");
         $stmt->bindParam(':estado', $data['estado']);
+        $stmt->bindParam(':fecha_fin', $data['fecha_fin']);
         $stmt->bindParam(':id', $data['id']);
         return $stmt->execute();
     }

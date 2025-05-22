@@ -66,6 +66,7 @@ $router->get('/resumen-horas/usuario', 'ResumenHorasController@resumenPorUsuario
 // Clientes
 $router->get('/crear_cliente', 'ClienteController@create');
 $router->get('/clientes', 'ClienteController@index');
+$router->get('/delete_cliente', 'ClienteController@delete_cliente');
 $router->get('/clientes_historial', 'ClienteController@clientes_historial');
 $router->post('/store_cliente', 'ClienteController@store');
 $router->post('/store_cliente_ticket', 'ClienteController@storeTickets');

@@ -32,9 +32,8 @@
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
               <div class="table-responsive">
                 <table id="tabla_tickets" class="table table-hover align-middle small">
-                  <thead class="table-dark">
+                  <thead id="tickets_thead" class="table-dark d-none">
                     <tr>
-                      <th>Cliente</th>
                       <th>ID</th>
                       <th>Medio</th>
                       <th>Técnico</th>
@@ -44,84 +43,6 @@
                       <th class="text-center">Acciones</th>
                     </tr>
                   </thead>
-                  <?php
-                    require_once(__DIR__ . '/../models/Database.php');
-                    require_once(__DIR__ . '/../models/DatabaseXGEST.php');
-
-                    $db = Database::connect();
-
-                    $db2 = DatabaseXGEST::connect();
-
-                    function obtenerNombreCliente($cliente_id, $db2) {
-                      $stmt = $db2->prepare("SELECT CNOM FROM fccli001 WHERE CCODCL = ?");
-                      $stmt->execute([$cliente_id]);
-                      return $stmt->fetchColumn();
-                    }
-
-                    function obtenerNombreMedio($medio_id, $db) {
-                      $stmt = $db->prepare("SELECT nombre FROM medios_comunicacion WHERE id = ?");
-                      $stmt->execute([$medio_id]);
-                      return $stmt->fetchColumn();
-                    }
-
-                    function obtenerNombreTecnico($tecnico_id, $db) {
-                      $stmt = $db->prepare("SELECT nombre FROM usuarios WHERE id = ?");
-                      $stmt->execute([$tecnico_id]);
-                      return $stmt->fetchColumn();
-                    }
-
-                    function obtenerEstadoBadge($estado) {
-                      switch ($estado) {
-                        case 'pendiente':
-                            $badgeClass = 'danger'; // Rojo
-                            $texto = 'Pendiente';
-                            break;
-                        case 'en_revision':
-                            $badgeClass = 'warning'; // Amarillo
-                            $texto = 'En Revisión';
-                            break;
-                        case 'finalizado':
-                            $badgeClass = 'success'; // Verde
-                            $texto = 'Finalizado';
-                            break;
-                        default:
-                            $badgeClass = 'secondary'; // Gris
-                            $texto = 'Desconocido';
-                            break;
-                        }
-                        return ['badgeClass' => $badgeClass, 'texto' => $texto];
-                    }
-
-                    function obtenerTiempoTranscurrido($fecha_inicio) {
-                      // Obtener la fecha actual
-                      $fecha_actual = new DateTime();
-                      // Convertir la fecha de inicio a un objeto DateTime
-                      $fecha_inicio = new DateTime($fecha_inicio);
-                  
-                      // Calcular la diferencia entre la fecha actual y la de inicio
-                      $intervalo = $fecha_actual->diff($fecha_inicio);
-                      
-                      // Inicializar el formato de la cadena
-                      $resultado = '';
-                  
-                      // Verificar si hay días
-                      if ($intervalo->d > 0) {
-                          $resultado .= $intervalo->d . 'd ';
-                      }
-                  
-                      // Verificar si hay horas
-                      if ($intervalo->h > 0) {
-                          $resultado .= $intervalo->h . 'h ';
-                      }
-                  
-                      // Verificar si hay minutos
-                      if ($intervalo->i > 0 || $resultado === '') { // Mostrar minutos si no hay días ni horas
-                          $resultado .= $intervalo->i . 'm';
-                      }
-                  
-                      return $resultado;
-                    }
-                  ?>
                   <tbody id="tickets_tbody">
 
                   </tbody>
@@ -134,6 +55,8 @@
             </div>
         </div>
     </div>
+  <hr>
+    <h2 class="mb-0">Listado de clientes</h2>
 
   <div class="row g-3 align-items-end mb-4">
     <div class="col-md-3">
@@ -220,6 +143,8 @@
 
   <!-- Modal editar usuario -->
   <?php include_once __DIR__ . '/components/modal_editar_usuario.php'; ?>
+    <!-- Modal descripcion -->
+  <?php include_once __DIR__ . '/components/modal_tickets/modal_descripcion_ticket.php'; ?>
 
 
 <!-- Modal confirmación de eliminación -->
