@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE)
 
 require_once(__DIR__ . '/../models/Departamento.php');
 
+require_once(__DIR__ . '/../models/unauth.php');
+
 $departamentoModel = new Departamento();
 $departamentos = $departamentoModel->getAll();
 

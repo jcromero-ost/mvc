@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalCrearCliente" tabindex="-1" aria-labelledby="modalCrearClienteLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
-      <form id="formCrearCliente" method="POST"  action="/store_cliente_ticket" enctype="multipart/form-data">
+      <form id="formCrearCliente" method="POST" enctype="multipart/form-data">
         <div class="modal-header">
           <h5 class="modal-title" id="modalCrearClienteLabel">Crear cliente</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -16,18 +16,22 @@
             <div class="row mb-3">
                 <div class="col-md-12">
                     <label for="nombre" class="form-label">Nombre completo</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control text-uppercase" id="nombre" name="nombre" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label for="telefono" class="form-label">Teléfono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono">
+				<input type="text" class="form-control" id="telefono" name="telefono" maxlength="9" required>
                 </div>
                 <div class="col-md-3">
                     <label for="dni" class="form-label">DNI</label>
-                    <input type="text" class="form-control" id="dni" name="dni">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" id="dni" name="dni" maxlength="9" required>
+                        <button type="button" class="btn btn-outline-secondary" id="validarDNI">Validar DNI</button>
+                    </div>
+                    <small id="dniMensaje" class="form-text"></small>
                 </div>
                 <div class="col-md-6">
                     <label for="email" class="form-label">Correo electrónico</label>
@@ -43,11 +47,11 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="direccion" class="form-label">Direccion</label>
+                    <label for="direccion" class="form-label text-uppercase">Direccion</label>
                     <input type="text" class="form-control" id="direccion" name="direccion">
                 </div>
                 <div class="col-md-6">
-                    <label for="ciudad" class="form-label">Ciudad</label>
+                    <label for="ciudad" class="form-label text-uppercase">Ciudad</label>
                     <input type="text" class="form-control" id="ciudad" name="ciudad" required>
                 </div>
             </div>
@@ -58,7 +62,7 @@
                     <input type="text" class="form-control" id="cp" name="cp">
                 </div>
                 <div class="col-md-6">
-                    <label for="ciudad" class="form-label">Provincia</label>
+                    <label for="ciudad" class="form-label text-uppercase">Provincia</label>
                     <input list="provincias" type="text" class="form-control" id="ciudad" name="ciudad" required>
                     <datalist id="provincias">
                             <option value="ALMERIA">
@@ -75,7 +79,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success btn-primary">Guardar cambios</button>
+          <button type="submit" class="btn btn-success btn-primary" data-bs-dismiss="modal">Guardar cambios</button>
           <button type="button" class="btn btn-secondary btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </form>

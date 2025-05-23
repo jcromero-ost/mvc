@@ -142,7 +142,7 @@ class RegistroHorario
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerJornadasFiltradas($usuario = null, $fechaDesde = null, $fechaHasta = null, $pagina = 1, $limite = 10) {
+        public function obtenerJornadasFiltradas($usuario = null, $fechaDesde = null, $fechaHasta = null, $pagina = 1, $limite = 10) {
             $offset = ($pagina - 1) * $limite;
 
             $query = "SELECT

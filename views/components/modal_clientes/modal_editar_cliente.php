@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
         <input type="hidden" name="accion" value="eliminar">
-        <input type="hidden" name="id" id="delete_id">
+        <input type="hidden" name="id" id="edit_id">
 
         <div class="modal-header">
           <h5 class="modal-title" id="modalEditarClienteLabel">Editar Cliente</h5>
@@ -11,7 +11,7 @@
         </div>
 
         <div class="modal-body">
-        <form method="POST" action="/store_cliente" enctype="multipart/form-data">
+        <form id="form_editar_cliente" method="POST" enctype="multipart/form-data">
                 <div class="d-flex">
                     <i class="bi bi-person me-3"></i>
                     <p class="mb-0">Datos personales</p>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="ciudad" class="form-label">Provincia</label>
-                        <input list="provincias" type="text" class="form-control text-uppercase" id="ciudad" name="ciudad" required>
+                        <input list="provincias" type="text" class="form-control text-uppercase" id="provincia" name="provincia" required>
                         <datalist id="provincias">
                                 <option value="ALMERIA">
                                 <option value="CADIZ">
@@ -81,12 +81,11 @@
                     </div>
                 </div>
 
-                <button type="submit" name="accion" value="crear" class="btn btn-primary">Guardar cliente</button>
+                <button id="botonEditarCliente" type="button" name="accion" value="crear" class="btn btn-primary">Guardar cliente</button>
             </form>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-success">Editar</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
     </div>

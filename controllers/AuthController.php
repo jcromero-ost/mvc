@@ -24,9 +24,10 @@ class AuthController {
 
         if ($user) {
             $_SESSION['user'] = $user;
-            $_SESSION['dept'] = $user['rol'] ?? null;
+            $_SESSION['user_id'] = $user['id'] ?? null;
+            $_SESSION['dept'] = $user['departamento_id'] ?? null;
             $_SESSION['success'] = 'Bienvenido, ' . htmlspecialchars($user['nombre'] ?? '');
-            header('Location: /dashboard');
+            header('Location: /registro_horario');
         } else {
             $_SESSION['error'] = 'Correo o contraseña incorrectos.';
             header('Location: /login');

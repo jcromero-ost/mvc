@@ -92,7 +92,7 @@ public function buscarJornadas()
         return;
     }
 
-    $usuario = $_POST['usuario'] ?? null;
+    $usuario = $_SESSION['user_id'];
     $fechaDesde = $_POST['fecha_desde'] ?? null;
     $fechaHasta = $_POST['fecha_hasta'] ?? null;
     $pagina = isset($_POST['page']) ? (int)$_POST['page'] : 1;

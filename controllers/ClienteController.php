@@ -19,48 +19,38 @@ class ClienteController {
         require_once __DIR__ . '/../views/clientes_historial.php';
     }
 
-    public function update() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar') {
-            $id = $_POST['id'] ?? null;
-            $nombre = $_POST['nombre'] ?? null;
-            $alias = $_POST['alias'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $telefono = $_POST['telefono'] ?? null;
-            $fecha_ingreso = $_POST['fecha_ingreso'] ?? null;
-            $departamento_id = $_POST['departamento_id'] ?? null;
-            $activo = $_POST['activo'] ?? 1;
-        
-            if ($id && $nombre && $email) {
-                $datos = [
-                    'id' => $id,
-                    'nombre' => $nombre,
-                    'alias' => $alias,
-                    'email' => $email,
-                    'telefono' => $telefono,
-                    'fecha_ingreso' => $fecha_ingreso,
-                    'departamento_id' => $departamento_id,
-                    'activo' => $activo
-                ];
-    
-                // Solo incluir 'foto' si se subió una nueva
-                if (!empty($foto)) {
-                    $datos['foto'] = $foto;
-                }
-    
-                if (Ticket::update($datos)) {
-                    $_SESSION['success'] = "Cliente actualizado correctamente.";
-                } else {
-                    $_SESSION['error'] = "Error al actualizar el cliente.";
-                }
-    
-                header("Location: ../views/clientes.php");
-                exit;
-            } else {
-                $_SESSION['error'] = "Faltan datos obligatorios.";
-                header("Location: ../views/clientes.php");
-                exit;
-            }
+    // Actualizar datos del cliente
+    public function update_cliente() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Recogemos los datos del formulario
+            $data = [
+                'id'        => $_POST['id'] ?? '',
+                'nombre'    => $_POST['nombre'] ?? '',
+                'telefono'  => $_POST['telefono'] ?? '',
+                'dni'       => $_POST['dni'] ?? '',
+                'email'     => $_POST['email'] ?? '',
+                'direccion' => $_POST['direccion'] ?? '',
+                'ciudad'    => $_POST['ciudad'] ?? '',
+                'cp'        => $_POST['cp'] ?? '',
+                'provincia' => $_POST['provincia'] ?? ''
+            ];
+
+            $cliente = new Cliente();
+            $exito = $cliente->update($data);
+
+            if ($exito) {
+                $this->responderJson(['success' => true]);
+            } else {
+                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            }
+            return;
+        }
+
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
     
     public function delete_cliente() {

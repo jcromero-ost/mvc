@@ -17,35 +17,45 @@ $current = basename($_SERVER['REQUEST_URI']);
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="tiempoDropdown">
         <li><a class="dropdown-item" href="/registro_horario"><i class="bi bi-clock me-2"></i>Registro horario</a></li>
         <li><a class="dropdown-item" href="/registro-horario/listado"><i class="bi bi-clipboard-data me-2"></i>Informe de registro horario</a></li>
-        <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
-        <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar-week me-2"></i>Form festivos</a></li>
-        <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-hourglass-split me-2"></i>Resumen Horas</a></li>
+        <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+          <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+          <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar-week me-2"></i>Form festivos</a></li>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+          <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-hourglass-split me-2"></i>Resumen Horas</a></li>
+        <?php endif; ?>
       </ul>
     </li>
 
     <!-- MENU USUARIOS -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['crear_usuario', 'usuarios', 'departamentos']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_usuario', 'usuarios', 'departamentos']) ? 'active' : ''); ?>" href="#" id="usuariosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-people-fill me-2"></i>Usuarios
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="usuariosDropdown">
-        <li><a class="dropdown-item" href="/crear_usuario"><i class="bi bi-person-plus me-2"></i>Crear usuario</a></li>
-        <li><a class="dropdown-item" href="/usuarios"><i class="bi bi-person-lines-fill me-2"></i>Gestionar usuarios</a></li>
-        <li><a class="dropdown-item" href="/departamentos"><i class="bi bi-diagram-3 me-2"></i>Departamentos (roles)</a></li>
-      </ul>
-    </li>
+    <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+      <li class="nav-item dropdown <?php echo (in_array($current, ['crear_usuario', 'usuarios', 'departamentos']) ? 'active' : ''); ?>">
+        <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_usuario', 'usuarios', 'departamentos']) ? 'active' : ''); ?>" href="#" id="usuariosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-people-fill me-2"></i>Usuarios
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="usuariosDropdown">
+          <li><a class="dropdown-item" href="/crear_usuario"><i class="bi bi-person-plus me-2"></i>Crear usuario</a></li>
+          <li><a class="dropdown-item" href="/usuarios"><i class="bi bi-person-lines-fill me-2"></i>Gestionar usuarios</a></li>
+          <li><a class="dropdown-item" href="/departamentos"><i class="bi bi-diagram-3 me-2"></i>Departamentos (roles)</a></li>
+        </ul>
+      </li>
+    <?php endif; ?>
 
     <!-- MENU CLIENTES -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-person-square me-2"></i>Clientes
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="clientesDropdown">
-        <li><a class="dropdown-item" href="/crear_cliente"><i class="bi bi-person-plus me-2"></i>Crear cliente</a></li>
-        <li><a class="dropdown-item" href="/clientes"><i class="bi bi-person-vcard me-2"></i>Gestionar clientes</a></li>
-        <li><a class="dropdown-item" href="/clientes_historial"><i class="bi bi-list-columns-reverse me-2"></i>Historial clientes</a></li>
-      </ul>
-    </li>
+    <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+      <li class="nav-item dropdown <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>">
+        <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_cliente', 'clientes', 'clientes_historial']) ? 'active' : ''); ?>" href="#" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-square me-2"></i>Clientes
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="clientesDropdown">
+          <li><a class="dropdown-item" href="/crear_cliente"><i class="bi bi-person-plus me-2"></i>Crear cliente</a></li>
+          <li><a class="dropdown-item" href="/clientes"><i class="bi bi-person-vcard me-2"></i>Gestionar clientes</a></li>
+          <li><a class="dropdown-item" href="/clientes_historial"><i class="bi bi-list-columns-reverse me-2"></i>Historial clientes</a></li>
+        </ul>
+      </li>
+    <?php endif; ?>
 
     <!-- MENU TICKETS -->
     <li class="nav-item dropdown <?php echo (in_array($current, ['crear_ticket', 'tickets_pendientes', 'tickets']) ? 'active' : ''); ?>">
@@ -60,14 +70,16 @@ $current = basename($_SERVER['REQUEST_URI']);
     </li>
 
     <!-- MENU CONFIGURACIÓN -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>" href="#" id="configuracionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-gear me-2"></i>Configuración
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="configuracionDropdown">
-        <li><a class="dropdown-item" href="/contratos_laborales"><i class="bi bi-newspaper me-2"></i>Contratos Laborales</a></li>
-      </ul>
-    </li>
+    <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+      <li class="nav-item dropdown <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>">
+        <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['contratos_laborales']) ? 'active' : ''); ?>" href="#" id="configuracionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-gear me-2"></i>Configuración
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="configuracionDropdown">
+          <li><a class="dropdown-item" href="/contratos_laborales"><i class="bi bi-newspaper me-2"></i>Contratos Laborales</a></li>
+        </ul>
+      </li>
+    <?php endif; ?>
 
     <!-- CERRAR SESIÓN -->
     <li class="nav-item mt-3">

@@ -6,7 +6,7 @@
 
 <div class="card p-4 mb-4">
 <div class="row align-items-end">
-<div class="col-md-3 position-relative">
+<div class="col-md-3 position-relative d-none">
   <label for="usuario" class="form-label">Usuario</label>
   <input type="text" id="usuario-buscador" class="form-control" placeholder="Buscar usuario...">
   <input type="hidden" id="usuario">
@@ -15,17 +15,17 @@
 
 
 
-  <div class="col-md-3">
+  <div class="col-md-4">
     <label for="fecha_desde" class="form-label">Fecha desde</label>
     <input type="date" id="fecha_desde" class="form-control">
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-4">
     <label for="fecha_hasta" class="form-label">Fecha hasta</label>
     <input type="date" id="fecha_hasta" class="form-control">
   </div>
 
-  <div class="col-md-3 d-flex align-items-center">
+  <div class="col-md-4 d-flex align-items-center">
   <div class="me-auto ms-4">
     <label for="cantidad" class="form-label">Registros por página</label>
     <select id="cantidad" class="form-select">
@@ -60,7 +60,7 @@
           <th>Hora Inicio</th>
           <th>Hora Fin</th>
           <th class="descansos-header">Descansos</th>
-          <?php if (isset($_SESSION['dept']) && $_SESSION['dept'] == 'webmaster'): ?>
+          <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
               <th>Acciones</th>
           <?php endif; ?>
         </tr>
@@ -125,5 +125,8 @@
 <script type="module" src="/public/js/reg_hor_list_events.js"></script>
 <script type="module" src="/public/js/reg_hor_list_core.js"></script>
 <script type="module" src="/public/js/reg_hor_list_descansos.js"></script>
+<script>
+    const dept_usuario = "<?= $_SESSION['dept'] ?>";
+</script>
 
 <script type="module" src="/public/js/buscador_usuarios.js"></script>

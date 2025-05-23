@@ -69,35 +69,41 @@ class Cliente {
         return $result ? $result['CCODCL'] : null; // Retorna el ID o null si no se encuentra
     }
     
-    public static function update($data) {
-        $db = DatabaseXGEST::connect();
-    
-        $sql = "UPDATE fccli001 SET 
-                    CNOM = :nombre,
-                    CTEL1 = :telefono,
-                    CDNI = :dni,
-                    CMAIL1 = :email,
-                    CDOM = :direccion,
-                    CPOB = :ciudad,
-                    CCODPO = :cp,
-                    CPAIS = :provincia";
-        
-        $sql .= " WHERE CCODCL = :id";
-    
-        $stmt = $db->prepare($sql);
-    
-        $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':telefono', $data['telefono']);
-        $stmt->bindParam(':dni', $data['dni']);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':direccion', $data['direccion']);
-        $stmt->bindParam(':ciudad', $data['ciudad']);
-        $stmt->bindParam(':cp', $data['cp']);
-        $stmt->bindParam(':provincia', $data['provincia']);
-    
-        return $stmt->execute();
-    }
+public static function update($data) {
+    $db = DatabaseXGEST::connect();
+
+    $sql = "UPDATE fccli001 SET 
+                CNOM = :nombre,
+                CTEL1 = :telefono,
+                CDNI = :dni,
+                CMAIL1 = :email,
+                CDOM = :direccion,
+                CPOB = :ciudad,
+                CCODPO = :cp,
+                CPAIS = :provincia,
+                CDOMFIS = NULL,
+                CDOMENVFRA = NULL,
+                CDOMENVMAT = NULL,
+                COBS = NULL,
+                COBSORD = NULL,
+                CACCIONIS = NULL,
+                CADMINIS = NULL
+            WHERE CCODCL = :id";
+    $stmt = $db->prepare($sql);
+
+    $stmt->bindParam(':id', $data['id']);
+    $stmt->bindParam(':nombre', $data['nombre']);
+    $stmt->bindParam(':telefono', $data['telefono']);
+    $stmt->bindParam(':dni', $data['dni']);
+    $stmt->bindParam(':email', $data['email']);
+    $stmt->bindParam(':direccion', $data['direccion']);
+    $stmt->bindParam(':ciudad', $data['ciudad']);
+    $stmt->bindParam(':cp', $data['cp']);
+    $stmt->bindParam(':provincia', $data['provincia']);
+
+    return $stmt->execute();
+}
+
     
     
     public static function delete($id) {

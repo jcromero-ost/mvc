@@ -27,23 +27,23 @@
           <tbody>
             <tr>
               <?php
-              $col = 0;
-              for ($i = 0; $i < $cal['primer_dia_semana']; $i++) {
-                echo '<td></td>';
-                $col++;
-              }
+                $col = 0;
+                for ($i = 0; $i < $cal['primer_dia_semana']; $i++) {
+                  echo '<td></td>';
+                  $col++;
+                }
 
-              foreach ($cal['dias'] as $dia) {
-                $clase = $dia['es_fin_de_semana'] ? 'table-secondary' : '';
-                echo "<td class='$clase'>{$dia['numero']}</td>";
-                $col++;
-                if ($col % 7 === 0) echo '</tr><tr>';
-              }
+                foreach ($cal['dias'] as $dia) {
+                  $clase = $dia['es_fin_de_semana'] ? 'table-secondary' : '';
+                  echo "<td class='$clase'>{$dia['numero']}</td>";
+                  $col++;
+                  if ($col % 7 === 0) echo '</tr><tr>';
+                }
 
-              while ($col % 7 !== 0) {
-                echo '<td></td>';
-                $col++;
-              }
+                while ($col % 7 !== 0) {
+                  echo '<td></td>';
+                  $col++;
+                }
               ?>
             </tr>
           </tbody>

@@ -93,37 +93,37 @@ export function renderizarTabla(jornadas) {
                     </button>` : '-'}
             </td>
         `;
-        //Asignar boton de editar
-        const tdBoton = document.createElement('td');
-        tdBoton.className = 'text-center align-middle';
+        console.log(dept_usuario);
+        if (dept_usuario === '3' || dept_usuario === '2') {
+            const tdBoton = document.createElement('td');
+            tdBoton.className = 'text-center align-middle';
 
-        const botonEditar = document.createElement('button');
-        botonEditar.type = 'button';
-        botonEditar.className = 'btn btn-sm btn-primary me-1 btn-editar';
-        botonEditar.title = 'Editar';
-        botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
+            const botonEditar = document.createElement('button');
+            botonEditar.type = 'button';
+            botonEditar.className = 'btn btn-sm btn-primary me-1 btn-editar';
+            botonEditar.title = 'Editar';
+            botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
 
-        const botonCancelar = document.createElement('button');
-        botonCancelar.type = 'button';
-        botonCancelar.className = 'btn btn-sm btn-danger me-1 btn-cancelar d-none';
-        botonCancelar.title = 'Cncelar';
-        botonCancelar.innerHTML = '<i class="bi bi-x-square"></i>';
+            const botonCancelar = document.createElement('button');
+            botonCancelar.type = 'button';
+            botonCancelar.className = 'btn btn-sm btn-danger me-1 btn-cancelar d-none';
+            botonCancelar.title = 'Cancelar';
+            botonCancelar.innerHTML = '<i class="bi bi-x-square"></i>';
 
-        // Enlazar el evento manualmente
-        botonEditar.addEventListener('click', function () {
-            habilitarEdicion(this, botonCancelar);
-        });
+            botonEditar.addEventListener('click', function () {
+                habilitarEdicion(this, botonCancelar);
+            });
 
-        // Evento de cancelar
-        botonCancelar.addEventListener('click', function () {
-            cancelarEdicion(this, botonEditar);
-            botonCancelar.classList.add('d-none');
-            botonEditar.classList.remove('d-none');
-        });
+            botonCancelar.addEventListener('click', function () {
+                cancelarEdicion(this, botonEditar);
+                botonCancelar.classList.add('d-none');
+                botonEditar.classList.remove('d-none');
+            });
 
-        tdBoton.appendChild(botonEditar);
-        tdBoton.appendChild(botonCancelar);
-        fila.appendChild(tdBoton);
+            tdBoton.appendChild(botonEditar);
+            tdBoton.appendChild(botonCancelar);
+            fila.appendChild(tdBoton);
+        }
 
         tabla.appendChild(fila);
     });

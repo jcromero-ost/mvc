@@ -144,20 +144,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar la tabla y la paginación
     mostrarPagina(currentPage);
-
-    const modalEditarCliente = new bootstrap.Modal(document.getElementById('modalEditarCliente'));
-
-    const delete_id_cliente = document.getElementById('delete_id_cliente');
-
-    // Realiza las operaciones cuando se pulsa el boton
-    tbody.addEventListener('click', function (event) {
-        const btn = event.target.closest('.btn-editar');
-        if (!btn) return;
-
-        const clienteId = btn.getAttribute('data-id');
-
-        document.getElementById('delete_id').value = clienteId;
-
-        modalEditarCliente.show();
-    });
 });

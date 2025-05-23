@@ -1,4 +1,5 @@
 <div class="container mt-4">
+  <div id="mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
   <h2 class="mb-4">Crear nuevo ticket</h2>
   <?php include_once __DIR__ . '/components/alerts.php'; ?>
   <form method="POST" action="/store_ticket" enctype="multipart/form-data">
