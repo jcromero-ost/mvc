@@ -69,8 +69,33 @@ class UsuarioController {
             }
         }
     }
+
+    public function cambiar_passwd() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'cambiar_passwd') {
+            $id = $_POST['id'] ?? null;
+            $password = $_POST['password'] ?? null;
+        
+            if ($id && $password) {
+                $datos = [
+                    'id' => $id,
+                    'password' => $password
+                ];
+        
+                if (Usuario::cambiar_passwd($datos)) {
+                    $_SESSION['success'] = "Se ha enviado un correo electrónico al usuario";
+                } else {
+                    $_SESSION['error'] = "Error al cambiar la contraseña";
+                }
     
-    
+                header("Location: ../views/usuarios.php");
+                exit;
+            } else {
+                $_SESSION['error'] = "Faltan datos obligatorios.";
+                header("Location: ../views/usuarios.php");
+                exit;
+            }
+        }
+    }
     
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
@@ -171,6 +196,9 @@ if (isset($_POST['accion'])) {
             break;
         case 'eliminar':
             $controller->delete();
+            break;
+        case 'cambiar_passwd':
+            $controller->cambiar_passwd();
             break;
     }
 }

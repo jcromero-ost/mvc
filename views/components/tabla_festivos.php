@@ -13,7 +13,7 @@
     <tbody>
         <?php foreach ($festivos as $f): ?>
         <tr>
-            <td><?= htmlspecialchars($f['fecha']) ?></td>
+            <td><?= (new DateTime($f['fecha']))->format('d-m-Y') ?></td>
             <td><?= ucfirst($f['tipo']) ?></td>
             <td><?= htmlspecialchars($f['descripcion']) ?></td>
             <td><?= htmlspecialchars($f['comunidad_autonoma']) ?></td>

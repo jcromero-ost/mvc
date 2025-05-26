@@ -69,42 +69,36 @@ class Cliente {
         return $result ? $result['CCODCL'] : null; // Retorna el ID o null si no se encuentra
     }
     
-public static function update($data) {
-    $db = DatabaseXGEST::connect();
+    public static function update($data) {
+        $db = DatabaseXGEST::connect();
 
-    $sql = "UPDATE fccli001 SET 
-                CNOM = :nombre,
-                CTEL1 = :telefono,
-                CDNI = :dni,
-                CMAIL1 = :email,
-                CDOM = :direccion,
-                CPOB = :ciudad,
-                CCODPO = :cp,
-                CPAIS = :provincia,
-                CDOMFIS = NULL,
-                CDOMENVFRA = NULL,
-                CDOMENVMAT = NULL,
-                COBS = NULL,
-                COBSORD = NULL,
-                CACCIONIS = NULL,
-                CADMINIS = NULL
-            WHERE CCODCL = :id";
-    $stmt = $db->prepare($sql);
+        $sql = "UPDATE fccli001 SET 
+                    CNOM = :nombre,
+                    CTEL1 = :telefono,
+                    CDNI = :dni,
+                    CMAIL1 = :email,
+                    CDOM = :direccion,
+                    CPOB = :ciudad,
+                    CCODPO = :cp,
+                    CPAIS = :provincia
+                WHERE CCODCL = :id";
+                
+        $stmt = $db->prepare($sql);
 
-    $stmt->bindParam(':id', $data['id']);
-    $stmt->bindParam(':nombre', $data['nombre']);
-    $stmt->bindParam(':telefono', $data['telefono']);
-    $stmt->bindParam(':dni', $data['dni']);
-    $stmt->bindParam(':email', $data['email']);
-    $stmt->bindParam(':direccion', $data['direccion']);
-    $stmt->bindParam(':ciudad', $data['ciudad']);
-    $stmt->bindParam(':cp', $data['cp']);
-    $stmt->bindParam(':provincia', $data['provincia']);
+        $stmt->bindValue(':id', $data['id']);
+        $stmt->bindValue(':nombre', $data['nombre']);
+        $stmt->bindValue(':telefono', $data['telefono']);
+        $stmt->bindValue(':dni', $data['dni']);
+        $stmt->bindValue(':email', $data['email']);
+        $stmt->bindValue(':direccion', $data['direccion']);
+        $stmt->bindValue(':ciudad', $data['ciudad']);
+        $stmt->bindValue(':cp', (int)$data['cp'], PDO::PARAM_INT);
+        $stmt->bindValue(':provincia', $data['provincia']);
 
-    return $stmt->execute();
-}
+        return $stmt->execute();
+    }
 
-    
+
     
     public static function delete($id) {
         $db = DatabaseXGEST::connect();

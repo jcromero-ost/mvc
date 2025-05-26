@@ -101,6 +101,53 @@ class Usuario {
     
         return $stmt->execute();
     }
+
+    public static function cambiar_passwd($data) {
+        $db = Database::connect();
+
+        // Hashear la nueva contraseña
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        // Preparar consulta para actualizar la contraseña
+        $sql = "UPDATE usuarios SET password = :password WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':password', $hash);
+
+        // Ejecutar la actualización
+        $resultado = $stmt->execute();
+
+        if ($resultado) {
+            // Enviar correo notificando el cambio de contraseña
+
+            $para = 'isegura@osttech.es';  // asegúrate de que el array $data contenga el email del usuario
+            $titulo = "Cambio de contraseña";
+            $mensaje = "
+            <html>
+            <head>
+            <title>Cambio de contraseña</title>
+            </head>
+            <body>
+            <p>Hola,</p>
+            <p>Tu contraseña ha sido cambiada correctamente.</p>
+            <p>Si no realizaste este cambio, contacta con soporte inmediatamente.</p>
+            </body>
+            </html>
+            ";
+
+            // Para enviar correo en formato HTML
+            $cabeceras  = "MIME-Version: 1.0" . "\r\n";
+            $cabeceras .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+            // Cabecera adicional
+            $cabeceras .= 'From: soporte@tudominio.com' . "\r\n";
+
+            mail($para, $titulo, $mensaje, $cabeceras);
+        }
+
+        return $resultado;
+    }
+
     
     
     public static function delete($id) {

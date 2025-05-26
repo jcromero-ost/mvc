@@ -57,6 +57,12 @@
                 <i class="bi bi-trash"></i>
               </button>
 
+              <button type="button" class="btn btn-sm btn-warning btn-password"
+                data-usuario='<?= json_encode($usuario, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
+                title="Cambiar contraseña">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+
             </td>
           </tr>
         <?php endforeach; ?>
@@ -65,7 +71,6 @@
   </div>
   <!-- Modal editar usuario -->
   <?php include_once __DIR__ . '/components/modal_editar_usuario.php'; ?>
-
 
 <!-- Modal confirmación de eliminación -->
 <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-labelledby="modalEliminarUsuarioLabel" aria-hidden="true">
@@ -93,8 +98,12 @@
   </div>
 </div>
 
+  <?php include_once __DIR__ . '/components/modal_usuarios/modal_cambiar_password.php'; ?>
+
+
 </div>
 <script src="/public/js/cropper_util.js"></script>
 <script src="/public/js/usuarios_editar.js"></script>
 <script src="/public/js/usuarios_eliminar.js"></script>
+<script src="/public/js/usuarios/usuarios_cambiar_password.js"></script>
 

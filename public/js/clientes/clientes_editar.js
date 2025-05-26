@@ -4,17 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const table = document.getElementById('tabla_clientes');
     const tbody = table.querySelector('tbody');
 
+    const mensaje = document.getElementById('mensaje');
+
+    let clienteId;
+
     // Realiza las operaciones cuando se pulsa el boton
     tbody.addEventListener('click', function (event) {
         const btn = event.target.closest('.btn-editar');
         if (!btn) return;
 
-        const clienteId = btn.getAttribute('data-id');
 
-        // Obtener los datos del cliente desde el atributo data
         const cliente = JSON.parse(btn.getAttribute('data-cliente'));
+        clienteId = cliente.CCODCL;
+        console.log('clienteId asignado:', clienteId);  // <--- Aquí
 
-        // Llenar los campos del modal
+        // Llenar campos del modal
         document.getElementById('nombre').value = cliente.CNOM || '';
         document.getElementById('telefono').value = cliente.CTEL1 || '';
         document.getElementById('dni').value = cliente.CDNI || '';
@@ -24,26 +28,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('cp').value = cliente.CCODPO || '';
         document.getElementById('provincia').value = cliente.CPAIS || '';
 
+        // **Asignar el id al input hidden**
+        document.getElementById('edit_id').value = clienteId;
+
         modalEditarCliente.show();
-    });
-
-        document.getElementById('dni').addEventListener('input', function () {
-        let value = this.value.toUpperCase(); // Convertir a mayúsculas
-        let numbers = value.slice(0, 8).replace(/\D/g, ''); // Solo dígitos en los primeros 8
-        let letter = value.slice(8, 9).replace(/[^A-Z]/g, ''); // Solo letra en la posición 9
-
-        this.value = numbers + letter;
     });
 
 
     // Validar letra del DNI al hacer clic
     document.getElementById('validarDNI').addEventListener('click', function () {
         const dni = document.getElementById('dni').value.toUpperCase();
-        const mensaje = document.getElementById('dniMensaje');
+        const mensajeDNI = document.getElementById('dniMensaje');
 
         if (!/^\d{8}[A-Z]$/.test(dni)) {
-            mensaje.textContent = "Formato incorrecto. Debe ser 8 números seguidos de una letra";
-            mensaje.className = "form-text text-danger";
+            mensajeDNI.textContent = "Formato incorrecto. Debe ser 8 números seguidos de una letra";
+            mensajeDNI.className = "form-text text-danger";
             return;
         }
 
@@ -52,11 +51,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const letraEsperada = letras[numero % 23];
 
         if (dni[8] === letraEsperada) {
-            mensaje.textContent = "DNI válido";
-            mensaje.className = "form-text text-success";
+            mensajeDNI.textContent = "DNI válido";
+            mensajeDNI.className = "form-text text-success";
         } else {
-            mensaje.textContent = "DNI no válido";
-            mensaje.className = "form-text text-danger";
+            mensajeDNI.textContent = "DNI no válido";
+            mensajeDNI.className = "form-text text-danger";
         }
     });
 
@@ -69,6 +68,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const form_editar_cliente = document.getElementById('form_editar_cliente');
 
     botonEditarCliente.addEventListener('click', function () {
+
+            if (!clienteId) {
+        mensaje.textContent = 'Error: No se ha seleccionado ningún cliente para editar.';
+        mensaje.classList.remove('d-none', 'bg-success');
+        mensaje.classList.add('bg-danger', 'text-black', 'bg-opacity-100');
+        return;
+    }
         const formData = new FormData(form_editar_cliente);
 
         // Mostrar cada clave-valor del FormData en la consola
@@ -83,15 +89,29 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Cliente actualizado correctamente');
                 modalEditarCliente.hide();
+
+                mensaje.textContent = 'Cliente editado correctamente.';
+                mensaje.classList.add('text-black');
+                mensaje.classList.add('bg-opacity-25');
+                mensaje.classList.remove('bg-danger');
+                mensaje.classList.add('bg-success');
             } else {
-                alert('Error al actualizar: ' + (data.error || 'Desconocido'));
+                mensaje.textContent = 'Error al editar el cliente: ' + data.error;
+                mensaje.classList.add('text-black');
+                mensaje.classList.add('bg-opacity-100');
+                mensaje.classList.remove('bg-success');
+                mensaje.classList.add('bg-danger');
             }
+            mensaje.classList.remove('d-none');
+
+            // Ocultar después de 2 segundos (2000 ms)
+            setTimeout(() => {
+                mensaje.classList.add('d-none');
+            }, 2000);
         })
         .catch(error => {
-            console.error('Error en la petición AJAX:', error);
-            alert('Error en la conexión con el servidor.');
+            console.error('Error en la petición:', error);
         });
     });
 });

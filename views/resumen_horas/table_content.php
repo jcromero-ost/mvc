@@ -5,7 +5,8 @@ $meses = [
     9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
 ];
 
-$totalHoras = 0;
+$totalHorasDadas = 0;
+$totalHoras = 120;
 $totalExtras = 0;
 
 function tiempoASegundos($tiempo) {
@@ -31,7 +32,7 @@ function segundosATiempo($seg) {
             <?php foreach ($resumen as $mes => $datos): 
                 $segTrab = tiempoASegundos($datos['trabajadas']);
                 $segExt  = tiempoASegundos($datos['extras']);
-                $totalHoras += $segTrab;
+                $totalHorasDadas += $segTrab;
                 $totalExtras += $segExt;
             ?>
                 <tr>
@@ -44,7 +45,7 @@ function segundosATiempo($seg) {
         <tfoot class="fw-bold table-light">
             <tr>
                 <td>Total</td>
-                <td><?= segundosATiempo($totalHoras) ?></td>
+                <td><?= segundosATiempo($totalHorasDadas) ?></td>
                 <td><?= segundosATiempo($totalExtras) ?></td>
             </tr>
         </tfoot>

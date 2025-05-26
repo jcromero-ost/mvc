@@ -6,7 +6,7 @@
         <label for="usuario-buscador" class="form-label">Usuario</label>
         <input type="text" id="usuario-buscador" class="form-control" placeholder="Escriba el nombre del usuario..." autocomplete="off">
         <input type="hidden" id="usuario" name="usuario_id">
-        <div id="sugerencias-usuarios" class="list-group position-absolute z-3 w-50"></div>
+        <div id="sugerencias-usuarios" class="list-group position-relative z-3 w-50"></div>
     </div>
 
     <div class="col-md-3">

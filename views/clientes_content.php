@@ -1,5 +1,5 @@
 <div class="container-fluid mt-2">
-
+  <div id="mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Listado de clientes</h2>
     <a href="/crear_cliente" class="btn btn-primary">
