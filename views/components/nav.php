@@ -23,9 +23,7 @@ $current = basename($_SERVER['REQUEST_URI']);
         <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
           <li><a class="dropdown-item" href="/festivos"><i class="bi bi-calendar-week me-2"></i>Form festivos</a></li>
         <?php endif; ?>
-        <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
           <li><a class="dropdown-item" href="/resumen-horas"><i class="bi bi-hourglass-split me-2"></i>Resumen Horas</a></li>
-        <?php endif; ?>
       </ul>
     </li>
 

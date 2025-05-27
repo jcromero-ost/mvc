@@ -3,10 +3,12 @@
 
     <form id="formResumenHoras" class="row g-3 align-items-end mb-4">
     <div class="col-md-5">
+    <div class="position-relative">
         <label for="usuario-buscador" class="form-label">Usuario</label>
         <input type="text" id="usuario-buscador" class="form-control" placeholder="Escriba el nombre del usuario..." autocomplete="off">
         <input type="hidden" id="usuario" name="usuario_id">
-        <div id="sugerencias-usuarios" class="list-group position-relative z-3 w-50"></div>
+        <div id="sugerencias-usuarios" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+    </div>
     </div>
 
     <div class="col-md-3">
