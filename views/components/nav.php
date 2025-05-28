@@ -1,14 +1,15 @@
 <?php
 $current = basename($_SERVER['REQUEST_URI']);
 ?>
-
+  <button id="toggleSidebar" class="btn btn-dark d-lg-none" style="position: fixed; top: 82px; left: 10px; z-index: 1050;">
+  <i class="bi bi-list" style="font-size: 1.8rem;"></i>
+</button>
 <nav class="sidebar-osttech d-flex flex-column flex-shrink-0 p-3 bg-dark position-fixed" style="width: 220px; height: 100vh;">
-  <a href="/usuarios" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-    <span class="fs-4">Intranet</span>
-  </a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
-
+    <a href="/usuarios" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <span class="fs-4">Intranet</span>
+    </a>
     <!-- MENU CONTROL DE TIEMPO -->
     <li class="nav-item dropdown <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>">
       <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>" href="#" id="tiempoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -17,6 +18,7 @@ $current = basename($_SERVER['REQUEST_URI']);
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="tiempoDropdown">
         <li><a class="dropdown-item" href="/registro_horario"><i class="bi bi-clock me-2"></i>Registro horario</a></li>
         <li><a class="dropdown-item" href="/registro-horario/listado"><i class="bi bi-clipboard-data me-2"></i>Informe de registro horario</a></li>
+          <li><a class="dropdown-item" href="/vacaciones"><i class="bi bi-airplane me-2"></i>Solicitar Vacaciones</a></li>
         <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
           <li><a class="dropdown-item" href="/calendario_laboral"><i class="bi bi-calendar3 me-2"></i>Calendario laboral</a></li>
         <?php endif; ?>
@@ -88,3 +90,18 @@ $current = basename($_SERVER['REQUEST_URI']);
 
   </ul>
 </nav>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+  const sidebar = document.querySelector('nav.sidebar-osttech');
+
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+  });
+
+  // Opcional: cerrar si clic fuera
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('show')) {
+      sidebar.classList.remove('show');
+    }
+  });
+</script>

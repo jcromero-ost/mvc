@@ -99,6 +99,9 @@ class ResumenHoras
                 $resumen[$mes]['trabajadas'],
                 self::segundosAFormatoHora($totalSegundosDia)
             );
+
+            //echo "[$dia] Total segundos del día: $totalSegundosDia (" . self::segundosAFormatoHora($totalSegundosDia) . ")<br>";
+
         }
 
         // Antes del foreach que recorre los días, consulta los festivos del mes
@@ -114,6 +117,10 @@ class ResumenHoras
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $festivos[] = $row['fecha'];
             }
+
+            
+    // Mostrar los festivos
+    //echo "<strong>Festivos del mes $mes:</strong> " . implode(', ', $festivos) . "<br>";
             return $festivos;
         }
 
@@ -125,7 +132,11 @@ class ResumenHoras
             $fechaInicioContrato = $contrato ? new DateTime($contrato['fecha_inicio']) : new DateTime("$anio-$mes-01");
             $fechaInicioMes = new DateTime("$anio-$mes-01");
             // El día inicial para contar es el máximo entre inicio contrato y primer día mes
-            $fechaInicio = max($fechaInicioContrato, $fechaInicioMes);
+            if ($fechaInicioContrato > $fechaInicioMes) {
+                $fechaInicio = clone $fechaInicioContrato;
+            } else {
+                $fechaInicio = clone $fechaInicioMes;
+            }
             $fechaFin = new DateTime("$anio-$mes-" . cal_days_in_month(CAL_GREGORIAN, $mes, $anio));
 
             while ($fechaInicio <= $fechaFin) {

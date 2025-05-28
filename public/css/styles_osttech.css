@@ -171,4 +171,9 @@ header, footer {
     color: #495057;
 }
 
+/*Desactiva el icono del dropdown*/
+.dropdown-toggle::after {
+    display: none !important;
+}
+
 

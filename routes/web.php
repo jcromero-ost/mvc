@@ -60,8 +60,10 @@ $router->post('/festivos/delete', 'FestivoController@delete');
 $router->get('/resumen-horas', 'ResumenHorasController@index');
 $router->get('/resumen-horas/usuario', 'ResumenHorasController@resumenPorUsuario');
 
-
-
+//Vacaciones
+$router->get('/vacaciones', 'VacacionesController@index');
+$router->post('/store_vacaciones', 'VacacionesController@store');
+$router->post('/vacaciones/estado', 'VacacionesController@getSolicitudesPorEstado');
 
 // Clientes
 $router->get('/crear_cliente', 'ClienteController@create');

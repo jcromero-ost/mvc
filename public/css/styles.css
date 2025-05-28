@@ -8,6 +8,20 @@ footer {
     color: #777;
 }
 
+header {
+  position: fixed;   /* para que se mantenga fijo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 72px;      /* misma altura que usas en CSS */
+  background: #333;
+  color: white;
+  z-index: 2000;     /* más alto que el botón */
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+}
+
 .nav-link i {
     font-size: 1.2rem;
     vertical-align: middle;
@@ -109,3 +123,120 @@ footer {
 .modal-custom-size .modal-content {
   height: 100%;
 }
+
+
+/*
+@media (min-width: 600px) and (max-width: 900px) {
+  nav.sidebar-osttech {
+    position: fixed;
+    top: 72px;
+    left: -220px;
+    height: calc(100vh - 72px);
+    width: 220px;
+    background-color: #212529;
+    transition: left 0.3s ease;
+  }
+  .sidebar-osttech > * {
+    margin-top: 3rem;
+  }
+
+  nav.sidebar-osttech.show {
+    left: 0;
+  }
+
+  #toggleSidebar {
+    position: fixed;
+    top: 72px;
+    left: 10px;
+    z-index: 1500;
+    display: block !important;
+    background: #212529;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  main.container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  main.container-fluid > .card {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 1.5rem !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  nav.sidebar-osttech {
+    position: fixed;
+    top: 72px;
+    left: -220px;
+    height: calc(100vh - 72px);
+    width: 220px;
+    background-color: #212529;
+    transition: left 0.3s ease;
+  }
+  .sidebar-osttech > * {
+    margin-top: 3rem;
+  }
+
+  nav.sidebar-osttech.show {
+    left: 0;
+  }
+
+  .intranet-texto {
+    margin-left: auto;
+    padding-right: 5rem;
+  }
+
+  #toggleSidebar {
+    position: fixed;
+    top: 72px;
+    left: 10px;
+    z-index: 1500;
+    display: block !important;
+    background: #212529;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  main.container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  main.container-fluid > .card {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 1.5rem !important;
+  }
+}
+
+@media (min-width: 901px) {
+  nav.sidebar-osttech {
+    left: 0 !important;
+    position: fixed;
+    top: 72px;
+    height: calc(100vh - 72px);
+    width: 220px;
+  }
+
+  #toggleSidebar {
+    display: none !important;
+  }
+}
+
+@media (min-width: 901px) {
+  main, .container-fluid, .content-wrapper {
+    padding-left: 220px;
+    padding-top: 72px;
+  }
+}
+*/

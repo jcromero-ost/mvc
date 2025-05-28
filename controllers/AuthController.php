@@ -24,6 +24,9 @@ class AuthController {
 
         if ($user) {
             $_SESSION['user'] = $user;
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['nombre'] = $user['nombre'];
+            $_SESSION['foto'] = $user['foto'];
             $_SESSION['user_id'] = $user['id'] ?? null;
             $_SESSION['dept'] = $user['departamento_id'] ?? null;
             $_SESSION['success'] = 'Bienvenido, ' . htmlspecialchars($user['nombre'] ?? '');

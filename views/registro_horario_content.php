@@ -1,4 +1,4 @@
-<main class="container d-flex justify-content-center align-items-center ">
+<main class="container-fluid d-flex justify-content-center align-items-center ">
     <div class="card p-5 shadow text-center" style="max-width: 450px; width: 100%;">
         <h2 class="mb-4">Control de Horas</h2>
 
