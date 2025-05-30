@@ -20,8 +20,6 @@
     <link rel="stylesheet" href="/public/css/calendario.css">
     <link rel="stylesheet" href="/public/css/pagination.css">
 
-
-
     <!-- Cropper.js CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
 
@@ -30,6 +28,22 @@
 
     <!-- Cropper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" defer></script>
+
+    <?php if (empty($_SESSION['tablet_mode'])): ?>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const isTablet = window.matchMedia("(pointer: coarse)").matches;
+            const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+            const pathname = window.location.pathname;
+            const yaDentro = pathname.includes('/registro_horario') || pathname.includes('/dashboard');
+
+            if (isTablet && isPortrait && !yaDentro) {
+                window.location.href = "/login_tablet";
+            }
+        });
+    </script>
+    <?php endif; ?>
+
 </head>
 
 <body class="bg-light">

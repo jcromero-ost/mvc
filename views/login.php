@@ -60,5 +60,14 @@
       </form>
     </div>
   </div>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const isTablet = window.innerWidth <= 820 && window.innerHeight > window.innerWidth;
+    if (isTablet) {
+      window.location.href = '/login_tablet';
+    }
+  });
+</script>
 </body>
+
 </html>

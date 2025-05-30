@@ -102,53 +102,75 @@ class Usuario {
         return $stmt->execute();
     }
 
-    public static function cambiar_passwd($data) {
+    public static function update_perfil($data) {
         $db = Database::connect();
-
-        // Hashear la nueva contraseña
-        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        // Preparar consulta para actualizar la contraseña
-        $sql = "UPDATE usuarios SET password = :password WHERE id = :id";
+    
+        $sql = "UPDATE usuarios SET 
+                    nombre = :nombre,
+                    alias = :alias,
+                    email = :email,
+                    telefono = :telefono";
+        
+        $sql .= " WHERE id = :id";
+    
         $stmt = $db->prepare($sql);
+    
         $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':password', $hash);
-
-        // Ejecutar la actualización
-        $resultado = $stmt->execute();
-
-        if ($resultado) {
-            // Enviar correo notificando el cambio de contraseña
-
-            $para = 'isegura@osttech.es';  // asegúrate de que el array $data contenga el email del usuario
-            $titulo = "Cambio de contraseña";
-            $mensaje = "
-            <html>
-            <head>
-            <title>Cambio de contraseña</title>
-            </head>
-            <body>
-            <p>Hola,</p>
-            <p>Tu contraseña ha sido cambiada correctamente.</p>
-            <p>Si no realizaste este cambio, contacta con soporte inmediatamente.</p>
-            </body>
-            </html>
-            ";
-
-            // Para enviar correo en formato HTML
-            $cabeceras  = "MIME-Version: 1.0" . "\r\n";
-            $cabeceras .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-            // Cabecera adicional
-            $cabeceras .= 'From: soporte@tudominio.com' . "\r\n";
-
-            mail($para, $titulo, $mensaje, $cabeceras);
-        }
-
-        return $resultado;
+        $stmt->bindParam(':nombre', $data['nombre']);
+        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':telefono', $data['telefono']);
+        
+        return $stmt->execute();
     }
 
+    public static function update_password($data) {
+        $db = Database::connect();
     
+        $sql = "UPDATE usuarios SET 
+                    password = :password";
+        
+        $sql .= " WHERE id = :id";
+    
+        $stmt = $db->prepare($sql);
+    
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':password', $data['password']);
+        
+        return $stmt->execute();
+    }
+
+    public static function update_pin($data) {
+        $db = Database::connect();
+    
+        $sql = "UPDATE usuarios SET 
+                    pin = :pin";
+        
+        $sql .= " WHERE id = :id";
+    
+        $stmt = $db->prepare($sql);
+    
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':pin', $data['pin']);
+        
+        return $stmt->execute();
+    }
+
+    public static function update_foto($data) {
+        $db = Database::connect();
+    
+        $sql = "UPDATE usuarios SET 
+                    foto = :foto";
+        
+        $sql .= " WHERE id = :id";
+    
+        $stmt = $db->prepare($sql);
+    
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':foto', $data['foto']);
+        
+        return $stmt->execute();
+    }
     
     public static function delete($id) {
         $db = Database::connect();
@@ -169,7 +191,58 @@ class Usuario {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-    
+public static function verificarPin($usuarioId, $pinIngresado) {
+    $db = Database::connect();
+    $stmt = $db->prepare("SELECT pin FROM usuarios WHERE id = :id AND activo = 1");
+    $stmt->bindParam(':id', $usuarioId, PDO::PARAM_INT);
+    $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($usuario) {
+        $pinHashed = hash('sha256', $pinIngresado);
+        return $pinHashed === $usuario['pin'];
+    }
+
+    return false;
+}
+
+ 
+
+public static function estadoJornada($userId) {
+    $db = Database::connect();
+    $hoy = date('Y-m-d');
+
+    $stmt = $db->prepare("
+        SELECT tipo_evento 
+        FROM registro_horarios 
+        WHERE user_id = ? AND DATE(fecha_hora) = ? 
+        ORDER BY fecha_hora DESC 
+        LIMIT 1
+    ");
+    $stmt->execute([$userId, $hoy]);
+    $ultimo = $stmt->fetchColumn();
+
+    if ($ultimo === 'inicio_jornada' || $ultimo === 'fin_descanso') {
+        return 'iniciada';
+    } elseif ($ultimo === 'inicio_descanso') {
+        return 'descanso';
+    } elseif ($ultimo === 'fin_jornada') {
+        return 'finalizada';
+    }
+
+    return 'no_iniciada';
+}
+
+
+
+
+
+  public function getAllUsuariosSinWebmaster() {
+    $stmt = $this->db->prepare("SELECT id, nombre, foto, rol FROM usuarios WHERE rol != 'webmaster' AND activo = 1 ORDER BY nombre ASC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+  
     
     
 }

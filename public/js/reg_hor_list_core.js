@@ -23,10 +23,15 @@ export function formatearFechaInput(fecha) {
 
 
 export async function cargarRegistros() {
-    const usuario = document.getElementById('usuario').value;
-    const fechaDesde = document.getElementById('fecha_desde').value;
-    const fechaHasta = document.getElementById('fecha_hasta').value;
-    const cantidad = parseInt(document.getElementById('cantidad').value, 10);
+    const usuarioElem = document.getElementById('usuario');
+    const fechaDesdeElem = document.getElementById('fecha_desde');
+    const fechaHastaElem = document.getElementById('fecha_hasta');
+    const cantidadElem = document.getElementById('cantidad');
+
+    const usuario = usuarioElem ? usuarioElem.value : '';
+    const fechaDesde = fechaDesdeElem ? fechaDesdeElem.value : '';
+    const fechaHasta = fechaHastaElem ? fechaHastaElem.value : '';
+    const cantidad = cantidadElem ? parseInt(cantidadElem.value, 10) : 10; //Valor por defecto si no existe
     
 
     const formData = new FormData();
@@ -93,7 +98,6 @@ export function renderizarTabla(jornadas) {
                     </button>` : '-'}
             </td>
         `;
-        console.log(dept_usuario);
         if (dept_usuario === '3' || dept_usuario === '2') {
             const tdBoton = document.createElement('td');
             tdBoton.className = 'text-center align-middle';
@@ -143,7 +147,6 @@ export function habilitarEdicion(boton, botonCancelar) {
 
     celdasEditables.forEach(celda => {
         const valor = celda.innerText.trim();
-        console.log('valor para input:', valor);  // DEBUG
         valoresOriginales.push(valor);
 
         const input = document.createElement('input');
@@ -191,8 +194,6 @@ export function guardarEdicion(botonEditar) {
     const fila = botonEditar.closest('tr');
     const celdasEditables = fila.querySelectorAll('td.editable-hora');
     const inputs = Array.from(celdasEditables).map(celda => celda.querySelector('input')).filter(Boolean);
-
-    console.log('Inputs detectados:', inputs.length);  // DEBUG
 
     if (inputs.length !== 2) {
         alert('Error: se esperaban 2 campos editables.');

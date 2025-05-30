@@ -30,4 +30,11 @@ class ContratoLaboral
             return false;
         }
     }
+
+    // Obtener todos los contratos
+    public function getAllContratos() {
+        $stmt = $this->db->prepare("SELECT * FROM contratos_laborales");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modalEliminarTicket = new bootstrap.Modal(document.getElementById('modalEliminarTicket'));
+    const modalElement = document.getElementById('modalEliminarTicket');
+
+    if (!modalElement) {
+        // No hay modal en esta página, no hacemos nada
+        return;
+    }
+
+    const modalEliminarTicket = new bootstrap.Modal(modalElement);
 
     const delete_id_ticket = document.getElementById('delete_id_ticket');
     const delete_id = document.getElementById('delete_id');

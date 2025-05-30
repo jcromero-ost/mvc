@@ -70,28 +70,166 @@ class UsuarioController {
         }
     }
 
-    public function cambiar_passwd() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'cambiar_passwd') {
+    public function update_perfil() {
+        session_start();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar_perfil') {
             $id = $_POST['id'] ?? null;
-            $password = $_POST['password'] ?? null;
+            $nombre = $_POST['nombre'] ?? null;
+            $alias = $_POST['alias'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $telefono = $_POST['telefono'] ?? null;
+    
+            if ($id && $nombre && $email) {
+                $datos = [
+                    'id' => $id,
+                    'nombre' => $nombre,
+                    'alias' => $alias,
+                    'email' => $email,
+                    'telefono' => $telefono
+                ];
+        
+                if (Usuario::update_perfil($datos)) {
+                    $_SESSION['success'] = "Perfil actualizado correctamente.";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el perfil.";
+                }
+    
+                header('Location: /perfil_user');
+                exit;
+            } else {
+                $_SESSION['error'] = "Faltan datos obligatorios.";
+                header('Location: /perfil_user');
+                exit;
+            }
+        }
+    }
+
+    public function update_password() {
+        session_start();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar_password') {
+            $id = $_POST['id'] ?? null;
+            $password = $_POST['new_password'] ?? null;
+            $passwordConfirm = $_POST['new_password_confirm'] ?? null;
+
+            if (!$id) {
+                $_SESSION['error'] = "ID de usuario faltante.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            if (!$password || !$passwordConfirm) {
+                $_SESSION['error'] = "Debe ingresar ambas contraseñas.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            if ($password !== $passwordConfirm) {
+                $_SESSION['error'] = "Las contraseñas no coinciden.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         
             if ($id && $password) {
                 $datos = [
                     'id' => $id,
-                    'password' => $password
+                    'password' => $passwordHash
                 ];
         
-                if (Usuario::cambiar_passwd($datos)) {
-                    $_SESSION['success'] = "Se ha enviado un correo electrónico al usuario";
+                if (Usuario::update_password($datos)) {
+                    $_SESSION['success'] = "Contraseña actualizado correctamente.";
                 } else {
-                    $_SESSION['error'] = "Error al cambiar la contraseña";
+                    $_SESSION['error'] = "Error al actualizar la contraseña.";
                 }
-    
-                header("Location: ../views/usuarios.php");
+
+                header('Location: /perfil_user');
                 exit;
             } else {
                 $_SESSION['error'] = "Faltan datos obligatorios.";
-                header("Location: ../views/usuarios.php");
+                header('Location: /perfil_user');
+                exit;
+            }
+        }
+    }
+
+    public function update_pin() {
+        session_start();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar_pin') {
+            $id = $_POST['id'] ?? null;
+            $pin = $_POST['new_pin'] ?? null;
+            $pinConfirm = $_POST['new_pin_confirm'] ?? null;
+
+            if (!$id) {
+                $_SESSION['error'] = "ID de usuario faltante.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            if (!$pin || !$pinConfirm) {
+                $_SESSION['error'] = "Debe ingresar ambas contraseñas.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            if ($pin !== $pinConfirm) {
+                $_SESSION['error'] = "Las contraseñas no coinciden.";
+                header('Location: /perfil_user');
+                exit;
+            }
+
+            $pinHash = password_hash($pin, PASSWORD_DEFAULT);
+        
+            if ($id && $pin) {
+                $datos = [
+                    'id' => $id,
+                    'pin' => $pinHash
+                ];
+        
+                if (Usuario::update_pin($datos)) {
+                    $_SESSION['success'] = "PIN actualizado correctamente.";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar el PIN.";
+                }
+
+                header('Location: /perfil_user');
+                exit;
+            } else {
+                $_SESSION['error'] = "Faltan datos obligatorios.";
+                header('Location: /perfil_user');
+                exit;
+            }
+        }
+    }
+
+    public function update_foto() {
+        session_start();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'editar_foto') {
+            $id = $_POST['id'] ?? null;
+            $foto = $_POST['foto_base64'] ?? null;
+
+            if(!$foto){
+                $foto = 'default.jpeg';
+            }
+
+            if ($id && $foto) {
+                $datos = [
+                    'id' => $id,
+                    'foto' => $foto
+                ];
+        
+                if (Usuario::update_foto($datos)) {
+                    $_SESSION['foto'] = $datos['foto'];
+                    $_SESSION['success'] = "Foto de perfil actualizada correctamente.";
+                } else {
+                    $_SESSION['error'] = "Error al actualizar tu foto de perfil.";
+                }
+
+                header('Location: /perfil_user');
+                exit;
+            } else {
+                $_SESSION['error'] = "Faltan datos obligatorios.";
+                header('Location: /perfil_user');
                 exit;
             }
         }
@@ -185,6 +323,13 @@ class UsuarioController {
     echo json_encode(['success' => true, 'data' => $usuarios]);
 }
 
+public function loginTablet() {
+    $usuarioModel = new Usuario();
+    $usuarios = $usuarioModel->getAllUsuariosSinWebmaster(); // nuevo método
+    require_once __DIR__ . '/../views/login_tablet.php';
+}
+
+
 
 }
 if (isset($_POST['accion'])) {
@@ -194,11 +339,20 @@ if (isset($_POST['accion'])) {
         case 'editar':
             $controller->update();
             break;
+        case 'editar_perfil':
+            $controller->update_perfil();
+            break;
+        case 'editar_password':
+            $controller->update_password();
+            break;
+        case 'editar_pin':
+            $controller->update_pin();
+            break;
+        case 'editar_foto':
+            $controller->update_foto();
+            break;
         case 'eliminar':
             $controller->delete();
-            break;
-        case 'cambiar_passwd':
-            $controller->cambiar_passwd();
             break;
     }
 }

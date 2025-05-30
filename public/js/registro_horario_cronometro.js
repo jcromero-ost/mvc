@@ -8,7 +8,10 @@ export function iniciarCronometro() {
 }
 
 export function detenerCronometro() {
-    if (cronometroInterval) clearInterval(cronometroInterval);
+    if (cronometroInterval) {
+        clearInterval(cronometroInterval);
+        cronometroInterval = null;
+    }
 }
 
 export function resetearCronometro() {
@@ -23,7 +26,10 @@ export function actualizarCronometro() {
 }
 
 export function setSegundos(segundos) {
-    segundosTranscurridos = segundos;
+    if (typeof segundos === 'number' && segundos >= 0) {
+        segundosTranscurridos = segundos;
+        actualizarVistaCronometro(); // opcional si quieres que se actualice al setear
+    }
 }
 
 export function getSegundos() {
@@ -32,10 +38,11 @@ export function getSegundos() {
 
 function actualizarVistaCronometro() {
     const cronometro = document.getElementById('cronometro');
-    if (cronometro) {
-        const horas = Math.floor(segundosTranscurridos / 3600);
-        const minutos = Math.floor((segundosTranscurridos % 3600) / 60);
-        const segundos = segundosTranscurridos % 60;
-        cronometro.textContent = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-    }
+    if (!cronometro) return;
+
+    const horas = Math.floor(segundosTranscurridos / 3600);
+    const minutos = Math.floor((segundosTranscurridos % 3600) / 60);
+    const segundos = segundosTranscurridos % 60;
+
+    cronometro.textContent = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
 }

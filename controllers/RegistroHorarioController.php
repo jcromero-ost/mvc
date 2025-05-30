@@ -4,10 +4,19 @@ require_once __DIR__ . '/../models/RegistroHorario.php';
 class RegistroHorarioController
 {
     public function index()
-    {
-        $view = 'registro_horario_content.php';
-        require __DIR__ . '/../views/layout.php';
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $view = 'registro_horario_content.php';
+    require __DIR__ . '/../views/layout.php';
+}
 
     public function store()
     {

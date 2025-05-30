@@ -2,8 +2,7 @@
 <div class="modal fade" id="modalRevisarSolicitud" tabindex="-1" aria-labelledby="modalRevisarSolicitudLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST" action="/controllers/TicketController.php">
-        <input type="hidden" name="accion" value="eliminar">
+      <form method="POST">
         <input type="hidden" name="id" id="delete_id">
 
         <div class="modal-header">
@@ -14,27 +13,27 @@
         <div class="modal-body">
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
-                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                    <label for="fecha_inicio_modal" class="form-label">Fecha Inicio</label>
+                    <input type="date" class="form-control" id="fecha_inicio_modal" name="fecha_inicio_modal" readonly>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="fecha_fin" class="form-label">Fecha Fin</label>
-                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                    <label for="fecha_fin_modal" class="form-label">Fecha Fin</label>
+                    <input type="date" class="form-control" id="fecha_fin_modal" name="fecha_fin_modal" readonly>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <label for="motivo" class="form-label">Motivo</label>
-                    <textarea id="motivo" name="motivo" class="form-control"></textarea>
+                    <label for="motivo_modal" class="form-label">Motivo</label>
+                    <textarea id="motivo_modal" name="motivo_modal" class="form-control" readonly></textarea>
                 </div>
             </div>
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
-          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Rechazar</button>
+          <button type="submit" class="btn btn-success">Aceptar</button>
+          <button type="submit" class="btn btn-danger">Rechazar</button>
         </div>
       </form>
     </div>

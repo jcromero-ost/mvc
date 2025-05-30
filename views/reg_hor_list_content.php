@@ -5,49 +5,86 @@
 </div>
 
 <div class="card p-4 mb-4">
-<div class="row align-items-end">
-<div class="col-md-3 position-relative d-none">
-  <label for="usuario" class="form-label">Usuario</label>
-  <input type="text" id="usuario-buscador" class="form-control" placeholder="Buscar usuario...">
-  <input type="hidden" id="usuario">
-  <div id="sugerencias-usuarios" class="list-group"></div>
-</div>
+  <div class="row align-items-end">
+    <?php if($_SESSION['dept'] == '2' || $_SESSION['dept'] == '3'): ?>
+      <div class="col-md-4 position-relative">
+        <label for="usuario" class="form-label">Usuario</label>
+        <input type="text" id="usuario-buscador" class="form-control" placeholder="Buscar usuario...">
+        <input type="hidden" id="usuario">
+        <div id="sugerencias-usuarios" class="list-group"></div>
+      </div>
 
+      <div class="col-md-2">
+        <label for="fecha_desde" class="form-label">Fecha desde</label>
+        <input type="date" id="fecha_desde" class="form-control">
+      </div>
 
+      <div class="col-md-2">
+        <label for="fecha_hasta" class="form-label">Fecha hasta</label>
+        <input type="date" id="fecha_hasta" class="form-control">
+      </div>
 
-  <div class="col-md-4">
-    <label for="fecha_desde" class="form-label">Fecha desde</label>
-    <input type="date" id="fecha_desde" class="form-control">
+      <div class="col-md-2 d-flex align-items-center">
+        <div class="me-auto ms-4">
+          <label for="cantidad" class="form-label">Registros por página</label>
+          <select id="cantidad" class="form-select">
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+
+        <div class="col-md-2 d-flex align-items-center">
+          <div class="ms-2 align-self-end">
+            <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
+              <i class="bi bi-funnel"></i> Filtrar
+            </button>
+          </div>
+          <div class="ms-2 align-self-end">
+            <button id="btn-imprimir" class="btn btn-secondary btn-sm-custom">
+              <i class="bi bi-printer"></i> Imprimir
+            </button>
+          </div>
+        </div>
+    <?php else: ?>
+        <div class="col-md-4">
+          <label for="fecha_desde" class="form-label">Fecha desde</label>
+          <input type="date" id="fecha_desde" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+          <label for="fecha_hasta" class="form-label">Fecha hasta</label>
+          <input type="date" id="fecha_hasta" class="form-control">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-center">
+          <div class="me-auto ms-4">
+            <label for="cantidad" class="form-label">Registros por página</label>
+            <select id="cantidad" class="form-select">
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+
+          <div class="col-md-2 d-flex align-items-center">
+            <div class="ms-2 align-self-end">
+              <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
+                <i class="bi bi-funnel"></i> Filtrar
+              </button>
+            </div>
+            <div class="ms-2 align-self-end">
+              <button id="btn-imprimir" class="btn btn-secondary btn-sm-custom">
+                <i class="bi bi-printer"></i> Imprimir
+              </button>
+            </div>
+          </div>
+      <?php endif; ?>
   </div>
-
-  <div class="col-md-4">
-    <label for="fecha_hasta" class="form-label">Fecha hasta</label>
-    <input type="date" id="fecha_hasta" class="form-control">
-  </div>
-
-  <div class="col-md-4 d-flex align-items-center">
-  <div class="me-auto ms-4">
-    <label for="cantidad" class="form-label">Registros por página</label>
-    <select id="cantidad" class="form-select">
-      <option value="10" selected>10</option>
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-    </select>
-  </div>
-  <div class="ms-2 align-self-end">
-    <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
-      <i class="bi bi-funnel"></i> Filtrar
-    </button>
-  </div>
-  <div class="ms-2 align-self-end">
-    <button id="btn-imprimir" class="btn btn-secondary btn-sm-custom">
-      <i class="bi bi-printer"></i> Imprimir
-    </button>
-  </div>
-</div>
-
-</div>
 
 
 
@@ -129,4 +166,6 @@
     const dept_usuario = "<?= $_SESSION['dept'] ?>";
 </script>
 
-<script type="module" src="/public/js/buscador_usuarios.js"></script>
+<?php if($_SESSION['dept'] == '2' || $_SESSION['dept'] == '3'): ?>
+  <script type="module" src="/public/js/buscador_usuarios.js"></script>
+<?php endif; ?>

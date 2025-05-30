@@ -119,8 +119,8 @@ class ResumenHoras
             }
 
             
-    // Mostrar los festivos
-    //echo "<strong>Festivos del mes $mes:</strong> " . implode(', ', $festivos) . "<br>";
+            // Mostrar los festivos
+            //echo "<strong>Festivos del mes $mes:</strong> " . implode(', ', $festivos) . "<br>";
             return $festivos;
         }
 
@@ -198,9 +198,34 @@ class ResumenHoras
         return sprintf('%02d:%02d:%02d', $horas, $minutos, $segundos);
     }
 
-    private static function formatoHoraASegundos($hora)
-    {
-        list($h, $m, $s) = explode(':', $hora);
-        return $h * 3600 + $m * 60 + $s;
+private static function formatoHoraASegundos($hora)
+{
+    list($h, $m, $s) = explode(':', $hora);
+    return ($h * 3600) + ($m * 60) + $s;
+}
+
+public static function obtenerTotalesAnualesPorUsuario($usuarioId, $anio)
+{
+    $resumenMensual = self::obtenerResumenMensualPorUsuario($usuarioId, $anio);
+
+    $totalTrabajadasSegundos = 0;
+    $totalExtrasSegundos = 0;
+
+    foreach ($resumenMensual as $mes => $tiempos) {
+        $totalTrabajadasSegundos += self::formatoHoraASegundos($tiempos['trabajadas']);
+        $totalExtrasSegundos += self::formatoHoraASegundos($tiempos['extras']);
     }
+
+    // Extras positivas o 0
+    $extrasSegundos = $totalExtrasSegundos > 0 ? $totalExtrasSegundos : 0;
+    // Pendientes si extras es negativo, convertido a positivo, sino 0
+    $pendientesSegundos = $totalExtrasSegundos < 0 ? abs($totalExtrasSegundos) : 0;
+
+    return [
+        'trabajadas' => self::segundosAFormatoHora($totalTrabajadasSegundos),
+        'extras' => self::segundosAFormatoHora($extrasSegundos),
+        'pendientes' => self::segundosAFormatoHora($pendientesSegundos),
+    ];
+}
+
 }

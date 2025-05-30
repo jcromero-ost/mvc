@@ -9,29 +9,50 @@ require_once __DIR__ . '/../session.php';
   <body>
 
     <?php include __DIR__ . '/components/header.php'; ?>
-    <?php include __DIR__ . '/components/nav.php'; ?>
+    <?php if (empty($_SESSION['tablet_mode'])): ?>
+      <?php include __DIR__ . '/components/nav.php'; ?>
+    <?php endif; ?>
 
-    <main style="margin-left: 220px; padding: 1rem;">
-      <?php
-        // Cargar alertas globales
-        include __DIR__ . '/components/alerts.php';
+<?php
+$esTablet = !empty($_SESSION['tablet_mode']);
+$esRegistroHorario = isset($view) && $view === 'registro_horario_content.php';
 
-        // Cargar vista específica
-        if (isset($view)) {
-          $viewFile = __DIR__ . '/' . $view;
-          if (file_exists($viewFile)) {
-            include $viewFile;
-          } else {
-            echo "<div class='alert alert-danger'>Vista '$view' no encontrada.</div>";
-          }
+// Definir clases y estilos dinámicamente
+$claseMain = ($esTablet || $esRegistroHorario)
+    ? 'container-fluid d-flex justify-content-center align-items-center'
+    : 'main-default';
+
+$estiloMain = ($esTablet || $esRegistroHorario) ? 'min-height: 100vh;' : '';
+
+$claseContenedor = ($esTablet || $esRegistroHorario)
+    ? 'w-100'
+    : 'wrapper';
+
+$estiloContenedor = ($esTablet || $esRegistroHorario)
+    ? 'max-width: 550px;'
+    : '';
+?>
+
+<main class="<?= $claseMain ?>" style="<?= $estiloMain ?>">
+  <div class="<?= $claseContenedor ?>" style="<?= $estiloContenedor ?>">
+    <?php
+      include __DIR__ . '/components/alerts.php';
+      if (isset($view)) {
+        $viewFile = __DIR__ . '/' . $view;
+        if (file_exists($viewFile)) {
+          include $viewFile;
         } else {
-          echo "<div class='alert alert-warning'>Error: no se especificó ninguna vista.</div>";
+          echo "<div class='alert alert-danger'>Vista '$view' no encontrada.</div>";
         }
-      ?>
-    </main>
+      } else {
+        echo "<div class='alert alert-warning'>Error: no se especificó ninguna vista.</div>";
+      }
+    ?>
+  </div>
+</main>
 
-    <?php // Opcional: footer si lo agregás después ?>
-    <?php // include __DIR__ . '/components/footer.php'; ?>
+<?php // Opcional: include footer si decides agregarlo ?>
+<?php // include __DIR__ . '/components/footer.php'; ?>
 
-  </body>
+</body>
 </html>

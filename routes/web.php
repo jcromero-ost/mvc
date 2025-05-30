@@ -18,6 +18,16 @@ $router->get('/', function () {
     exit();
 });
 
+// Login especial para tablet o kiosko
+$router->get('/login_tablet', 'UsuarioController@loginTablet');
+$router->post('/login_tablet/pin', 'AuthController@loginTabletPin');
+
+
+//perfil usuario
+// Perfil de usuario
+$router->get('/perfil_user', 'PerfilUserController@index')  ;
+
+
 // Login / Logout
 $router->get('/login', function () {
     require __DIR__ . '/../views/login.php';

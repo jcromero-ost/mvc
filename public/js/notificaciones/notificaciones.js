@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
+            let motivo = data.motivo;
             if (data.success) {
                 if (data.data.length === 0) {
                     bola_notificaciones.classList.add('d-none');
@@ -37,10 +38,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         button.classList.add('btn', 'btn-primary', 'btn-sm');
                         button.textContent = 'Revisar';
 
+                        //Creamos las variables del modal
                         const modalRevisarSolicitud = new bootstrap.Modal(document.getElementById('modalRevisarSolicitud'));
+                        const fecha_inicio_modal = document.getElementById('fecha_inicio_modal');
+                        const fecha_fin_modal = document.getElementById('fecha_fin_modal');
+                        const motivo_modal = document.getElementById('motivo_modal');
 
                         button.addEventListener('click', function(){
                             modalRevisarSolicitud.show();
+
+                            fecha_fin_modal.value = data.fecha_fin;
+                            console.log(motivo);
                         });
 
                         //Agregamos elementos al contenedor

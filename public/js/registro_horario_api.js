@@ -11,6 +11,13 @@ export async function enviarEvento(tipoEvento) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `user_id=${encodeURIComponent(userId)}&tipo_evento=${encodeURIComponent(tipoEvento)}`
         });
+
+        // Redirige al login si la sesión ha expirado
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+
         const data = await response.json();
         if (data.success) {
             await cargarEstadoActual();
@@ -19,12 +26,20 @@ export async function enviarEvento(tipoEvento) {
         }
     } catch (error) {
         console.error('Error enviando evento:', error);
+        window.location.href = '/login'; // fallback por error grave
     }
 }
 
 export async function cargarEstadoActual() {
     try {
         const response = await fetch('/registro_horario/historial');
+
+        // Redirige al login si no hay sesión activa
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = '/login';
+            return;
+        }
+
         const data = await response.json();
         if (data.success && data.data) {
             setSegundos(data.data.segundos_trabajados);
@@ -34,5 +49,6 @@ export async function cargarEstadoActual() {
         }
     } catch (error) {
         console.error('Error cargando estado actual:', error);
+        window.location.href = '/login'; // fallback por error grave
     }
 }

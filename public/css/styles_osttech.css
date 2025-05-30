@@ -54,6 +54,58 @@ header, footer {
   font-size: 0.85rem; /* Reducimos el tamaño de texto solo del nav */
 }
 
+.centrado-tablet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px); /* Ajusta según tu header */
+}
+
+main.main-default {
+  margin-left: 220px; /* para vista PC con nav */
+  padding: 1rem;
+}
+
+main.main-tablet {
+  margin: 0 !important;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;         /* asegura que el contenido esté en columna */
+  align-items: center;            /* centra horizontalmente */
+  justify-content: center;        /* centra verticalmente */
+  min-height: calc(100vh - 80px); /* altura útil sin header */
+}
+
+main.main-tablet > .card {
+  width: 100%;
+  max-width: 420px;
+}
+
+main.main-tablet .wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+
+@media screen and (max-width: 820px) and (orientation: portrait) {
+  .card {
+    max-width: 400px;
+    width: 100%;
+  }
+}
+
+.user-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
 
 /* Sidebar OSTTECH */
 .sidebar-osttech .nav-link,

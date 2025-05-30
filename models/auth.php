@@ -22,4 +22,17 @@ class Auth {
 
         return false;
     }
+
+    public function authenticateByIdAndPin($userId, $pin) {
+    $pdo = Database::connect();
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? LIMIT 1");
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($pin, $user['password'])) {
+        return $user;
+    }
+    return false;
+}
+
 }

@@ -97,6 +97,22 @@ class RegistroHorario
         ];
     }
 
+    public function obtenerEstadosUsuariosHoy() {
+    $hoy = date('Y-m-d');
+    $sql = "SELECT user_id, tipo_evento, MAX(fecha_hora) AS ultima
+            FROM registro_horarios
+            WHERE DATE(fecha_hora) = ?
+            GROUP BY user_id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$hoy]);
+    $estados = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $estados[$row['user_id']] = $row['tipo_evento']; // último evento = estado
+    }
+    return $estados;
+}
+
+
     public function buscarRegistros($usuario = null, $fechaDesde = null, $fechaHasta = null, $tipoEvento = null, $pagina = 1, $limite = 10)
     {
         $pagina = max(1, (int)$pagina);
@@ -156,9 +172,11 @@ class RegistroHorario
 
             $params = [];
 
-            if (!empty($usuario)) {
-                $query .= " AND rh.user_id = ?";
-                $params[] = $usuario;
+            if($_SESSION['dept'] == '1'){
+                if (!empty($usuario)) {
+                    $query .= " AND rh.user_id = ?";
+                    $params[] = $usuario;
+                }
             }
 
             if (!empty($fechaDesde)) {
