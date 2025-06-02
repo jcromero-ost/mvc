@@ -199,8 +199,7 @@ public static function verificarPin($usuarioId, $pinIngresado) {
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario) {
-        $pinHashed = hash('sha256', $pinIngresado);
-        return $pinHashed === $usuario['pin'];
+        return password_verify($pinIngresado, $usuario['pin']);
     }
 
     return false;
