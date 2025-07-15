@@ -46,8 +46,22 @@
                         <td><?= htmlspecialchars($solicitud['fecha_inicio'] ?? '') ?></td>
                         <td><?= htmlspecialchars($solicitud['fecha_fin'] ?? '') ?></td>
                         <td><?= htmlspecialchars($solicitud['fecha_creacion'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($solicitud['estado'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($solicitud['revisado_por_nombre'] ?? '') ?></td>
+<td>
+    <?php
+        $estado = $solicitud['estado'] ?? '';
+        $clase = match ($estado) {
+            'pendiente' => 'badge bg-warning text-dark',
+            'aprobado'  => 'badge bg-success',
+            'rechazado' => 'badge bg-danger',
+            default     => 'badge bg-secondary'
+        };
+
+        $estadoFormateado = ucfirst($estado);
+    ?>
+    <span class="<?= $clase ?>"><?= htmlspecialchars($estadoFormateado) ?></span>
+</td>
+
+                        <td><?= htmlspecialchars($solicitud['revisado_por'] ?? '') ?></td>
                         <td><?= htmlspecialchars($solicitud['rechazo_motivo'] ?? '') ?></td>
                     </tr>
                 <?php endforeach; ?>                  

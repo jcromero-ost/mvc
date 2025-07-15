@@ -23,10 +23,10 @@
             <td>
               <div class="d-flex align-items-center">
                 <?php if (!empty($usuario['foto']) && str_starts_with($usuario['foto'], 'data:image')): ?>
-    <img src="<?= $usuario['foto'] ?>" class="rounded-circle" style="height: 40px;">
-<?php else: ?>
-  <img src="/public/images/<?= $usuario['foto'] ?? 'default.jpeg' ?>" class="rounded-circle" style="height: 40px;">
-<?php endif; ?>
+                  <img src="<?= $usuario['foto'] ?>" class="rounded-circle" style="height: 40px;">
+                <?php else: ?>
+                  <img src="/public/images/<?= $usuario['foto'] ?? 'default.jpeg' ?>" class="rounded-circle" style="height: 40px;">
+                <?php endif; ?>
 
                 <div>
                   <strong><?= htmlspecialchars($usuario['nombre']) ?></strong><br>

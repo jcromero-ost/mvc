@@ -81,14 +81,20 @@ export function renderizarTabla(jornadas) {
             : `/public/images/${jornada.foto || 'default.jpeg'}`;
 
         const fila = document.createElement('tr');
+        const celdaHoras = jornada.es_vacacion
+            ? `<td colspan="2" class="text-center align-middle"><span class="badge bg-primario text-uppercase fs-6 py-1 px-2">Vacaciones</span></td>`
+            : `
+                <td data-editable class="editable-hora text-center align-middle">${jornada.hora_inicio || '--:--'}</td>
+                <td data-editable class="editable-hora text-center align-middle">${jornada.hora_fin || '--:--'}</td>
+            `;
+
         fila.innerHTML = `
             <td>
                 <img src="${rutaImagen}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                 ${jornada.usuario}
             </td>
             <td data-editable class="text-center align-middle">${jornada.fecha}</td>
-            <td data-editable class="editable-hora text-center align-middle">${jornada.hora_inicio || '--:--'}</td>
-            <td data-editable class="editable-hora text-center align-middle">${jornada.hora_fin || '--:--'}</td>
+            ${celdaHoras}
             <td class="text-center align-middle">
                 ${jornada.descansos && jornada.descansos.length > 0 ? `
                     <button class="btn btn-primary btn-sm rounded-circle border btn-ver-descansos px-2 py-1"
@@ -98,34 +104,48 @@ export function renderizarTabla(jornadas) {
                     </button>` : '-'}
             </td>
         `;
-        if (dept_usuario === '3' || dept_usuario === '2') {
+
+        if ((dept_usuario === '3' || dept_usuario === '2')) {
             const tdBoton = document.createElement('td');
             tdBoton.className = 'text-center align-middle';
 
-            const botonEditar = document.createElement('button');
-            botonEditar.type = 'button';
-            botonEditar.className = 'btn btn-sm btn-primary me-1 btn-editar';
-            botonEditar.title = 'Editar';
-            botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
+            if (!jornada.es_vacacion) {
+                const botonEditar = document.createElement('button');
+                botonEditar.type = 'button';
+                botonEditar.className = 'btn btn-sm btn-primary me-1 btn-editar';
+                botonEditar.title = 'Editar';
+                botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
 
-            const botonCancelar = document.createElement('button');
-            botonCancelar.type = 'button';
-            botonCancelar.className = 'btn btn-sm btn-danger me-1 btn-cancelar d-none';
-            botonCancelar.title = 'Cancelar';
-            botonCancelar.innerHTML = '<i class="bi bi-x-square"></i>';
+                const botonCancelar = document.createElement('button');
+                botonCancelar.type = 'button';
+                botonCancelar.className = 'btn btn-sm btn-danger me-1 btn-cancelar d-none';
+                botonCancelar.title = 'Cancelar';
+                botonCancelar.innerHTML = '<i class="bi bi-x-square"></i>';
 
-            botonEditar.addEventListener('click', function () {
-                habilitarEdicion(this, botonCancelar);
-            });
+                botonEditar.addEventListener('click', function () {
+                    habilitarEdicion(this, botonCancelar);
+                });
 
-            botonCancelar.addEventListener('click', function () {
-                cancelarEdicion(this, botonEditar);
-                botonCancelar.classList.add('d-none');
-                botonEditar.classList.remove('d-none');
-            });
+                botonCancelar.addEventListener('click', function () {
+                    cancelarEdicion(this, botonEditar);
+                    botonCancelar.classList.add('d-none');
+                    botonEditar.classList.remove('d-none');
+                });
 
-            tdBoton.appendChild(botonEditar);
-            tdBoton.appendChild(botonCancelar);
+                tdBoton.appendChild(botonEditar);
+                tdBoton.appendChild(botonCancelar);
+            } else {
+                const botonEditar = document.createElement('button');
+                botonEditar.type = 'button';
+                botonEditar.className = 'btn btn-sm btn-primary me-1';
+                botonEditar.title = 'No se puede editar';
+                botonEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
+
+                botonEditar.disabled = true;
+
+                tdBoton.appendChild(botonEditar);
+            }
+
             fila.appendChild(tdBoton);
         }
 

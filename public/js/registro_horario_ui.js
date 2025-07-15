@@ -19,10 +19,12 @@ export function actualizarUIEstado(estado, datos) {
         const inicio = new Date(datos.hora_inicio_jornada);
         horaInicioSpan.textContent = inicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
+
     if (horaFinSpan && datos.hora_fin_jornada) {
         const fin = new Date(datos.hora_fin_jornada);
         horaFinSpan.textContent = fin.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
+
     if (tiempoTrabajadoSpan) {
         const horas = Math.floor(datos.segundos_trabajados / 3600);
         const minutos = Math.floor((datos.segundos_trabajados % 3600) / 60);
@@ -35,30 +37,30 @@ export function actualizarUIEstado(estado, datos) {
             if (textoEstado) textoEstado.textContent = 'Jornada en curso';
             if (estadoCronometro) actualizarColor(estadoCronometro, 'text-primary', 'Trabajando');
             iniciarCronometro();
-            if (btnIniciarJornada) btnIniciarJornada.classList.add('d-none');
-            if (btnIniciarDescanso) btnIniciarDescanso.classList.remove('d-none');
-            if (btnFinalizarJornada) btnFinalizarJornada.classList.remove('d-none');
-            if (btnFinalizarDescanso) btnFinalizarDescanso.classList.add('d-none');
+            btnIniciarJornada?.classList.add('d-none');
+            btnIniciarDescanso?.classList.remove('d-none');
+            btnFinalizarDescanso?.classList.add('d-none');
+            btnFinalizarJornada?.classList.remove('d-none');
             break;
 
         case 'descanso':
             if (textoEstado) textoEstado.textContent = 'En descanso';
             if (estadoCronometro) actualizarColor(estadoCronometro, 'text-warning', 'Descansando');
             detenerCronometro();
-            if (btnIniciarJornada) btnIniciarJornada.classList.add('d-none');
-            if (btnIniciarDescanso) btnIniciarDescanso.classList.add('d-none');
-            if (btnFinalizarJornada) btnFinalizarJornada.classList.remove('d-none');
-            if (btnFinalizarDescanso) btnFinalizarDescanso.classList.remove('d-none');
+            btnIniciarJornada?.classList.add('d-none');
+            btnIniciarDescanso?.classList.add('d-none');
+            btnFinalizarDescanso?.classList.remove('d-none');
+            btnFinalizarJornada?.classList.add('d-none'); // 👈 se oculta correctamente aquí
             break;
 
         case 'finalizado':
             if (textoEstado) textoEstado.textContent = 'Jornada finalizada';
             if (estadoCronometro) actualizarColor(estadoCronometro, 'text-success', 'Finalizada');
             detenerCronometro();
-            if (btnIniciarJornada) btnIniciarJornada.classList.remove('d-none');
-            if (btnIniciarDescanso) btnIniciarDescanso.classList.add('d-none');
-            if (btnFinalizarDescanso) btnFinalizarDescanso.classList.add('d-none');
-            if (btnFinalizarJornada) btnFinalizarJornada.classList.add('d-none');
+            btnIniciarJornada?.classList.remove('d-none');
+            btnIniciarDescanso?.classList.add('d-none');
+            btnFinalizarDescanso?.classList.add('d-none');
+            btnFinalizarJornada?.classList.add('d-none');
             break;
 
         default:

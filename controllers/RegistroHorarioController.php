@@ -101,7 +101,12 @@ public function buscarJornadas()
         return;
     }
 
-    $usuario = $_SESSION['user_id'];
+    if ($_SESSION['dept'] != '3') {
+        $usuario = $_SESSION['user_id'];
+    }else{
+        $usuario = $_POST['usuario'];
+    }
+
     $fechaDesde = $_POST['fecha_desde'] ?? null;
     $fechaHasta = $_POST['fecha_hasta'] ?? null;
     $pagina = isset($_POST['page']) ? (int)$_POST['page'] : 1;
@@ -119,7 +124,6 @@ public function buscarJornadas()
         'limit' => $limite,
         'page' => $pagina
     ]);
-    
 }
 
 public function imprimir()

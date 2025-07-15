@@ -21,13 +21,13 @@ class Usuario {
     
         $stmt = $this->db->prepare("
             INSERT INTO usuarios 
-                (nombre, alias, email, telefono, fecha_ingreso, password, departamento_id, activo, foto)
+                (nombre, apellidos, email, telefono, fecha_ingreso, password, departamento_id, activo, foto)
             VALUES 
-                (:nombre, :alias, :email, :telefono, :fecha_ingreso, :password, :departamento_id, :activo, :foto)
+                (:nombre, :apellidos, :email, :telefono, :fecha_ingreso, :password, :departamento_id, :activo, :foto)
         ");
     
         $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':apellidos', $data['apellidos']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':telefono', $data['telefono']);
         $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso']);
@@ -71,7 +71,7 @@ class Usuario {
     
         $sql = "UPDATE usuarios SET 
                     nombre = :nombre,
-                    alias = :alias,
+                    apellidos = :apellidos,
                     email = :email,
                     telefono = :telefono,
                     fecha_ingreso = :fecha_ingreso,
@@ -88,7 +88,7 @@ class Usuario {
     
         $stmt->bindParam(':id', $data['id']);
         $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':apellidos', $data['apellidos']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':telefono', $data['telefono']);
         $stmt->bindParam(':fecha_ingreso', $data['fecha_ingreso']);
@@ -107,7 +107,7 @@ class Usuario {
     
         $sql = "UPDATE usuarios SET 
                     nombre = :nombre,
-                    alias = :alias,
+                    apellidos = :apellidos,
                     email = :email,
                     telefono = :telefono";
         
@@ -117,7 +117,7 @@ class Usuario {
     
         $stmt->bindParam(':id', $data['id']);
         $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':alias', $data['alias']);
+        $stmt->bindParam(':apellidos', $data['apellidos']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':telefono', $data['telefono']);
         
@@ -179,7 +179,7 @@ class Usuario {
         return $stmt->execute();
     }
 
-    public function obtenerUsuariosActivos()
+    public static function obtenerUsuariosActivos()
 {
     $conexion = Database::connect();
     $query = "SELECT id, nombre FROM usuarios WHERE activo = 1 ORDER BY nombre ASC";
@@ -236,8 +236,9 @@ public static function estadoJornada($userId) {
 
 
 
-  public function getAllUsuariosSinWebmaster() {
-    $stmt = $this->db->prepare("SELECT id, nombre, foto, rol FROM usuarios WHERE rol != 'webmaster' AND activo = 1 ORDER BY nombre ASC");
+  public static function getAllUsuariosSinWebmaster() {
+    $db = Database::connect();
+    $stmt = $db->prepare("SELECT id, nombre, apellidos, foto, rol FROM usuarios WHERE rol != 'webmaster' AND activo = 1 ORDER BY nombre ASC");
     $stmt->execute();
     return $stmt->fetchAll();
 }

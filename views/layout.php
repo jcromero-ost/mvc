@@ -8,7 +8,9 @@ require_once __DIR__ . '/../session.php';
 
   <body>
 
-    <?php include __DIR__ . '/components/header.php'; ?>
+    <?php 
+    include __DIR__ . '/components/header.php'; 
+    ?>
     <?php if (empty($_SESSION['tablet_mode'])): ?>
       <?php include __DIR__ . '/components/nav.php'; ?>
     <?php endif; ?>
@@ -22,7 +24,7 @@ $claseMain = ($esTablet || $esRegistroHorario)
     ? 'container-fluid d-flex justify-content-center align-items-center'
     : 'main-default';
 
-$estiloMain = ($esTablet || $esRegistroHorario) ? 'min-height: 100vh;' : '';
+$estiloMain = ($esTablet || $esRegistroHorario) ? 'min-height: calc(100vh - 70px); padding-top: 1rem;' : '';
 
 $claseContenedor = ($esTablet || $esRegistroHorario)
     ? 'w-100'
@@ -36,7 +38,7 @@ $estiloContenedor = ($esTablet || $esRegistroHorario)
 <main class="<?= $claseMain ?>" style="<?= $estiloMain ?>">
   <div class="<?= $claseContenedor ?>" style="<?= $estiloContenedor ?>">
     <?php
-      include __DIR__ . '/components/alerts.php';
+      include __DIR__ . '/components/alerts.php'; 
       if (isset($view)) {
         $viewFile = __DIR__ . '/' . $view;
         if (file_exists($viewFile)) {

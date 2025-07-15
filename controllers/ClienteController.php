@@ -8,8 +8,8 @@ require_once __DIR__ . '/../models/Cliente.php';
 class ClienteController {
 
     public function create() {
-        require_once __DIR__ . '/../views/crear_cliente.php';
-    }
+    require_once __DIR__ . '/../views/crear_cliente.php';
+}
 
     public function index() {
         require_once __DIR__ . '/../views/clientes.php';
@@ -21,12 +21,9 @@ class ClienteController {
 
     // Actualizar datos del cliente
     public function update_cliente() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) session_start();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Recogemos los datos del formulario
             $data = [
                 'id'        => $_POST['id'] ?? '',
                 'nombre'    => $_POST['nombre'] ?? '',
@@ -39,77 +36,83 @@ class ClienteController {
                 'provincia' => $_POST['provincia'] ?? ''
             ];
 
-            $cliente = new Cliente();
-            $exito = $cliente->update($data);
+            $exito = Cliente::update($data);
 
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
+            $this->responderJson($exito ? ['success' => true] : ['success' => false, 'error' => 'Error al guardar en base de datos.']);
             return;
         }
 
         $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
-    
+
     public function delete_cliente() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'eliminar') {
             $id = $_POST['id'] ?? null;
-            if ($id) {
-                Cliente::delete($id);
-            } else {
-                
-                echo "ID no válido para eliminar.";
-            }
+            if ($id) Cliente::delete($id);
+            else echo "ID no válido para eliminar.";
         }
     }
-    
+
     public function store() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) session_start();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? '';
-            $nombre = $_POST['nombre'] ?? '';
-            $telefono = $_POST['telefono'] ?? '';
-            $dni = $_POST['dni'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $direccion = $_POST['direccion'] ?? '';
-            $ciudad = $_POST['ciudad'] ?? '';
-            $cp = $_POST['cp'] ?? '';
-            $provincia = $_POST['provincia'] ?? '';
+            $data = [
+                'id' => $_POST['id'] ?? '',
+                'nombre' => $_POST['nombre'] ?? '',
+                'telefono' => $_POST['telefono'] ?? '',
+                'dni' => $_POST['dni'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'direccion' => $_POST['direccion'] ?? '',
+                'ciudad' => $_POST['ciudad'] ?? '',
+                'cp' => $_POST['cp'] ?? '',
+                'provincia' => $_POST['provincia'] ?? ''
+            ];
 
-            // Validaciones
-            if (empty($nombre) || empty($telefono) || empty($dni) || empty($email)) {
+            if (empty($data['nombre']) || empty($data['telefono']) || empty($data['dni']) || empty($data['email'])) {
                 $_SESSION['error'] = 'Todos los campos obligatorios deben completarse.';
                 header('Location: /crear_cliente');
                 exit;
             }
 
-            $cliente = new Cliente();
-            $cliente->create([
-                'id' => $id,
-                'nombre' => $nombre,
-                'telefono' => $telefono,
-                'dni' => $dni,
-                'email' => $email,
-                'direccion' => $direccion,
-                'ciudad' => $ciudad,
-                'cp' => $cp,
-                'provincia' => $provincia
-            ]);
-
+            Cliente::create($data);
 
             $_SESSION['success'] = 'Cliente creado correctamente.';
             header('Location: /clientes');
             exit;
         }
 
-        // Si entra por GET o sin POST válido, redirigir
         header('Location: /clientes');
         exit;
+    }
+
+    public function storeTickets() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id' => $_POST['id'] ?? '',
+                'nombre' => $_POST['nombre'] ?? '',
+                'telefono' => $_POST['telefono'] ?? '',
+                'dni' => $_POST['dni'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'direccion' => $_POST['direccion'] ?? '',
+                'ciudad' => $_POST['ciudad'] ?? '',
+                'cp' => $_POST['cp'] ?? '',
+                'provincia' => $_POST['provincia'] ?? ''
+            ];
+
+            if (empty($data['nombre']) || empty($data['telefono']) || empty($data['dni']) || empty($data['email'])) {
+                $this->responderJson(['success' => false, 'error' => 'Faltan campos obligatorios']);
+            }
+
+            $exito = Cliente::create($data);
+
+            $this->responderJson($exito ? ['success' => true] : ['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            return;
+        }
+
+        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
     private function responderJson($data) {
@@ -117,61 +120,17 @@ class ClienteController {
         echo json_encode($data);
         exit;
     }
-
-    public function storeTickets() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? '';
-            $nombre = $_POST['nombre'] ?? '';
-            $telefono = $_POST['telefono'] ?? '';
-            $dni = $_POST['dni'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $direccion = $_POST['direccion'] ?? '';
-            $ciudad = $_POST['ciudad'] ?? '';
-            $cp = $_POST['cp'] ?? '';
-            $provincia = $_POST['provincia'] ?? '';
-
-            // Validaciones
-            if (empty($nombre) || empty($telefono) || empty($dni) || empty($email)) {
-                $this->responderJson(['success' => false, 'error' => 'Faltan campos obligatorios']);
-            }
-
-            $cliente = new Cliente();
-            $exito = $cliente->create([
-                'id' => $id,
-                'nombre' => $nombre,
-                'telefono' => $telefono,
-                'dni' => $dni,
-                'email' => $email,
-                'direccion' => $direccion,
-                'ciudad' => $ciudad,
-                'cp' => $cp,
-                'provincia' => $provincia
-            ]);
-
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
-        }
-        // Si entra por GET o sin POST válido, redirigir
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
 }
+
 if (isset($_POST['accion'])) {
     $controller = new ClienteController();
-    
+
     switch ($_POST['accion']) {
         case 'editar':
-            $controller->update();
+            $controller->update_cliente();
             break;
         case 'eliminar':
-            $controller->delete();
+            $controller->delete_cliente();
             break;
     }
 }

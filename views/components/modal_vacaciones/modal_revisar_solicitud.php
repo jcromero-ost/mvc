@@ -2,8 +2,10 @@
 <div class="modal fade" id="modalRevisarSolicitud" tabindex="-1" aria-labelledby="modalRevisarSolicitudLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST">
-        <input type="hidden" name="id" id="delete_id">
+      <form method="POST" action="/vacaciones_update_estado">
+        <input type="hidden" name="id" id="form-id">
+        <input type="hidden" name="estado" id="form-estado">
+        <input type="hidden" name="rechazo_motivo" id="form-rechazo-motivo">
 
         <div class="modal-header">
           <h5 class="modal-title" id="modalRevisarSolicitudLabel">Revisar Solicitud</h5>
@@ -32,12 +34,12 @@
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Aceptar</button>
-          <button type="submit" class="btn btn-danger">Rechazar</button>
+          <button id="botonAceptarSolicitud" type="submit" class="btn btn-success">Aceptar</button>
+          <button id="botonRechazarSolicitud" type="button" class="btn btn-danger">Rechazar</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<script src="/public/js/tickets/tickets_modal_eliminar.js"></script>
+

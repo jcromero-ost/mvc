@@ -15,6 +15,14 @@ class Departamento {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Obtener todos los departamentos sin webmaster
+    public function getAllDepartamentosSinWebmaster() {
+        $stmt = $this->db->prepare("SELECT * FROM departamentos WHERE id != 3 ORDER BY nombre ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     // Obtener un departamento por ID
     public function getById($id) {
         $id = (int) $id;

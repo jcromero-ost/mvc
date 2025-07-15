@@ -36,7 +36,6 @@ class UsuarioController {
                 $datos['foto'] = $foto;
             }
             
-    
             if ($id && $nombre && $email) {
                 $datos = [
                     'id' => $id,
@@ -313,25 +312,23 @@ class UsuarioController {
         exit;
     }
 
-    public function usuariosActivos()
-{
-    header('Content-Type: application/json');
+    public function usuariosActivos() {
+        header('Content-Type: application/json');
 
-    $usuario = new Usuario();
-    $usuarios = $usuario->obtenerUsuariosActivos();
+        $usuario = new Usuario();
+        $usuarios = $usuario->obtenerUsuariosActivos();
 
-    echo json_encode(['success' => true, 'data' => $usuarios]);
-}
+        echo json_encode(['success' => true, 'data' => $usuarios]);
+    }
 
-public function loginTablet() {
-    $usuarioModel = new Usuario();
-    $usuarios = $usuarioModel->getAllUsuariosSinWebmaster(); // nuevo método
-    require_once __DIR__ . '/../views/login_tablet.php';
-}
-
-
+    public function loginTablet() {
+        $usuarioModel = new Usuario();
+        $usuarios = $usuarioModel->getAllUsuariosSinWebmaster(); // nuevo método
+        require_once __DIR__ . '/../views/login_tablet.php';
+    }
 
 }
+
 if (isset($_POST['accion'])) {
     $controller = new UsuarioController();
     

@@ -14,12 +14,12 @@
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="edit_nombre" class="form-label">Nombre completo</label>
+              <label for="edit_nombre" class="form-label">Nombre</label>
               <input type="text" class="form-control" id="edit_nombre" name="nombre" required>
             </div>
             <div class="col-md-6">
-              <label for="edit_alias" class="form-label">Alias</label>
-              <input type="text" class="form-control" id="edit_alias" name="alias">
+              <label for="edit_apellidos" class="form-label">Apellidos</label>
+              <input type="text" class="form-control" id="edit_apellidos" name="alias">
             </div>
           </div>
 

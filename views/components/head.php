@@ -23,11 +23,20 @@
     <!-- Cropper.js CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
 
+    <!--CSS Quill editor-->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+    <!-- Carga de jQuery antes de cualquier script que lo use -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
     <!-- Bootstrap Bundle (incluye Popper.js, necesario para tooltips, dropdowns, alerts dismiss...) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 
     <!-- Cropper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" defer></script>
+
+    <!-- Quill Editor JS -->
+     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 
     <?php if (empty($_SESSION['tablet_mode'])): ?>
     <script>

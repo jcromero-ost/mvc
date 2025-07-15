@@ -7,7 +7,7 @@
   </div>
 
   <div class="row g-3 align-items-end mb-4">
-    <div class="col-md-3">
+    <div class="col-md-2">
       <label for="filtrar_cliente" class="form-label">Cliente</label>
       <input type="text" id="filtrar_cliente" class="form-control">
       <div id="sugerencias-nombre" class="list-group"></div>
@@ -19,15 +19,74 @@
     </div>
 
     <div class="col-md-2">
-      <label for="filtrar_tecnico" class="form-label">Técnico</label>
-      <select id="filtrar_tecnico" class="form-select">
-            <option value="">Seleccione un tecnico</option>
-            <option value="Pendiente de asignar">Sin tecnico asignado</option>
-            <?php foreach ($tecnicos as $tec): ?>
-              <option><?= htmlspecialchars($tec['nombre']) ?></option>
-            <?php endforeach; ?>
+      <label for="filtrar_medio" class="form-label">Medio</label>
+      <select id="filtrar_medio" class="form-select">
+        <option value="">Seleccione un medio</option>
+        <?php foreach ($medios_comunicacion as $medio): ?>
+            <option value="<?= htmlspecialchars($medio['nombre']) ?>"><?= htmlspecialchars($medio['nombre']) ?></option>
+        <?php endforeach; ?>
       </select>
     </div>
+
+    <div class="col-md-3">
+      <div class="d-flex justify-content-center gap-3 mb-2">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="filtro_asignacion" id="filtro_departamento" value="departamento" checked>
+          <label class="form-check-label" for="filtro_departamento">Departamento</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="filtro_asignacion" id="filtro_tecnico" value="tecnico">
+          <label class="form-check-label" for="filtro_tecnico">Técnico</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="filtro_asignacion" id="filtro_sinAsignar" value="ain_asignar">
+          <label class="form-check-label" for="filtro_sinAsignar">Sin asignar</label>
+        </div>
+      </div>
+
+      <!-- Select de departamentos (visible por defecto) -->
+      <select id="select_filtro_departamento" class="form-select">
+        <option value="">Seleccione un departamento</option>
+        <?php 
+        if ($_SESSION['dept'] == '2' || $_SESSION['dept'] == '3') {
+            // Mostrar todos los departamentos
+            foreach ($departamentos as $dept): 
+        ?>
+            <option value="<?= htmlspecialchars($dept['nombre']) ?>"><?= htmlspecialchars($dept['nombre']) ?></option>
+        <?php 
+            endforeach;
+        } else {
+            // Mostrar solo el departamento del usuario
+            foreach ($departamentos as $dept): 
+                if ($dept['id'] == $_SESSION['dept']): 
+        ?>
+            <option value="<?= htmlspecialchars($dept['nombre']) ?>"><?= htmlspecialchars($dept['nombre']) ?></option>
+        <?php 
+                endif;
+            endforeach;
+        }
+        ?>
+      </select>
+
+
+      <!-- Select de técnicos (oculto al inicio) -->
+      <select id="select_filtro_tecnico" class="form-select d-none mt-2">
+        <option value="">Seleccione un técnico</option>
+        <?php if ($_SESSION['dept'] != '3' && $_SESSION['dept'] != '2'): ?>
+            <?php foreach ($tecnicos as $tec): ?>
+                <?php if ($tec['id'] == $_SESSION['id']): ?>
+                    <option><?= htmlspecialchars($tec['nombre']) ?></option>
+                    <?php break; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <?php foreach ($tecnicos as $tec): ?>
+                <option><?= htmlspecialchars($tec['nombre']) ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+      </select>
+    </div>
+
 
     <div class="col-md-2">
       <label for="filtrar_estado" class="form-label">Estado</label>
@@ -35,9 +94,6 @@
             <option value="">Seleccione un estado</option>
             <option value="Pendiente">Pendiente</option>
             <option value="En Revisión">En Revisión</option>
-            <option value="Finalizado">Finalizado</option>
-            <option value="Albaranado">Albaranado</option>
-
       </select>
     </div>
 
@@ -52,7 +108,7 @@
       </select>
     </div>
 
-    <div class="col-md-2 d-flex gap-2">
+    <div class="col-md-2 d-flex gap-2 d-none">
       <button id="btn-filtrar" class="btn btn-primary w-100">
         <i class="bi bi-funnel"></i> Filtrar
       </button>
@@ -69,10 +125,13 @@
           <th>Cliente</th>
           <th>ID</th>
           <th>Medio</th>
-          <th>Técnico</th>
+          <th>Asignaciones</th>
           <th>Fecha Inicio</th>
           <th>Descripcion</th>
-          <th>Tiempo</th>
+<th  id="th-tiempo-abierto" style="cursor:pointer">
+  Tiempo Abierto
+  <i class="bi bi-arrow-down-up ms-1"></i>
+</th>
           <th>Estado</th>
           <th class="text-center">Acciones</th>
         </tr>
@@ -129,34 +188,24 @@
             return ['badgeClass' => $badgeClass, 'texto' => $texto];
         }
 
-        function obtenerTiempoTranscurrido($fecha_inicio) {
-          // Obtener la fecha actual
-          $fecha_actual = new DateTime();
-          // Convertir la fecha de inicio a un objeto DateTime
-          $fecha_inicio = new DateTime($fecha_inicio);
-      
-          // Calcular la diferencia entre la fecha actual y la de inicio
-          $intervalo = $fecha_actual->diff($fecha_inicio);
-          
-          // Inicializar el formato de la cadena
-          $resultado = '';
-      
-          // Verificar si hay días
-          if ($intervalo->d > 0) {
-              $resultado .= $intervalo->d . 'd ';
-          }
-      
-          // Verificar si hay horas
-          if ($intervalo->h > 0) {
-              $resultado .= $intervalo->h . 'h ';
-          }
-      
-          // Verificar si hay minutos
-          if ($intervalo->i > 0 || $resultado === '') { // Mostrar minutos si no hay días ni horas
-              $resultado .= $intervalo->i . 'm';
-          }
-      
-          return $resultado;
+        function formatoTiempo($segundos) {
+            $horas = floor($segundos / 3600);
+            $minutos = floor(($segundos % 3600) / 60);
+            $segundos = $segundos % 60;
+            return sprintf('%02d:%02d:%02d', $horas, $minutos, $segundos);
+        }
+
+        function tiempoAbierto($fecha_inicio) {
+          $inicio = new DateTime($fecha_inicio);
+          $ahora = new DateTime();
+          $diferencia = $inicio->diff($ahora);
+
+          $dias = $diferencia->d + $diferencia->m * 30 + $diferencia->y * 365;
+          $horas = $diferencia->h;
+          $minutos = $diferencia->i;
+          $segundos = $diferencia->s;
+
+          return sprintf('%dd %02dh %02dm', $dias, $horas, $minutos);
         }
       ?>
       <tbody>
@@ -165,20 +214,51 @@
                 <td><?= htmlspecialchars(obtenerNombreCliente($ticket['cliente_id'], $db2)) ?></td>
                 <td><?= htmlspecialchars($ticket['id']) ?></td>
                 <td><?= htmlspecialchars(obtenerNombreMedio($ticket['medio_id'], $db)) ?></td>
-                <td><?= empty($ticket['tecnico_id']) ? 'Pendiente de asignar' : htmlspecialchars(obtenerNombreTecnico($ticket['tecnico_id'], $db)) ?></td>
-                <td><?= htmlspecialchars($ticket['fecha_inicio']) ?></td>
                 <td>
-                  <?= htmlspecialchars(implode(' ', array_slice(explode(' ', $ticket['descripcion']), 0, 45))) ?>
-                  <a 
-                    class="btn btn-primary btn-extra-small btn-descripcion-completa" 
-                    data-id="<?= $ticket['id'] ?>" 
-                    data-descripcion="<?= htmlspecialchars($ticket['descripcion'], ENT_QUOTES) ?>"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalDescripcionCompleta">
-                    ...ver más
-                  </a>
+                  <?php
+                    $ticket_id = $ticket['id'];
+                    if (isset($asignacionesPorTicket[$ticket_id])) {
+                        foreach ($asignacionesPorTicket[$ticket_id] as $asignacion) {
+                            $tipo = $asignacion['tipo'];
+                            $nombre = '';
+
+                            // Busca nombre según el tipo de asignación
+                            if ($tipo === 'tecnico') {
+                                $nombre = obtenerNombreTecnico($asignacion['ref_id'], $db);
+                                echo '<span class="badge bg-dark me-1">' . htmlspecialchars($nombre) . '</span>';
+                            } elseif ($tipo === 'departamento') {
+                                // Suponiendo que tengas una función o consulta para obtener nombre de departamento
+                                $stmt = $db->prepare("SELECT nombre FROM departamentos WHERE id = ?");
+                                $stmt->execute([$asignacion['ref_id']]);
+                                $nombre = $stmt->fetchColumn();
+                                echo '<span class="badge bg-primario me-1">' . htmlspecialchars($nombre) . '</span>';
+                            }
+                        }
+                    } else {
+                      echo '<span class="badge bg-danger me-1">Pendiente de asignar</span>';
+                    }
+                  ?>
                 </td>
-                <td><?= htmlspecialchars(obtenerTiempoTranscurrido($ticket['fecha_inicio'])) ?></td>
+                <td><?= htmlspecialchars($ticket['fecha_inicio']) ?></td>
+                <?php
+                  $descripcion = $ticket['descripcion'];
+                  $palabras = explode(' ', $descripcion);
+                  $descripcion_resumida = implode(' ', array_slice($palabras, 0, 45));
+                ?>
+                <td>
+                  <?= htmlspecialchars($descripcion_resumida) ?>
+                  <?php if (count($palabras) > 45): ?>
+                    <a 
+                      class="btn btn-primary btn-extra-small btn-descripcion-completa" 
+                      data-id="<?= $ticket['id'] ?>" 
+                      data-descripcion="<?= htmlspecialchars($descripcion, ENT_QUOTES) ?>"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#modalDescripcionCompleta">
+                      ...ver más
+                    </a>
+                  <?php endif; ?>
+                </td>
+                <td><?= tiempoAbierto($ticket['fecha_inicio']) ?></td>
                 <td>
                 <?php
                   // Obtener el estado y los valores correspondientes
@@ -214,7 +294,7 @@
   <?php include_once __DIR__ . '/components/modal_tickets/modal_editar_ticket.php'; ?>
 
   <!-- Modal eliminar ticket -->
-  <?php include_once __DIR__ . '/components/modal_tickets/modal_eliminar_ticket.php'; ?>
+  
 
   <!-- Modal descripcion -->
   <?php include_once __DIR__ . '/components/modal_tickets/modal_descripcion_ticket.php'; ?>

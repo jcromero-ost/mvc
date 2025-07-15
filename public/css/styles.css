@@ -124,6 +124,127 @@ header {
   height: 100%;
 }
 
+.btn-custom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    height: 90px;
+    padding: 8px;
+    border-radius: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    transition: transform 0.15s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+.icono-boton {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+}
+
+.texto-boton {
+    font-size: 0.75rem;
+    line-height: 1.1;
+    margin-top: 2px;
+}
+
+.check-icon {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  position: absolute;
+  right: 0.75rem;
+  top: calc(50% + 1px); /* Ajuste fino para Firefox */
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+
+input#cliente_search {
+  padding-right: 2rem; /* deja espacio para el icono */
+}
+
+main.con-cronometro {
+  margin-right: 265px; /* Ajusta este valor si el ancho del offcanvas cambia */
+  transition: margin 0.3s ease;
+}
+
+.offcanvas-cronometro {
+    width: 260px !important;
+    background-color: var(--color-dark);
+    color: white;
+  }
+
+  .offcanvas-cronometro .btn {
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .cronometro-btn-group {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 1rem;
+  }
+
+  .cronometro-btn-group .btn {
+    flex: 1;
+  }
+
+
+.comentario-postit {
+  background-color: #fff8c6;
+  border-left: 6px solid #ffe600;
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.top-derecha {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  z-index: 1;
+}
+
+
+.comentario-postit small.text-muted {
+  font-size: 0.75rem;
+}
+
+.comentario-postit .badge {
+  font-size: 0.7rem;
+  padding: 0.35em 0.5em;
+}
+
+.comentario-postit .btn-editar-comentario {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.comentario-postit textarea {
+  background-color: #fffde4;
+}
+
+.comentario-postit .alert-secondary {
+  background-color: #fffae0;
+  border-color: #f9f3be;
+}
+
+
+
+
 
 /*
 @media (min-width: 600px) and (max-width: 900px) {

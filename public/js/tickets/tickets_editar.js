@@ -1,197 +1,173 @@
-document.addEventListener("DOMContentLoaded", function () {  
-    const formulario_editar = document.getElementById('formEditarTicket');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formEditarTicket");
+  const mensaje = document.getElementById("mensaje");
 
-    const mensaje = document.getElementById('mensaje');
-    
-    // Realiza las operaciones cuando se pulsa el boton
-    formulario_editar.addEventListener('submit', function(e) {
-        e.preventDefault();  // Prevenir el envío tradicional
+  // Mostrar mensaje dinámico
+  function mostrarMensaje(texto, tipo = "info") {
+    mensaje.textContent = texto;
+    mensaje.className = `alert alert-${tipo} mt-3`;
+    mensaje.classList.remove("d-none");
 
-        const medio_comunicacion = document.getElementById('medio_comunicacion').value;
-        const tecnico = document.getElementById('tecnico').value;
-        const descripcion = document.getElementById('descripcion').value;
+    setTimeout(() => mensaje.classList.add("opacity-0"), 2500);
+    setTimeout(() => {
+      mensaje.classList.add("d-none");
+      mensaje.classList.remove("opacity-0");
+    }, 3000);
+  }
 
-        // Crear FormData con los datos que se necesitan enviar
-        const formData = new FormData();
-        formData.append('medio_comunicacion', medio_comunicacion); // ID Ticket
-        formData.append('tecnico', tecnico); // ID Ticket
-        formData.append('descripcion', descripcion); // ID Ticket
-        formData.append('id', ticket_id); // ID Ticket
+  // Enviar formulario
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
 
-        fetch('/store_ticket_editar', {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json())
-        .then(data => {        
-            if (data.success) {
-                mensaje.textContent = 'Ticket editado correctamente.';
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-25');
-                mensaje.classList.remove('bg-danger');
-                mensaje.classList.add('bg-success');
-            } else {
-                mensaje.textContent = data.error;
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-25');
-                mensaje.classList.remove('bg-success');
-                mensaje.classList.add('bg-danger');
-            }
+    try {
+      const response = await fetch("/api/tickets/update", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
 
-            mensaje.classList.remove('d-none');
-
-            // Ocultar después de 2 segundos (2000 ms)
-            setTimeout(() => {
-                mensaje.classList.add('d-none');
-            }, 2000);
-        })
-        .catch(error => {
-            console.error('Error en la petición:', error);
-        });
-    });
-
-    //-------------------------------------------------BOTONES FINALIZADO/PENDIENTE--------------------------------------------------
-    const ticket_id = document.getElementById('id').value;
-    const ticket_estado = document.getElementById('estado').value;
-    const botonFinalizarTicket = document.getElementById('botonFinalizarTicket');
-    const botonAlbaranarTicket = document.getElementById('botonAlbaranarTicket');
-    const botonPendienteTicket = document.getElementById('botonPendienteTicket');
-
-    const nuevoComentarioBtn = document.getElementById('nuevoComentarioBtn');    
-    const nuevoComentarioInternoBtn = document.getElementById('nuevoComentarioInternoBtn');
-    const botonFormulario = document.getElementById('botonFormulario');
-
-    const botonDeleteComentario = document.getElementById('botonDeleteComentario');
-    const botonEditComentario = document.getElementById('botonEditComentario');
-
-    if(ticket_estado === 'pendiente'){
-        botonFinalizarTicket.classList.remove('d-none');
-        botonPendienteTicket.classList.add('d-none');
-        botonAlbaranarTicket.classList.add('d-none');
-
-    }else if (ticket_estado === 'finalizado'){
-        botonFinalizarTicket.classList.add('d-none');
-        botonPendienteTicket.classList.remove('d-none');
-        botonAlbaranarTicket.classList.remove('d-none');
-    }else if (ticket_estado === 'en_revision'){
-        botonFinalizarTicket.classList.remove('d-none');
-        botonPendienteTicket.classList.add('d-none');
-        botonAlbaranarTicket.classList.add('d-none');
-    }else if (ticket_estado === 'albaranado'){
-        desactivarEdicionFormulario();
+      if (data.success) {
+        mostrarMensaje("Cambios guardados con éxito", "success");
+      } else {
+        mostrarMensaje(data.error || "Error al guardar los cambios", "danger");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      mostrarMensaje("Error en la petición", "danger");
     }
+  });
 
-    function desactivarEdicionFormulario(){
-        const inputs = formulario_editar.querySelectorAll('input, textarea'); // Selecciona todos los inputs, textarea y selects
-        const selects = formulario_editar.querySelectorAll('select');
+  // Actualizar estado del ticket
+  function actualizarEstado(nuevoEstado) {
+    const ticketId = form.querySelector('input[name="id"]').value;
 
-        inputs.forEach(input => {
-            input.readOnly = true; // Establece 'readonly' en todos los campos
-        });
+    fetch("/api/tickets/cambiar_estado", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: ticketId, estado: nuevoEstado }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) location.reload();
+        else mostrarMensaje("No se pudo actualizar el estado", "danger");
+      })
+      .catch(err => {
+        console.error(err);
+        mostrarMensaje("Error al cambiar estado", "danger");
+      });
+  }
 
-        selects.forEach(select =>{
-            select.disabled = true;
-        });
+  // Botones de estado
+  document.getElementById("botonFinalizarTicket")?.addEventListener("click", () => actualizarEstado("finalizado"));
+  document.getElementById("botonAlbaranarTicket")?.addEventListener("click", () => actualizarEstado("albaranado"));
+  document.getElementById("botonPendienteTicket")?.addEventListener("click", () => actualizarEstado("pendiente"));
 
-        document.querySelectorAll('button').forEach(el => el.classList.add('d-none'));
-    }
-
-    const badge = document.getElementById('estadoBadge');
-
-    botonFinalizarTicket.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-        botonPendienteTicket.classList.remove('d-none');
-        botonAlbaranarTicket.classList.remove('d-none');
-        botonFinalizarTicket.classList.add('d-none');
-
-        // Crear FormData con los datos que se necesitan enviar
-        const formData = new FormData();
-        formData.append('estado', 'finalizado'); // ID Ticket
-        formData.append('id', ticket_id); // ID Ticket
-
-        fetch('/update_estado', {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json())
-        .then(data => {        
-            if (data.success) {
-                mensaje.textContent = 'Ticket finalizado correctamente.';
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-25');
-                mensaje.classList.remove('bg-danger');
-                mensaje.classList.add('bg-success');
-
-                badge.textContent = 'Finalizado';
-                badge.className = 'badge bg-success mb-4';
-
-            } else {
-                mensaje.textContent = 'Error al finalizar el ticket: ' + data.error;
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-100');
-                mensaje.classList.remove('bg-success');
-                mensaje.classList.add('bg-danger');
-            }
-
-            mensaje.classList.remove('d-none');
-
-            // Ocultar después de 2 segundos (2000 ms)
-            setTimeout(() => {
-                mensaje.classList.add('d-none');
-            }, 2000);
-        })
-        .catch(error => {
-            console.error('Error en la petición:', error);
-        });
-    });
-
-    botonPendienteTicket.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-        botonPendienteTicket.classList.add('d-none');
-        botonAlbaranarTicket.classList.add('d-none');
-        botonFinalizarTicket.classList.remove('d-none');
-
-        // Crear FormData con los datos que se necesitan enviar
-        const formData = new FormData();
-        formData.append('estado', 'pendiente'); // ID Ticket
-        formData.append('id', ticket_id); // ID Ticket
-
-        fetch('/update_estado', {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json())
-        .then(data => {        
-            if (data.success) {
-                mensaje.textContent = 'Ticket marcado como pendiente correctamente.';
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-25');
-                mensaje.classList.remove('bg-danger');
-                mensaje.classList.add('bg-success');
-
-                badge.textContent = 'Pendiente';
-                badge.className = 'badge bg-danger mb-4';
-            } else {
-                mensaje.textContent = 'Error al finalizar el ticket: ' + data.error;
-                mensaje.classList.add('text-black');
-                mensaje.classList.add('bg-opacity-100');
-                mensaje.classList.remove('bg-success');
-                mensaje.classList.add('bg-danger');
-            }
-
-            mensaje.classList.remove('d-none');
-
-            // Ocultar después de 2 segundos (2000 ms)
-            setTimeout(() => {
-                mensaje.classList.add('d-none');
-            }, 2000);
-        })
-        .catch(error => {
-            console.error('Error en la petición:', error);
-        });
+  // Mostrar campos según tipo de asignación
+  document.querySelectorAll('input[name="tipo_asignacion"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      document.getElementById("select_departamentos").classList.toggle("d-none", radio.value !== "departamento");
+      document.getElementById("select_tecnicos").classList.toggle("d-none", radio.value !== "tecnico");
     });
   });
-  
+
+  // Editar comentario
+  document.querySelectorAll(".btn-editar-comentario").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest("li");
+      const contenidoHTML = item.querySelector(".comentario-contenido").innerHTML.trim();
+      const textarea = item.querySelector(".comentario-editor");
+
+      const esSistema = contenidoHTML.includes("Se ha iniciado un comentario");
+      textarea.value = esSistema ? "" : contenidoHTML.replace(/<br\s*\/?>/gi, "\n");
+
+      item.querySelector(".comentario-contenido").classList.add("d-none");
+      textarea.classList.remove("d-none");
+      item.querySelector(".comentario-acciones").classList.remove("d-none");
+    });
+  });
+
+  // Cancelar edición de comentario
+  document.querySelectorAll(".cancelar-edicion").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest("li");
+      item.querySelector(".comentario-contenido").classList.remove("d-none");
+      item.querySelector(".comentario-editor").classList.add("d-none");
+      item.querySelector(".comentario-acciones").classList.add("d-none");
+    });
+  });
+
+  // Confirmar edición y abrir modal
+  document.querySelectorAll(".guardar-edicion").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest("li");
+      const id = item.dataset.id;
+      const contenido = item.querySelector(".comentario-editor").value.trim();
+
+      if (!contenido) return alert("El comentario no puede estar vacío");
+
+      const modal = document.getElementById("modalFinalizarComentario");
+      modal.dataset.id = id;
+      modal.dataset.contenido = contenido;
+
+      new bootstrap.Modal(modal).show();
+    });
+  });
+
+  // Mostrar input de hora manual
+  document.getElementById("introducirHora")?.addEventListener("change", () => {
+    document.getElementById("horaManualInput")?.classList.remove("d-none");
+  });
+
+  document.getElementById("usarHoraActual")?.addEventListener("change", () => {
+    document.getElementById("horaManualInput")?.classList.add("d-none");
+  });
+
+  // Confirmar guardar comentario con hora
+  document.getElementById("confirmarFinalizarComentario")?.addEventListener("click", async () => {
+    const modal = document.getElementById("modalFinalizarComentario");
+    const id = modal.dataset.id;
+    const contenido = modal.dataset.contenido;
+    const usarActual = document.getElementById("usarHoraActual").checked;
+    const horaManual = document.getElementById("horaManualInput").value;
+
+    let hora_fin = "";
+
+    if (usarActual) {
+      const ahora = new Date();
+      hora_fin = ahora.toTimeString().slice(0, 8);
+    } else if (horaManual) {
+      hora_fin = horaManual + ":00";
+    } else {
+      return alert("Debes introducir una hora válida.");
+    }
+
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("contenido", contenido);
+    formData.append("hora_fin", hora_fin);
+
+    try {
+      const res = await fetch("/update_comentarios", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        const item = document.querySelector(`li[data-id="${id}"]`);
+        item.querySelector(".comentario-contenido").innerHTML = contenido.replace(/\n/g, "<br>");
+        item.querySelector(".comentario-contenido").classList.remove("d-none");
+        item.querySelector(".comentario-editor").classList.add("d-none");
+        item.querySelector(".comentario-acciones").classList.add("d-none");
+        bootstrap.Modal.getInstance(modal)?.hide();
+      } else {
+        alert("Error al actualizar el comentario");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error en la petición");
+    }
+  });
+});

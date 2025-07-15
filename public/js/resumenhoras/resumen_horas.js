@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Si el departamento no es 2 ni 3, establecer usuario por defecto
+    if (dept_usuario !== '2' && dept_usuario !== '3') {
+        usuarioIdInput.value = id_usuario_logueado;
+        usuarioIdInput.setAttribute('readonly', 'readonly'); // Opcional: evita que se pueda cambiar
+    }
+
     form.addEventListener('submit', function (e) {
         e.preventDefault();
 

@@ -3,9 +3,20 @@ import { cargarRegistros, setPaginaActual, formatearFechaInput } from './reg_hor
 document.addEventListener('DOMContentLoaded', () => {
     cargarRegistros();
 
-    document.getElementById('btn-filtrar').addEventListener('click', () => {
-        setPaginaActual(1);
-        cargarRegistros();
+    //document.getElementById('btn-filtrar').addEventListener('click', () => {
+      //  setPaginaActual(1);
+        //cargarRegistros();
+    //});
+
+    // Filtro automático al cambiar usuario, fecha_desde o fecha_hasta
+    ['usuario', 'fecha_desde', 'fecha_hasta'].forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem) {
+            elem.addEventListener('change', () => {
+                setPaginaActual(1);
+                cargarRegistros();
+            });
+        }
     });
 
     document.getElementById('btn-imprimir').addEventListener('click', () => {
@@ -58,6 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                             inputUsuario.value = u.nombre;
                                             campoOculto.value = u.id;
                                             sugerencias.innerHTML = '';
+
+                                            // Filtrado automático al seleccionar usuario
+                                            setPaginaActual(1);
+                                            cargarRegistros();
                                         });
                                         sugerencias.appendChild(item);
                                     });

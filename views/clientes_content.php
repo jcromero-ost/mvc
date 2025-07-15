@@ -1,5 +1,9 @@
 <div class="container-fluid mt-2">
-  <div id="mensaje" class="text-success mt-2 d-none alert" role="alert"></div>
+
+  <!-- Alerta de feedback -->
+  <div id="mensaje" class="alert alert-success d-none" role="alert"></div>
+
+  <!-- Encabezado -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Listado de clientes</h2>
     <a href="/crear_cliente" class="btn btn-primary">
@@ -7,7 +11,8 @@
     </a>
   </div>
 
-  <div class="row g-3 align-items-end mb-4">
+  <!-- Filtros -->
+  <form class="row g-3 align-items-end mb-4" onsubmit="return false;">
     <div class="col-md-3">
       <label for="filtrar_nombre" class="form-label">Nombre</label>
       <input type="text" id="filtrar_nombre" class="form-control">
@@ -20,7 +25,7 @@
     </div>
 
     <div class="col-md-2">
-      <label for="filtrar_telefono" class="form-label">Telefono</label>
+      <label for="filtrar_telefono" class="form-label">Teléfono</label>
       <input type="text" id="filtrar_telefono" class="form-control">
     </div>
 
@@ -39,25 +44,26 @@
       </select>
     </div>
 
-    <div class="col-md-2 d-flex gap-2">
-      <button id="btn-filtrar" class="btn btn-primary w-100">
+    <div class="col-md-2 d-grid gap-2">
+      <button id="btn-filtrar" class="btn btn-primary">
         <i class="bi bi-funnel"></i> Filtrar
       </button>
-      <button id="btn-imprimir" class="btn btn-secondary w-100">
+      <button id="btn-imprimir" class="btn btn-secondary">
         <i class="bi bi-printer"></i> Imprimir
       </button>
     </div>
-  </div>
+  </form>
 
+  <!-- Tabla de resultados -->
   <div class="table-responsive">
     <table id="tabla_clientes" class="table table-hover align-middle small">
       <thead class="table-dark">
         <tr>
           <th>Nombre</th>
           <th>ID</th>
-          <th>Telefono</th>
+          <th>Teléfono</th>
           <th>DNI</th>
-          <th>Direccion</th>
+          <th>Dirección</th>
           <th>Ciudad</th>
           <th>CP</th>
           <th>Provincia</th>
@@ -76,24 +82,25 @@
             <td><?= htmlspecialchars($cliente['CCODPO']) ?></td>
             <td><?= htmlspecialchars($cliente['CPAIS']) ?></td>
             <td class="text-center">
-                <button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
-                    data-cliente='<?= json_encode($cliente, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
-                    title="Editar">
-                    <i class="bi bi-pencil-square"></i>
-                </button>
+              <button type="button" class="btn btn-sm btn-primary btn-editar"
+                title="Editar"
+                data-cliente='<?= json_encode($cliente, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'>
+                <i class="bi bi-pencil-square"></i>
+              </button>
             </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
     </table>
   </div>
+
+  <!-- Paginación -->
   <div id="paginacion" class="mt-3"></div>
 
-  <!-- Modal descripcion -->
+  <!-- Modal edición -->
   <?php include_once __DIR__ . '/components/modal_clientes/modal_editar_cliente.php'; ?>
-
 </div>
+
+<!-- Scripts JS -->
 <script src="/public/js/clientes/clientes.js"></script>
 <script src="/public/js/clientes/clientes_editar.js"></script>
-
-

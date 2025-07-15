@@ -6,13 +6,13 @@ $current = basename($_SERVER['REQUEST_URI']);
 </button>
 <nav class="sidebar-osttech d-flex flex-column flex-shrink-0 p-3 bg-dark position-fixed" style="width: 220px; height: 100vh;">
   <hr>
-  <ul class="nav nav-pills flex-column mb-auto">
-    <a href="/usuarios" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+  <ul class="nav nav-pills flex-column mb-auto"> 
+    <a href="/tickets_pendientes" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <span class="fs-4">Intranet</span>
     </a>
     <!-- MENU CONTROL DE TIEMPO -->
-    <li class="nav-item dropdown <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>">
-      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>" href="#" id="tiempoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <li class="nav-item dropdown <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>"data-ignore-click-hide>
+      <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['registro_horario', 'listado', 'calendario_laboral', 'festivos', 'resumen-horas']) ? 'active' : ''); ?>" href="#" id="tiempoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-ignore-click-hide>
         <i class="bi bi-clock-history me-2"></i>Control de Tiempo
       </a>
       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="tiempoDropdown">
@@ -81,10 +81,10 @@ $current = basename($_SERVER['REQUEST_URI']);
       </li>
     <?php endif; ?>
 
-    <!-- CERRAR SESIÓN -->
+    <!-- CCrear_pedido Test -->
     <li class="nav-item mt-3">
-      <a class="nav-link text-danger d-flex align-items-center" href="/logout">
-        <i class="bi bi-box-arrow-right text-danger me-2"></i> Cerrar sesión
+      <a class="nav-link text-primary d-flex align-items-center" href="/xgest/pedidos-test">
+        <i class="bi bi-box-arrow-right text-danger me-2"></i> crear pedido test
       </a>
     </li>
 

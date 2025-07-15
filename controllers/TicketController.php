@@ -4,19 +4,18 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../models/Ticket.php';
+require_once __DIR__ . '/../models/TicketAsignacion.php';
 require_once __DIR__ . '/../models/Cliente.php';
 require_once __DIR__ . '/../models/MediosComunicacion.php';
 
 class TicketController {
 
-    public function create() {
-        $mediosModel = new MedioComunicacion();
-        $medios_comunicacion = $mediosModel->getAll();
-        require_once __DIR__ . '/../views/crear_ticket.php';
-    }
-
     public function ticketsPendientes() {
         require_once __DIR__ . '/../views/tickets_pendientes.php';
+    }
+
+    public function create() {
+        require_once __DIR__ . '/../views/crear_ticket.php';
     }
 
     public function index() {
@@ -27,433 +26,351 @@ class TicketController {
         require_once __DIR__ . '/../views/editar_ticket.php';
     }
 
-    public function obtenerTicketsPorCliente() {
-        header('Content-Type: application/json');
-
-        // Validar que recibimos el cliente_id vía POST (según tu condición)
-        if (isset($_POST['cliente_id'])) {
-            $cliente_id = intval($_POST['cliente_id']);
-
-            if ($cliente_id > 0) {
-                // Crear instancia del modelo Ticket (si no está creada)
-                $ticketModel = new Ticket();
-
-                // Obtener tickets para el cliente
-                $tickets = $ticketModel->getByIdCliente($cliente_id);
-
-                echo json_encode($tickets);
-            } else {
-                echo json_encode(['error' => 'cliente_id inválido']);
-            }
-        } else {
-            // No se recibió cliente_id en POST
-            echo json_encode(['error' => 'No se recibió cliente_id']);
-        }
-        exit;
-    }
-
-    public function delete() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar') {
-            $id = $_POST['id'] ?? null;
-            if ($id) {
-                Ticket::delete($id);
-                $_SESSION['mensaje'] = "Ticket eliminado correctamente.";
-                header("Location: ../views/tickets.php");
-                exit;
-
-            } else {
-                
-                echo "ID no válido para eliminar.";
-            }
-        }
-    }
-
     public function store() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
-            $nombreCliente = $_POST['cliente'] ?? '';
-            $tecnico = $_POST['tecnico'] ?? '';
-            $tecnico = ($tecnico === '') ? null : $tecnico;
-            $fecha_inicio = $_POST['fecha_inicio'] ?? '';
+            $cliente_id = $_POST['cliente_id'] ?? null;
+            $medio_id = $_POST['medio_comunicacion'] ?? null;
+            $fecha_inicio = $_POST['fecha_inicio'] ?? date('Y-m-d H:i:s');
             $descripcion = $_POST['descripcion'] ?? '';
+            $usuario_creador_id = $_SESSION['user']['id'] ?? null;
 
-            // Sacar el id del usuario logueado
-            $usuario_creador_completo = $_SESSION['user'] ?? null;
-
-            // Accede a la propiedad 'id' directamente
-            $usuario_creador = $usuario_creador_completo['id'] ?? null; // Si 'id' no está definida, será null
-
-            $cliente = new Cliente();
-            // Obtener el ID del cliente
-            $idCliente = $cliente->getIdByCliente($nombreCliente);
-
-            // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($nombreCliente) || empty($fecha_inicio) || empty($descripcion)) {
-                $_SESSION['error'] = 'Todos los campos son obligatorios.';
-                header('Location: /crear_ticket');
-                exit;
-            }
-
-            $ticket = new Ticket();
-            $ticket->create([
-                'medio_comunicacion' => $medio_comunicacion,
-                'cliente' => $idCliente,
-                'tecnico' => $tecnico,
-                'fecha_inicio' => $fecha_inicio,
-                'descripcion' => $descripcion,
-                'usuario_creador' => $usuario_creador
-            ]);
-
-
-            $_SESSION['success'] = 'Ticket creado correctamente.';
-            header('Location: /tickets_pendientes');
-            exit;
-        }
-
-        // Si entra por GET o sin POST válido, redirigir
-        header('Location: /tickets_pendientes');
-        exit;
-    }
-    
-    // Actualizar comentarios
-    public function storeEdit() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $medio_comunicacion = $_POST['medio_comunicacion'] ?? '';
-            $tecnico = $_POST['tecnico'] ?? '';
-            $descripcion = $_POST['descripcion'] ?? '';
-            $id = $_POST['id'] ?? '';
-
-            // Validaciones mínimas
-            if (empty($tecnico)) {
-                // Enviar error como respuesta JSON
-                $this->responderJson(['success' => false, 'error' => 'Selecciona un tecnico antes de editar el ticket']);
-                exit;  // Detener la ejecución
-            }
-
-            // Validaciones mínimas
-            if (empty($medio_comunicacion) || empty($descripcion)) {
-                // Enviar error como respuesta JSON
-                $this->responderJson(['success' => false, 'error' => 'Faltan datos obligatorios']);
-                exit;  // Detener la ejecución
-            }
-
-            $ticket = new Ticket();
-            $exito = $ticket->update([
-                'medio_comunicacion' => $medio_comunicacion,
-                'tecnico' => $tecnico,
-                'descripcion' => $descripcion,
-                'id' => $id
-            ]);
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
+            $tipo_asignacion = $_POST['tipo_asignacion'] ?? 'ninguno';
+            if ($tipo_asignacion === 'departamento') {
+                $valores_asignacion = $_POST['departamentos'] ?? [];
+            } elseif ($tipo_asignacion === 'tecnico') {
+                $valores_asignacion = $_POST['tecnicos'] ?? [];
             } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+                $valores_asignacion = [];
             }
-            return;
-        }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
 
-    public function storeComentarios() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ticket_id = $_POST['id'] ?? '';
-            $fecha_hora = $_POST['fecha_hora'] ?? '';
-            $contenido = $_POST['contenido'] ?? '';
-            $tipo = $_POST['tipo'] ?? '';
-    
-            if (empty($ticket_id) || empty($fecha_hora) || empty($contenido)) {
-                $this->responderJson(['success' => false, 'error' => 'El comentario no puede estar vacío']);
+            if (!$cliente_id || !$medio_id || !$descripcion || !$usuario_creador_id) {
+                echo "Error: Faltan datos obligatorios.";
                 return;
             }
-    
+
             $ticket = new Ticket();
-            $exito = $ticket->createComentario([
+            $ticket_id = $ticket->create([
+                'cliente_id' => $cliente_id,
+                'medio_id' => $medio_id,
+                'fecha_inicio' => $fecha_inicio,
+                'descripcion' => $descripcion,
+                'estado' => 'pendiente',
+                'usuario_creador_id' => $usuario_creador_id,
+            ], true); // true para devolver el ID
+
+            if ($ticket_id) {
+                $this->storeAsignaciones($ticket_id, $tipo_asignacion, $valores_asignacion);
+                $_SESSION['success'] = "Ticket creado correctamente";
+                header('Location: /tickets_pendientes');
+                exit;
+            } else {
+                $_SESSION['error'] = "Error al guardar el ticket";
+            }
+        } else {
+            echo "Acceso inválido.";
+        }
+    }
+
+    public function storeAsignaciones($ticket_id, $tipo_asignacion, $valores) {
+        $asignacionModel = new TicketAsignacion();
+        return $asignacionModel->asignar($ticket_id, $tipo_asignacion, $valores);
+    }
+
+    public function storeAsignacionesNotificaciones() {
+        if (!isset($_POST['id'], $_POST['tipo_asignacion'])) {
+            die('Datos incompletos para asignar ticket.');
+        }
+
+        $ticket_id = $_POST['id'];
+        $tipo = $_POST['tipo_asignacion'];
+        $valores = [];
+
+        if ($tipo === 'departamento' && isset($_POST['departamentos'])) {
+            $valores = $_POST['departamentos'];
+        } elseif ($tipo === 'tecnico' && isset($_POST['tecnicos'])) {
+            $valores = $_POST['tecnicos'];
+        }
+
+        $asignacionModel = new TicketAsignacion();
+        $exito = $asignacionModel->asignar($ticket_id, $tipo, $valores);
+
+        if ($exito) {
+            header("Location: /tickets_pendientes"); // Redirige a donde quieras
+            exit;
+        } else {
+            die("Error al asignar ticket.");
+        }
+    }
+
+
+    public function storeEdit() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+               session_start();
+            }
+            $ticket_id = $_POST['id'] ?? null;
+            $medio_id = $_POST['medio_comunicacion'] ?? null;
+            $descripcion = $_POST['descripcion'] ?? null;
+            $estado = $_POST['estado'] ?? null;
+
+            if (!$ticket_id || !$medio_id || !$descripcion) {
+                echo json_encode(['success' => false, 'error' => 'Faltan datos obligatorios.']);
+                return;
+            }
+
+            $ticket = new Ticket();
+            $resultado = $ticket->update([
+                'id' => $ticket_id,
+                'medio_id' => $medio_id,
+                'descripcion' => $descripcion,
+                'estado' => $estado
+            ]);
+
+            if ($resultado) {
+                echo json_encode(['success' => true, 'message' => 'Ticket actualizado correctamente.']);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el ticket.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Método inválido.']);
+        }
+    }
+
+    public function updateEstado() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            if (!isset($data['id'], $data['estado'])) {
+                echo json_encode(['success' => false, 'error' => 'Faltan datos']);
+                return;
+            }
+
+            $ticket = new Ticket();
+            $resultado = $ticket->updateEstado([
+                'id' => $data['id'],
+                'estado' => $data['estado'],
+                'fecha_fin' => date('Y-m-d H:i:s')
+            ]);
+
+            echo json_encode(['success' => $resultado]);
+        }
+    }
+
+    public function storeComentario() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? null;
+            $fecha = $_POST['fecha'] ?? null;
+            $tipo = $_POST['tipo'] ?? 'normal';
+            $contenido = $_POST['contenido'] ?? '';
+            $usuario_id = $_SESSION['user']['id'] ?? null;
+
+            if (!$ticket_id || !$contenido || !$usuario_id) {
+                echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
+                return;
+            }
+
+            $ticket = new Ticket();
+            $resultado = $ticket->createComentario([
                 'ticket_id' => $ticket_id,
-                'fecha_hora' => $fecha_hora,
+                'fecha' => $fecha,
                 'contenido' => $contenido,
                 'tipo' => $tipo
             ]);
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
+
+            echo json_encode(['success' => $resultado]);
         }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-    
-    private function responderJson($data) {
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
     }
 
-    public function obtenerComentariosPorTicket() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
+    public function getComentarios() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ticket_id = $_POST['id'] ?? ''; // Asegúrate de que 'id' esté correctamente enviado
+            $ticket_id = $_POST['id'] ?? null;
+            if (!$ticket_id) {
+                echo json_encode(['success' => false, 'error' => 'Falta ID']);
+                return;
+            }
 
-            // Obtener los comentarios por ticket_id
             $ticket = new Ticket();
             $comentarios = $ticket->getAllComentarios($ticket_id);
 
-            if ($comentarios) {
-                $this->responderJson(['success' => true, 'comentarios' => $comentarios]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'No se encontraron comentarios.']);
-            }
-            return;
+            echo json_encode(['success' => true, 'comentarios' => $comentarios]);
         }
-
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
-    // Borrar comentarios
-    public function deleteComentarios() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
+    public function updateComentario() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ticket_id = $_POST['id'] ?? '';
+            $comentario_id = $_POST['id'] ?? null;
+            $contenido = $_POST['contenido'] ?? null;
+            $hora_fin = $_POST['hora_fin'] ?? null;
 
-            $ticket = new Ticket();
-            $exito = $ticket->deleteComentarios($ticket_id);
-
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
-        }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-
-    // Actualizar comentarios
-    public function updateComentarios() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? '';
-            $contenido = $_POST['contenido'] ?? '';
-
-            $ticket = new Ticket();
-            $exito = $ticket->updateComentarios([
-                'contenido' => $contenido,
-                'id' => $id
-            ]);
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
-        }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-
-    // Actualizar estado ticket
-    public function updateEstado() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? '';
-            $estado = $_POST['estado'] ?? '';
-            $fecha_fin = date('Y-m-d H:i');
-
-            $ticket = new Ticket();
-            $exito = $ticket->updateEstado([
-                'estado' => $estado,
-                'fecha_fin' => $fecha_fin,
-                'id' => $id
-            ]);
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
-        }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-
-    //Crear cronometro
-    public function storeCronometro() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ticket_id = $_POST['ticket_id'] ?? '';
-            $fecha = $_POST['fecha'] ?? '';
-            $tiempo = $_POST['tiempo'] ?? '';
-            $usuario_id = $_SESSION['user']['id'];
-            $hora_inicio = $_POST['hora_inicio'] ?? '';
-            $hora_fin = $_POST['hora_fin'] ?? '';
-
-            $ticket = new Ticket();
-            $exito = $ticket->createCronometro([
-                'ticket_id' => $ticket_id,
-                'fecha' => $fecha,
-                'tiempo' => $tiempo,
-                'usuario_id' => $usuario_id,
-                'hora_inicio' => $hora_inicio,
-                'hora_fin' => $hora_fin
-            ]);
-
-            if ($exito) {
-                // Obtener nuevo tiempo total
-                $tiempo_total = $ticket->getTiempoTotal($ticket_id);
-                $segundos = (int) $tiempo_total['tiempo_total'];
-
-                $horas = floor($segundos / 3600);
-                $minutos = floor(($segundos % 3600) / 60);
-                $restoSegundos = $segundos % 60;
-
-                $tiempoFormateado = sprintf('%02d:%02d:%02d', $horas, $minutos, $restoSegundos);
-
-                $this->responderJson([
-                    'success' => true,
-                    'tiempo_total' => $tiempoFormateado
-                ]);
-                return;
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            if (!$comentario_id || $contenido === null) {
+                echo json_encode(['success' => false, 'error' => 'Faltan datos']);
                 return;
             }
-        }
-
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-
-
-    public function obtenerCronometroPorTicket() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ticket_id = $_POST['id'] ?? ''; // Asegúrate de que 'id' esté correctamente enviado
-
-            // Obtener los comentarios por ticket_id
-            $ticket = new Ticket();
-            $cronometro_registros = $ticket->getAllCronometro($ticket_id);
-
-            if ($cronometro_registros) {
-                $this->responderJson(['success' => true, 'cronometro_registros' => $cronometro_registros]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'No se encontraron registros de tiempo.']);
-            }
-            return;
-        }
-
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
-    }
-
-    // Actualizar estado ticket
-    public function updateTecnico() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? '';
-            $tecnico_id = $_POST['tecnico_id'] ?? '';
 
             $ticket = new Ticket();
-            $exito = $ticket->updateTecnico([
-                'tecnico_id' => $tecnico_id,
-                'id' => $id
-            ]);
-    
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
+            $data = [
+                'id' => $comentario_id,
+                'contenido' => $contenido
+            ];
+
+            if (!empty($hora_fin)) {
+                $data['hora_fin'] = $hora_fin;
             }
-            return;
+
+            $resultado = $ticket->updateComentarios($data);
+
+            echo json_encode(['success' => $resultado]);
         }
-    
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
     }
 
-    public function storeAlbaran() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
 
+    public function deleteComentario() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $cliente_albaranar = $_POST['cliente_albaranar'] ?? '';
-            $fecha_albaranar = $_POST['fecha_albaranar'] ?? '';
-            $codigo_articulo_albaranar = $_POST['codigo_articulo_albaranar'] ?? '';
-            $cantidad_albaranar = $_POST['cantidad_albaranar'] ?? '';
-            $precio_albaranar = $_POST['precio_albaranar'] ?? '';
-            $descripcion_amplia_albaranar = $_POST['descripcion_amplia_albaranar'] ?? '';
+            $comentario_id = $_POST['id'] ?? null;
 
-            // Validaciones
-            if (empty($cliente_albaranar) || empty($fecha_albaranar) || empty($codigo_articulo_albaranar) || empty($cantidad_albaranar) || empty($precio_albaranar) || empty($descripcion_amplia_albaranar)) {
-                // Enviar error como respuesta JSON
-                echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
-                exit;  // Detener la ejecución
+            if (!$comentario_id) {
+                echo json_encode(['success' => false, 'error' => 'Falta ID del comentario']);
+                return;
             }
 
             $ticket = new Ticket();
-            $exito = $ticket->createAlbaran([
-                'cliente_albaranar' => $cliente_albaranar,
-                'fecha_albaranar' => $fecha_albaranar,
-                'codigo_articulo_albaranar' => $codigo_articulo_albaranar,
-                'cantidad_albaranar' => $cantidad_albaranar,
-                'precio_albaranar' => $precio_albaranar,
-                'descripcion_amplia_albaranar' => $descripcion_amplia_albaranar
-            ]);
+            $resultado = $ticket->deleteComentarios($comentario_id);
 
+            echo json_encode(['success' => $resultado]);
+        }
+    }
+    /*_____NO SE USARA POR AHORA_____*/
+    /*public function storeCronometro() {
+        header('Content-Type: application/json');
 
-            if ($exito) {
-                $this->responderJson(['success' => true]);
-            } else {
-                $this->responderJson(['success' => false, 'error' => 'Error al guardar en base de datos.']);
-            }
-            return;
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['error' => 'Acceso inválido.']);
+            exit;
         }
 
-        $this->responderJson(['success' => false, 'error' => 'Método inválido.']);
+        $ticket_id = $_POST['ticket_id'] ?? null;
+        $hora_inicio = $_POST['hora_inicio'] ?? null;
+        $hora_fin = $_POST['hora_fin'] ?? null;
+        $tiempo = $_POST['tiempo'] ?? null;
+        $usuario_id = $_SESSION['user']['id'] ?? null;
+
+        if (!$ticket_id || !$hora_inicio || !$hora_fin || !$tiempo || !$usuario_id) {
+            echo json_encode(['error' => 'Faltan datos obligatorios.']);
+            exit;
+        }
+
+        $ticket = new Ticket();
+        $resultado = $ticket->createCronometro([
+            'ticket_id' => $ticket_id,
+            'fecha' => date('Y-m-d'),
+            'hora_inicio' => $hora_inicio,
+            'hora_fin' => $hora_fin,
+            'tiempo' => $tiempo,
+            'usuario_id' => $usuario_id
+        ]);
+
+        echo json_encode(['success' => $resultado]);
+    }*/
+
+
+    public function storeComentarioSoloFecha() {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['error' => 'Acceso inválido.']);
+            exit;
+        }
+
+        $ticket_id = $_POST['ticket_id'] ?? null;
+        $hora_inicio = $_POST['hora_inicio'] ?? null;
+        $usuario_id = $_SESSION['user']['id'] ?? null;
+
+        if (!$ticket_id || !$hora_inicio || !$usuario_id) {
+            echo json_encode(['error' => 'Faltan datos obligatorios.']);
+            exit;
+        }
+
+        $ticket = new Ticket();
+        $id = $ticket->createComentarioSoloFecha([
+            'ticket_id' => $ticket_id,
+            'fecha' => date('Y-m-d'),
+            'hora_inicio' => $hora_inicio,
+            'usuario_id' => $usuario_id
+        ]);
+
+        if ($id) {
+            echo json_encode(['status' => 'ok', 'id' => $id]);
+        } else {
+            echo json_encode(['error' => 'Error al guardar el comentario.']);
+        }
     }
+
+
+
+    
+
+    public function storeUpdateComentarioSoloFecha() {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['error' => 'Acceso inválido.']);
+            exit;
+        }
+
+        $contenido = $_POST['contenido'] ?? null;
+        $hora_fin = $_POST['hora_fin'] ?? null;
+        $id = $_POST['id'] ?? null;
+
+        if (!$id || !$hora_fin) {
+            echo json_encode(['error' => 'Faltan datos obligatorios.']);
+            exit;
+        }
+
+        $comentario = new Ticket();
+        $resultado = $comentario->updateComentarioSoloFecha([
+            'contenido' => $contenido,
+            'hora_fin' => $hora_fin,
+            'id' => $id
+        ]);
+
+        if ($resultado) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => 'Error al guardar el comentario.']);
+        }
+    }
+
+
+    public function ObtenerTicketsPorUsuario() {
+    header('Content-Type: application/json');
+
+    if (!isset($_SESSION['user']['id'])) {
+        echo json_encode(['success' => false, 'error' => 'Usuario no autenticado']);
+        exit;
+    }
+
+    $ticket = new Ticket();
+    $tickets = $ticket->getTicketNoAsignados();
+
+    echo json_encode(['success' => true, 'data' => $tickets]);
+}
+
+
+    public function getTiempoTotal() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ticket_id = $_POST['id'] ?? null;
+            $ticket = new Ticket();
+            $tiempo = $ticket->getTiempoTotal($ticket_id);
+            echo json_encode($tiempo);
+        }
+    }
+
 
 }
+
 if (isset($_POST['accion'])) {
     $controller = new TicketController();
-    
     switch ($_POST['accion']) {
         case 'eliminar':
             $controller->delete();

@@ -3,8 +3,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-
-<div class="card p-5 shadow text-center container-fluid d-flex justify-content-center align-items-center" style="max-width: 450px; width: 100%;">
+<div class="vh-container d-flex justify-content-center align-items-center">
+  <div class="card p-5 shadow text-center w-100" style="max-width: 850px; min-height: 70vh;">
     <h2 class="mb-4">Control de Horas</h2>
 
     <!-- Reloj actual -->
@@ -14,19 +14,26 @@ if (session_status() === PHP_SESSION_NONE) {
     <h6 id="estado-cronometro" class="text-muted">Esperando inicio...</h6>
     <div id="cronometro" class="mb-4 text-primary fw-bold">00:00:00</div>
 
-    <!-- Botones de acción -->
-    <div class="d-grid gap-2 mb-4">
-        <button id="btn-iniciar-jornada" class="btn" style="background-color: var(--color-success); color: white;">
-            <i class="bi bi-play-fill"></i> Iniciar jornada
+    <!-- Botones de acción estilizados -->
+    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+        <button id="btn-iniciar-jornada" class="btn btn-custom" style="background-color: var(--color-success); color: white;">
+            <i class="bi bi-play-fill icono-boton"></i>
+            <div class="texto-boton">Iniciar<br>jornada</div>
         </button>
-        <button id="btn-iniciar-descanso" class="btn d-none" style="background-color: var(--color-warning); color: black;">
-            <i class="bi bi-cup-hot-fill"></i> Iniciar descanso
+
+        <button id="btn-iniciar-descanso" class="btn btn-custom d-none" style="background-color: var(--color-warning); color: black;">
+            <i class="bi bi-cup-hot-fill icono-boton"></i>
+            <div class="texto-boton">Iniciar<br>descanso</div>
         </button>
-        <button id="btn-finalizar-descanso" class="btn d-none" style="background-color: var(--color-primary); color: white;">
-            <i class="bi bi-arrow-return-left"></i> Finalizar descanso
+
+        <button id="btn-finalizar-descanso" class="btn btn-custom d-none" style="background-color: var(--color-primary); color: white;">
+            <i class="bi bi-arrow-return-left icono-boton"></i>
+            <div class="texto-boton">Finalizar<br>descanso</div>
         </button>
-        <button id="btn-finalizar-jornada" class="btn d-none" style="background-color: var(--color-danger); color: white;">
-            <i class="bi bi-stop-fill"></i> Finalizar jornada
+
+        <button id="btn-finalizar-jornada" class="btn btn-custom d-none" style="background-color: var(--color-danger); color: white;">
+            <i class="bi bi-stop-fill icono-boton"></i>
+            <div class="texto-boton">Finalizar<br>jornada</div>
         </button>
     </div>
 
@@ -37,6 +44,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <p><strong>Hora de fin:</strong> <span id="hora-fin">--:--:--</span></p>
         <p><strong>Tiempo trabajado:</strong> <span id="tiempo-trabajado">--:--:--</span></p>
     </div>
+</div>
 </div>
 
 <!-- ID oculto del usuario -->

@@ -1,102 +1,100 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('click', function (e) {
-        if (e.target.closest('.btn-seleccionar')) {
-            const cliente = JSON.parse(e.target.closest('.btn-seleccionar').getAttribute('data-cliente'));
+
+    const tablaTicketsBody = document.querySelector('#tabla_tickets tbody');
+    const tablaTicketsHead = document.querySelector('#tabla_tickets thead');
+    const inputCliente = document.getElementById('cliente_historial');
+    const modalDescripcionCompleta = new bootstrap.Modal(document.getElementById('modalDescripcionCompleta'));
+    const descripcionCompletaTexto = document.getElementById('descripcionCompleta_texto');
+
+    document.addEventListener('click', async function (e) {
+        const btnSeleccionar = e.target.closest('.btn-seleccionar');
+
+        if (btnSeleccionar) {
+            const cliente = JSON.parse(btnSeleccionar.getAttribute('data-cliente'));
             const clienteId = cliente.CCODCL;
-            document.getElementById('cliente_historial').value = cliente.CNOM;
+            inputCliente.value = cliente.CNOM;
 
-            fetch('/obtener_tickets_por_cliente', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `cliente_id=${encodeURIComponent(clienteId)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const tabla = document.querySelector('#tabla_tickets tbody');
-                const tickets_thead = document.querySelector('#tabla_tickets thead');
-                tabla.innerHTML = ''; // Limpiar tabla
+            try {
+                const response = await fetch('/obtener_tickets_por_cliente', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `cliente_id=${encodeURIComponent(clienteId)}`
+                });
 
-                // Convertir a array si no lo es
-                const tickets = Array.isArray(data) ? data : (data === false ? [] : [data]);
+                const data = await response.json();
+                renderTickets(Array.isArray(data) ? data : (data === false ? [] : [data]));
+            } catch (error) {
+                console.error('Error al obtener tickets:', error);
+            }
+        }
 
-                if (tickets.length === 0) {
-                    // Mostrar mensaje de "sin tickets"
-                    const row = document.createElement('tr');
-                    const columnas = document.querySelectorAll('#tabla_tickets thead th').length;
-                    row.innerHTML = `
-                        <td colspan="${columnas}" class="text-center text-muted">
-                            No hay tickets para este cliente
-                        </td>
-                    `;
-                    tabla.appendChild(row);
-                    tickets_thead.classList.remove('d-none');
-
-                    // Mantener el mensaje sin borrarlo automáticamente
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    // Mostrar filas de tickets
-                    tickets.forEach(ticket => {
-                        // Comprobaciones del estado del ticket
-                        let estado_ticket;
-                        let estado_color;
-
-                        if (ticket.estado === 'pendiente') {
-                            estado_ticket = 'Pendiente';
-                            estado_color = 'danger';
-                        } else if (ticket.estado === 'en_revision') {
-                            estado_ticket = 'En Revisión';
-                            estado_color = 'warning';
-                        } else if (ticket.estado === 'finalizado') {
-                            estado_ticket = 'Finalizado';
-                            estado_color = 'success';
-                        }
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${ticket.id}</td>
-                            <td>${ticket.medio_nombre}</td>
-                            <td>${ticket.tecnico_nombre}</td>
-                            <td>${ticket.fecha_inicio}</td>
-                            <td>
-                            ${mostrarResumenDescripcion(ticket.descripcion, 45)}
-                            <a 
-                                href="#"
-                                class="btn btn-primary btn-extra-small btn-descripcion-completa" 
-                                data-id="${ticket.id}" 
-                                data-descripcion="${encodeHTML(ticket.descripcion)}"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalDescripcionCompleta">
-                                ...ver más
-                            </a>
-                            </td>
-                            <td>
-                            <span class="badge bg-${estado_color}">
-                                ${estado_ticket}
-                            </span>
-                            </td>
-                            <td class="text-center">
-                                <a href="/editar_ticket?id=${ticket.id}">
-                                    <button type="button" class="btn btn-sm btn-primary me-1">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                </a>
-                            </td>
-                        `;
-                        tabla.appendChild(row);
-                    });
-
-                    tickets_thead.classList.remove('d-none');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
+        // Mostrar descripción completa en modal
+        if (e.target.classList.contains('btn-descripcion-completa')) {
+            e.preventDefault();
+            descripcionCompletaTexto.innerHTML = e.target.getAttribute('data-descripcion');
+            modalDescripcionCompleta.show();
         }
     });
 
+    function renderTickets(tickets) {
+        tablaTicketsBody.innerHTML = '';
+        tablaTicketsHead.classList.remove('d-none');
+
+        if (!tickets.length) {
+            const row = document.createElement('tr');
+            const columnas = tablaTicketsHead.querySelectorAll('th').length;
+            row.innerHTML = `
+                <td colspan="${columnas}" class="text-center text-muted">
+                    No hay tickets para este cliente
+                </td>
+            `;
+            tablaTicketsBody.appendChild(row);
+            scrollTop();
+            return;
+        }
+
+        tickets.forEach(ticket => {
+            const { id, medio_nombre, tecnico_nombre, fecha_inicio, descripcion, estado } = ticket;
+
+            const estadoMap = {
+                pendiente: { texto: 'Pendiente', color: 'danger' },
+                en_revision: { texto: 'En Revisión', color: 'warning' },
+                finalizado: { texto: 'Finalizado', color: 'success' }
+            };
+
+            const estadoInfo = estadoMap[estado] || { texto: 'Desconocido', color: 'secondary' };
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${id}</td>
+                <td>${medio_nombre}</td>
+                <td>${tecnico_nombre}</td>
+                <td>${fecha_inicio}</td>
+                <td>
+                    ${mostrarResumenDescripcion(descripcion, 45)}
+                    <a href="#" class="btn btn-primary btn-extra-small btn-descripcion-completa"
+                        data-id="${id}"
+                        data-descripcion="${encodeHTML(descripcion)}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalDescripcionCompleta">...ver más</a>
+                </td>
+                <td><span class="badge bg-${estadoInfo.color}">${estadoInfo.texto}</span></td>
+                <td class="text-center">
+                    <a href="/editar_ticket?id=${id}">
+                        <button type="button" class="btn btn-sm btn-primary me-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </a>
+                </td>
+            `;
+            tablaTicketsBody.appendChild(row);
+        });
+
+        scrollTop();
+    }
+
     function mostrarResumenDescripcion(texto, limitePalabras) {
-        const palabras = texto.split(' ');
-        const resumen = palabras.slice(0, limitePalabras).join(' ');
-        return encodeHTML(resumen);
+        return encodeHTML(texto.split(' ').slice(0, limitePalabras).join(' '));
     }
 
     function encodeHTML(str) {
@@ -108,16 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/'/g, '&#039;');
     }
 
-    const modalDescripcionCompleta = new bootstrap.Modal(document.getElementById('modalDescripcionCompleta'));
-    const descripcionCompleta_texto = document.getElementById('descripcionCompleta_texto');
-
-    // Delegación de eventos para los botones dinámicos
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-descripcion-completa')) {
-            e.preventDefault(); // Prevenir navegación si es un <a href="#">
-            const descripcion = e.target.getAttribute('data-descripcion');
-            descripcionCompleta_texto.innerHTML = descripcion;
-            modalDescripcionCompleta.show();
-        }
-    });
+    function scrollTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 });

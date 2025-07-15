@@ -38,7 +38,7 @@
 
         <div class="col-md-2 d-flex align-items-center">
           <div class="ms-2 align-self-end">
-            <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
+            <button id="btn-filtrar" class="btn btn-primary btn-sm-custom d-none">
               <i class="bi bi-funnel"></i> Filtrar
             </button>
           </div>
@@ -73,7 +73,7 @@
 
           <div class="col-md-2 d-flex align-items-center">
             <div class="ms-2 align-self-end">
-              <button id="btn-filtrar" class="btn btn-primary btn-sm-custom">
+              <button id="btn-filtrar" class="btn btn-primary btn-sm-custom d-none">
                 <i class="bi bi-funnel"></i> Filtrar
               </button>
             </div>

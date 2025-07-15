@@ -64,30 +64,38 @@
         <th>Descansos</th>
       </tr>
     </thead>
-    <tbody>
-      <?php foreach ($jornadas as $j): ?>
-        <tr>
-          <td>
-            <div class="usuario">
-              <img src="<?= htmlspecialchars($j['foto']) ?>" alt="Foto">
-              <span><?= htmlspecialchars($j['usuario']) ?></span>
-            </div>
-          </td>
-          <td><?= htmlspecialchars($j['fecha']) ?></td>
-          <td><?= htmlspecialchars($j['hora_inicio']) ?></td>
-          <td><?= htmlspecialchars($j['hora_fin']) ?></td>
-          <td>
-            <?php if (!empty($j['descansos'])): ?>
-              <ul>
-                <?php foreach ($j['descansos'] as $d): ?>
-                  <li><?= htmlspecialchars($d['inicio']) ?> - <?= htmlspecialchars($d['fin']) ?></li>
-                <?php endforeach; ?>
-              </ul>
-            <?php endif; ?>
-          </td>
-        </tr>
-      <?php endforeach; ?>
-    </tbody>
+<tbody>
+  <?php foreach ($jornadas as $j): ?>
+    <tr>
+      <td>
+        <div class="usuario">
+          <img src="<?= htmlspecialchars($j['foto']) ?>" alt="Foto">
+          <span><?= htmlspecialchars($j['usuario']) ?></span>
+        </div>
+      </td>
+      <td><?= htmlspecialchars($j['fecha']) ?></td>
+
+      <?php if (!empty($j['es_vacacion'])): ?>
+        <td colspan="3" style="text-align: center;">
+          <span>Vacaciones</span>
+        </td>
+      <?php else: ?>
+        <td><?= htmlspecialchars($j['hora_inicio']) ?></td>
+        <td><?= htmlspecialchars($j['hora_fin']) ?></td>
+        <td>
+          <?php if (!empty($j['descansos'])): ?>
+            <ul>
+              <?php foreach ($j['descansos'] as $d): ?>
+                <li><?= htmlspecialchars($d['inicio']) ?> - <?= htmlspecialchars($d['fin']) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+        </td>
+      <?php endif; ?>
+    </tr>
+  <?php endforeach; ?>
+</tbody>
+
   </table>
 
   <script>

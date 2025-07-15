@@ -115,35 +115,135 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarPagina(currentPage);
     });
 
-    // Función de filtro
-    function filtrar() {
-        const cliente = document.getElementById("filtrar_cliente").value.toLowerCase();
-        const id = document.getElementById("filtrar_id").value.toLowerCase();
-        const tecnico = document.getElementById("filtrar_tecnico").value.toLowerCase();
-        const estado = document.getElementById("filtrar_estado").value.toLowerCase();
+    let ordenAscendenteTiempo = true; // Estado inicial: ascendente
 
-        // Filtrar filas basadas en los valores
-        filteredRows = rows.filter(fila => {
-            const tdCliente = fila.children[0].textContent.toLowerCase();
-            const tdId = fila.children[1].textContent.toLowerCase();
-            const tdTecnico = fila.children[3].textContent.toLowerCase();
-            const tdEstado = fila.children[7].textContent.trim().toLowerCase().replace(/\s+/g, ' ');
+    // Función para convertir "xdd hh mm" a segundos
+    function tiempoAbiertoASegundos(tiempoStr) {
+        // Ejemplo: "2d 04h 15m"
+        const regex = /(\d+)d\s+(\d+)h\s+(\d+)m/;
+        const match = tiempoStr.match(regex);
+        if (!match) return 0;
 
-            const coincideId = id === "" || tdId === id;  // Si ID está vacío, no se aplica filtro de ID
-            const coincideTecnico = tecnico === "" || tdTecnico === tecnico;  // Si técnico está vacío, no se aplica filtro de técnico
-            const coincideEstado = estado === "" || tdEstado.toLowerCase() === estado.toLowerCase();
+        const dias = parseInt(match[1], 10);
+        const horas = parseInt(match[2], 10);
+        const minutos = parseInt(match[3], 10);
 
-            return tdCliente.includes(cliente) && coincideId && coincideTecnico && coincideEstado;
-        });
-
-        currentPage = 1;  // Reiniciar a la primera página después de filtrar
-        mostrarPagina(currentPage);  // Mostrar los resultados filtrados
+        return dias * 86400 + horas * 3600 + minutos * 60;
     }
 
-    // Aplicar filtro al hacer clic en el botón
-    const botonFiltrar = document.getElementById('btn-filtrar');
-    botonFiltrar.addEventListener("click", filtrar);
 
-    // Inicializar la tabla y la paginación
+    document.getElementById('th-tiempo-abierto').addEventListener('click', () => {
+        filteredRows.sort((a, b) => {
+            const tiempoA = a.children[6].textContent.trim(); // columna "Tiempo Abierto"
+            const tiempoB = b.children[6].textContent.trim();
+
+            const segA = tiempoAbiertoASegundos(tiempoA);
+            const segB = tiempoAbiertoASegundos(tiempoB);
+
+            if (ordenAscendenteTiempo) {
+                return segA - segB;
+            } else {
+                return segB - segA;
+            }
+        });
+
+        ordenAscendenteTiempo = !ordenAscendenteTiempo; // Alternar orden
+        mostrarPagina(1);
+    });
+
+    const radioDept = document.getElementById('filtro_departamento');
+    const radioTec = document.getElementById('filtro_tecnico');
+    const selectDept = document.getElementById('select_filtro_departamento');
+    const selectTec = document.getElementById('select_filtro_tecnico');
+
+    // Mostrar u ocultar los <select> según el radio activo
+    function toggleSelects() {
+        if (radioDept.checked) {
+            selectDept.classList.remove('d-none');
+            selectTec.classList.add('d-none');
+        } else if (radioTec.checked) {
+            selectTec.classList.remove('d-none');
+            selectDept.classList.add('d-none');
+        } else {
+            selectDept.classList.add('d-none');
+            selectTec.classList.add('d-none');
+        }
+    }
+
+    radioDept.addEventListener('change', toggleSelects);
+    radioTec.addEventListener('change', toggleSelects);
+    toggleSelects(); // Inicializar visibilidad
+
+    // Función para filtrar
+    function filtrar() {
+        const cliente = document.getElementById("filtrar_cliente").value.toLowerCase().trim();
+        const id = document.getElementById("filtrar_id").value.toLowerCase().trim();
+        const estado = document.getElementById("filtrar_estado").value.toLowerCase().trim();
+        const medio = document.getElementById("filtrar_medio").value.toLowerCase().trim();
+
+        const filtroAsignacion = document.querySelector('input[name="filtro_asignacion"]:checked').value;
+        const valorDept = document.getElementById("select_filtro_departamento").value.toLowerCase().trim();
+        const valorTec = document.getElementById("select_filtro_tecnico").value.toLowerCase().trim();
+
+        filteredRows = rows.filter(fila => {
+            const tdCliente = fila.children[0].textContent.toLowerCase().trim();
+            const tdId = fila.children[1].textContent.toLowerCase().trim();
+            const tdEstado = fila.children[7].textContent.toLowerCase().trim().replace(/\s+/g, ' ');
+            const tdMedio = fila.children[2].textContent.toLowerCase().trim();
+
+            const tdAsignacion = fila.children[3]; // Contiene técnico + departamento
+            const spans = tdAsignacion.querySelectorAll('span');
+
+            const valoresDept = [];
+            const valoresTec = [];
+
+            spans.forEach(span => {
+                const texto = span.textContent.toLowerCase().trim();
+                if (span.classList.contains('bg-primario')) {
+                    valoresDept.push(texto);
+                } else if (span.classList.contains('bg-dark')) {
+                    valoresTec.push(texto);
+                }
+            });
+
+            const coincideCliente = tdCliente.includes(cliente);
+            const coincideId = id === "" || tdId.includes(id);
+            const coincideEstado = estado === "" || tdEstado.includes(estado);
+            const coincideMedio = medio === "" || tdMedio === medio;
+
+            let coincideAsignacion = true;
+            if (filtroAsignacion === "departamento") {
+                coincideAsignacion = valorDept === "" || valoresDept.some(dept => dept === valorDept);
+            } else if (filtroAsignacion === "tecnico") {
+                coincideAsignacion = valorTec === "" || valoresTec.some(tec => tec === valorTec);
+            } else if (filtroAsignacion === "ain_asignar") {
+                coincideAsignacion = tdAsignacion.textContent.toLowerCase().includes("pendiente de asignar");
+            }
+
+            return coincideCliente && coincideId && coincideEstado && coincideAsignacion && coincideMedio;
+        });
+
+        currentPage = 1;
+        mostrarPagina(currentPage);
+    }
+
+    // Eventos para todos los filtros
+    document.querySelectorAll('input[name="filtro_asignacion"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            toggleSelects();
+            filtrar();
+        });
+    });
+
+    document.getElementById("select_filtro_departamento").addEventListener("change", filtrar);
+    document.getElementById("select_filtro_tecnico").addEventListener("change", filtrar);
+    document.getElementById("filtrar_cliente").addEventListener("input", filtrar);
+    document.getElementById("filtrar_id").addEventListener("input", filtrar);
+    document.getElementById("filtrar_estado").addEventListener("change", filtrar);
+    document.getElementById("filtrar_medio").addEventListener("change", filtrar);
+
+
+    // Inicializar
     mostrarPagina(currentPage);
+
 });

@@ -53,35 +53,77 @@ class VacacionesController
         exit;
     }
 
-public function getSolicitudesPorEstado()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $estado = $_POST['estado'] ?? '';
+    public function getSolicitudesPorEstado()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $estado = $_POST['estado'] ?? '';
 
-        if (empty($estado)) {
-            // Respuesta JSON con error si no envían estado
+            if (empty($estado)) {
+                // Respuesta JSON con error si no envían estado
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Falta el parámetro estado.'
+                ]);
+                exit;
+            }
+
+            $vacacionesModel = new Vacaciones();
+            $vacaciones = $vacacionesModel->getByEstado($estado);
+
             echo json_encode([
-                'success' => false,
-                'message' => 'Falta el parámetro estado.'
+                'success' => true,
+                'data' => $vacaciones
             ]);
             exit;
         }
 
-        $vacacionesModel = new Vacaciones();
-        $vacaciones = $vacacionesModel->getByEstado($estado);
-
+        // Si no es POST, devolver error o redirigir
         echo json_encode([
-            'success' => true,
-            'data' => $vacaciones
+            'success' => false,
+            'message' => 'Método no permitido.'
         ]);
         exit;
     }
 
-    // Si no es POST, devolver error o redirigir
-    echo json_encode([
-        'success' => false,
-        'message' => 'Método no permitido.'
-    ]);
-    exit;
-}
+    public function updateEstado() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $revisado_por = $_SESSION['id'] ?? '';            
+            $rechazo_motivo = $_POST['rechazo_motivo'] ?? '';
+            $estado = $_POST['estado'] ?? '';
+
+            $solicitud = new Vacaciones();
+            $solicitud->updateEstado([
+                'estado' => $estado,
+                'revisado_por' => $revisado_por,
+                'rechazo_motivo' => $rechazo_motivo,
+                'id' => $id
+            ]);
+
+            // Si el estado es aprobado, obtener la solicitud y agregar eventos
+            if ($estado === 'aprobado') {
+                $vacacion = $solicitud->getById($id); // Debes implementar este método en el modelo Vacaciones
+                if ($vacacion) {
+                    $solicitud->insertarEventosVacaciones(
+                        $vacacion['usuario_id'],
+                        $vacacion['fecha_inicio'],
+                        $vacacion['fecha_fin']
+                    );
+                }
+            }
+
+            $_SESSION['success'] = 'Solicitud revisada correctamente';
+            header('Location: /vacaciones');
+            exit;
+        }
+
+        // Si entra por GET o sin POST válido, redirigir
+        header('Location: /vacaciones');
+        exit;
+    }
+
 }

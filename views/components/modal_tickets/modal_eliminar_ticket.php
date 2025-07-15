@@ -1,4 +1,5 @@
 <!-- Modal confirmación de eliminación -->
+
 <div class="modal fade" id="modalEliminarTicket" tabindex="-1" aria-labelledby="modalEliminarTicketLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -24,4 +25,4 @@
   </div>
 </div>
 
-<script src="/public/js/tickets/tickets_modal_eliminar.js"></script>
+

@@ -23,93 +23,98 @@ class RegistroHorario
     }
 
     public function obtenerEstadoActual($userId)
-    {
-        $hoy = date('Y-m-d');
-
-        $sql = "SELECT * FROM registro_horarios 
-                WHERE user_id = ? 
-                AND DATE(fecha_hora) = ?
-                ORDER BY fecha_hora ASC";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userId, $hoy]);
-        $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $estado = 'no_iniciado';
-        $hora_inicio_jornada = null;
-        $hora_inicio_descanso = null;
-        $hora_fin_jornada = null;
-        $segundos_trabajados = 0;
-
-        $inicio_trabajo = null;
-
-        foreach ($registros as $registro) {
-            $tipo = $registro['tipo_evento'];
-            $fecha = new DateTime($registro['fecha_hora']);
-
-            switch ($tipo) {
-                case 'inicio_jornada':
-                    $estado = 'trabajando';
-                    $hora_inicio_jornada = $registro['fecha_hora'];
-                    $inicio_trabajo = $fecha;
-                    break;
-
-                case 'inicio_descanso':
-                    $estado = 'descanso';
-                    $hora_inicio_descanso = $registro['fecha_hora'];
-                    if ($inicio_trabajo) {
-                        $interval = $inicio_trabajo->diff($fecha);
-                        $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
-                        $inicio_trabajo = null;
-                    }
-                    break;
-
-                case 'fin_descanso':
-                    $estado = 'trabajando';
-                    $hora_inicio_descanso = null;
-                    $inicio_trabajo = $fecha;
-                    break;
-
-                case 'fin_jornada':
-                    $estado = 'finalizado';
-                    $hora_fin_jornada = $registro['fecha_hora'];
-                    if ($inicio_trabajo) {
-                        $interval = $inicio_trabajo->diff($fecha);
-                        $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
-                        $inicio_trabajo = null;
-                    }
-                    break;
-            }
-        }
-
-        if ($estado === 'trabajando' && $inicio_trabajo) {
-            $ahora = new DateTime();
-            $interval = $inicio_trabajo->diff($ahora);
-            $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
-        }
-
-        return [
-            'estado_actual' => $estado,
-            'hora_inicio_jornada' => $hora_inicio_jornada,
-            'hora_inicio_descanso' => $hora_inicio_descanso,
-            'hora_fin_jornada' => $hora_fin_jornada,
-            'segundos_trabajados' => $segundos_trabajados
-        ];
-    }
-
-    public function obtenerEstadosUsuariosHoy() {
+{
     $hoy = date('Y-m-d');
-    $sql = "SELECT user_id, tipo_evento, MAX(fecha_hora) AS ultima
-            FROM registro_horarios
-            WHERE DATE(fecha_hora) = ?
-            GROUP BY user_id";
+
+    $sql = "SELECT * FROM registro_horarios 
+            WHERE user_id = ? 
+            AND DATE(fecha_hora) = ?
+            ORDER BY fecha_hora ASC";
+
     $stmt = $this->db->prepare($sql);
-    $stmt->execute([$hoy]);
-    $estados = [];
-    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $estados[$row['user_id']] = $row['tipo_evento']; // último evento = estado
+    $stmt->execute([$userId, $hoy]);
+    $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $estado = 'no_iniciado';
+    $hora_inicio_jornada = null;
+    $hora_inicio_descanso = null;
+    $hora_fin_jornada = null;
+    $segundos_trabajados = 0;
+    $inicio_trabajo = null;
+
+    foreach ($registros as $registro) {
+        $tipo = $registro['tipo_evento'];
+        $fecha = new DateTime($registro['fecha_hora']);
+
+        switch ($tipo) {
+            case 'inicio_jornada':
+            case 'inicio_vacaciones':
+                $hora_inicio_jornada = $registro['fecha_hora'];
+                $inicio_trabajo = $fecha;
+                break;
+
+            case 'inicio_descanso':
+                $hora_inicio_descanso = $registro['fecha_hora'];
+                if ($inicio_trabajo) {
+                    $interval = $inicio_trabajo->diff($fecha);
+                    $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
+                    $inicio_trabajo = null;
+                }
+                break;
+
+            case 'fin_descanso':
+                $hora_inicio_descanso = null;
+                $inicio_trabajo = $fecha;
+                break;
+
+            case 'fin_jornada':
+            case 'fin_vacaciones':
+                $hora_fin_jornada = $registro['fecha_hora'];
+                if ($inicio_trabajo) {
+                    $interval = $inicio_trabajo->diff($fecha);
+                    $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
+                    $inicio_trabajo = null;
+                }
+                break;
+        }
     }
-    return $estados;
+
+    // Si aún está trabajando
+    if ($inicio_trabajo) {
+        $ahora = new DateTime();
+        $interval = $inicio_trabajo->diff($ahora);
+        $segundos_trabajados += ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
+    }
+
+    // Determinar estado real según último evento
+    // Evaluar el último evento del día para fijar el estado real
+if (!empty($registros)) {
+    $ultimo = end($registros);
+    switch ($ultimo['tipo_evento']) {
+        case 'inicio_descanso':
+            $estado = 'descanso';
+            break;
+        case 'fin_descanso':
+        case 'inicio_jornada':
+            $estado = 'trabajando';
+            break;
+        case 'fin_jornada':
+        case 'fin_vacaciones':
+            $estado = 'finalizado';
+            break;
+        default:
+            $estado = 'trabajando';
+    }
+}
+
+
+    return [
+        'estado_actual' => $estado,
+        'hora_inicio_jornada' => $hora_inicio_jornada,
+        'hora_inicio_descanso' => $hora_inicio_descanso,
+        'hora_fin_jornada' => $hora_fin_jornada,
+        'segundos_trabajados' => $segundos_trabajados
+    ];
 }
 
 
@@ -168,20 +173,21 @@ class RegistroHorario
                         DATE(rh.fecha_hora) as fecha
                     FROM registro_horarios rh
                     INNER JOIN usuarios u ON rh.user_id = u.id
-                    WHERE 1";
+                    WHERE DATE(rh.fecha_hora) <= CURDATE()";
 
             $params = [];
 
-            if($_SESSION['dept'] == '1'){
-                if (!empty($usuario)) {
-                    $query .= " AND rh.user_id = ?";
-                    $params[] = $usuario;
-                }
+            if (!empty($usuario)) {
+                $query .= " AND rh.user_id = ?";
+                $params[] = $usuario;
             }
-
+            
             if (!empty($fechaDesde)) {
                 $query .= " AND DATE(rh.fecha_hora) >= ?";
                 $params[] = $fechaDesde;
+            } else {
+                // Si no se proporciona fechaHasta, usar la fecha actual
+                $query .= " AND DATE(rh.fecha_hora) <= CURDATE()";
             }
 
             if (!empty($fechaHasta)) {
@@ -221,7 +227,7 @@ class RegistroHorario
                     $tipo = $evento['tipo_evento'];
                     $hora = (new DateTime($evento['fecha_hora']))->format('H:i');
 
-                    if ($tipo == 'inicio_jornada') {
+                    if ($tipo == 'inicio_jornada' || $tipo == 'inicio_vacaciones') {
                         $jornadaActual = [
                             'usuario' => $nombreUsuario,
                             'foto' => $foto,
@@ -230,7 +236,8 @@ class RegistroHorario
                             'hora_fin' => null,
                             'id_inicio' => $idEvento,
                             'id_fin' => null,
-                            'descansos' => []
+                            'descansos' => [],
+                            'es_vacacion' => $tipo === 'inicio_vacaciones'
                         ];
                     }
 
@@ -248,9 +255,16 @@ class RegistroHorario
                         $inicioDescanso = null;
                     }
 
-                    if ($tipo == 'fin_jornada' && $jornadaActual) {
+
+                    if (($tipo == 'fin_jornada' || $tipo == 'fin_vacaciones') && $jornadaActual) {
                         $jornadaActual['hora_fin'] = $hora;
                         $jornadaActual['id_fin'] = $idEvento;
+
+                        // Aseguramos marcar como vacación si fue 'fin_vacaciones'
+                        if ($tipo === 'fin_vacaciones') {
+                            $jornadaActual['es_vacacion'] = true;
+                        }
+
                         $jornadas[] = $jornadaActual;
                         $jornadaActual = null;
                     }

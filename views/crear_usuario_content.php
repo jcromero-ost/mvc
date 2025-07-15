@@ -7,11 +7,12 @@
 				<label for="nombre" class="form-label">Nombre completo</label>
 				<input type="text" class="form-control" id="nombre" name="nombre" required>
 			</div>
-			<div class="col-md-6">
-				<label for="alias" class="form-label">Alias / Usuario</label>
-				<input type="text" class="form-control" id="alias" name="alias">
-			</div>
-		</div>
+			<div class="row mb-3">
+            <div class="col-md-6">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control text-uppercase" id="apellidos" name="apellidos" required>
+            </div>
+        </div>
 
 		<div class="row mb-3">
 			<div class="col-md-6">
