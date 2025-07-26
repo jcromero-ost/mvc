@@ -85,24 +85,22 @@ $router->post('/obtener_tickets_por_cliente', 'ClienteController@historial');
 $router->get('/crear_ticket', 'TicketController@create');
 $router->get('/tickets_pendientes', 'TicketController@ticketsPendientes');
 $router->get('/tickets', 'TicketController@index');
-$router->get('/editar_ticket', 'TicketController@edit');
+$router->get('/edit_ticket', 'TicketController@edit');
 $router->post('/asignar_ticket', 'TicketController@storeAsignacionesNotificaciones');
 $router->post('/store_ticket', 'TicketController@store');
 $router->post('/api/tickets/update', 'TicketController@storeEdit');
 $router->post('/api/tickets/cambiar_estado', 'TicketController@updateEstado');
 
-// Comentarios del Ticket
-$router->post('/get_comentarios', 'TicketController@getComentarios');
-$router->post('/update_comentarios', 'TicketController@updateComentario');
-$router->post('/delete_comentarios', 'TicketController@deleteComentario');
+// Cronometro
+$router->post('/cronometro/iniciar', 'CronometroController@iniciar');
 
-// Cronómetro y Comentario Rápido
-$router->post('/store_ticket_comentariosSoloFecha', 'TicketController@storeComentarioSoloFecha');
-$router->post('/update_ticket_comentariosSoloFecha', 'TicketController@storeUpdateComentarioSoloFecha');
+// Comentarios
+$router->get('/comentarios/obtener/{id}', 'ComentariosController@obtenerComentario');
+$router->post('/comentario/guardar', 'ComentariosController@guardarComentario');
+$router->get('/comentarios/obtener', 'ComentariosController@obtenerComentarios');
+$router->get('/comentarios/obtener-uno', 'ComentariosController@obtenerUno');
+$router->post('/comentarios/crear-interno', 'ComentariosController@crearInterno');
 
-// Otras funciones del cronómetro
-$router->post('/store_ticket_cronometro', 'TicketController@storeCronometro');
-$router->post('/get_cronometro', 'TicketController@obtenerCronometroPorTicket');
 
 // Otras utilidades tickets
 $router->post('/update_tecnico', 'TicketController@updateTecnico');
@@ -125,6 +123,7 @@ $router->get('/dashboard', 'DashboardController@index');
 
 // Xgest API
 $router->get('/xgest/clientes', 'XgestApiController@obtenerClientes');
+$router->get('/xgest/cliente_info_modal', 'XgestApiController@infoClienteModal');
 $router->get('/xgest/articulos', 'XgestApiController@obtenerArticulos');
 $router->get('/xgest/articulo', function () {
     $codigo =  $_GET['codigo'] ?? null;
@@ -140,3 +139,13 @@ $router->get('/xgest/pedidos-con-lineas', 'XgestApiController@obtenerTodosLosPed
 $router->post('/xgest/crear-pedido', 'XgestApiController@crearPedidoAvanzado');
 $router->get('/xgest/buscar-clientes', 'XgestApiController@buscarClientes');
 $router->get('/xgest/pedidos-test', 'XgestApiController@index');
+
+
+// Contratos
+$router->get('/crear_contrato', 'ContratoCliController@create'); // muestra formulario con búsqueda dinámica de cliente
+$router->post('/contratos/store', 'ContratoCliController@store');
+$router->get('/contratos-clientes', 'ContratoCliController@index');
+
+//Servidores de cliente
+$router->get('/servidores_cli', 'ServidorCliController@index');
+$router->post('/servidores_cli/store', 'ServidorCliController@store');

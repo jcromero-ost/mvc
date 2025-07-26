@@ -57,6 +57,29 @@ $current = basename($_SERVER['REQUEST_URI']);
       </li>
     <?php endif; ?>
 
+    <!-- MENU INFRAESTRUCTURA -->
+    <?php if (isset($_SESSION['dept']) && ($_SESSION['dept'] == 1 || $_SESSION['dept'] == 2 || $_SESSION['dept'] == 3)): ?>
+      <li class="nav-item dropdown <?php echo (in_array($current, ['crear_contrato', 'contratos', 'servicios', 'fichas']) ? 'active' : ''); ?>">
+        <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_contrato', 'contratos', 'servicios', 'fichas']) ? 'active' : ''); ?>" href="#" id="infraestructuraDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-hdd-network me-2"></i>Infraestructura
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="infraestructuraDropdown">
+          <!-- CONTRATOS -->
+          <li><h6 class="dropdown-header">Contratos</h6></li>
+          <li><a class="dropdown-item" href="/crear_contrato"><i class="bi bi-file-plus me-2"></i>Crear contrato</a></li>
+          <li><a class="dropdown-item" href="/contratos-clientes"><i class="bi bi-file-earmark-text me-2"></i>Listar contratos</a></li>
+
+          <!-- SERVICIOS -->
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="/servicios"><i class="bi bi-diagram-3-fill me-2"></i>Servicios</a></li>
+
+          <!-- FICHAS -->
+          <li><a class="dropdown-item" href="/fichas"><i class="bi bi-pc-display-horizontal me-2"></i>Fichas</a></li>
+        </ul>
+      </li>
+    <?php endif; ?>
+
+
     <!-- MENU TICKETS -->
     <li class="nav-item dropdown <?php echo (in_array($current, ['crear_ticket', 'tickets_pendientes', 'tickets']) ? 'active' : ''); ?>">
       <a class="nav-link dropdown-toggle <?php echo (in_array($current, ['crear_ticket', 'tickets_pendientes', 'tickets']) ? 'active' : ''); ?>" href="#" id="ticketsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

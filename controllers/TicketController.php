@@ -23,7 +23,7 @@ class TicketController {
     }
 
     public function edit() {
-        require_once __DIR__ . '/../views/editar_ticket.php';
+        require_once __DIR__ . '/../views/edit_ticket.php';
     }
 
     public function store() {

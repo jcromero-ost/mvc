@@ -271,7 +271,7 @@
               </td>
 
                 <td class="text-center">
-                    <a href="/editar_ticket?id=<?= $ticket['id'] ?>"><button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
+                    <a href="/edit_ticket?id=<?= $ticket['id'] ?>"><button type="button" class="btn btn-sm btn-primary me-1 btn-editar"
                         data-ticket='<?= json_encode($ticket, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE) ?>'
                         title="Editar">
                         <i class="bi bi-pencil-square"></i>

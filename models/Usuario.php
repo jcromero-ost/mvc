@@ -183,7 +183,7 @@ class Usuario {
 {
     $conexion = Database::connect();
     $query = "SELECT id, nombre FROM usuarios WHERE activo = 1 ORDER BY nombre ASC";
-    //                                  🔵 Correcto campo usado: activo
+    // Correcto campo usado: activo
 
     $stmt = $conexion->prepare($query);
     $stmt->execute();
@@ -204,8 +204,6 @@ public static function verificarPin($usuarioId, $pinIngresado) {
 
     return false;
 }
-
- 
 
 public static function estadoJornada($userId) {
     $db = Database::connect();

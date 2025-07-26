@@ -13,6 +13,9 @@
   --color-warning: #ffc107;
   --color-danger: #dc3545;
   --color-link: #007bff;
+
+  --bs-primary: var(--color-primary);
+  --btn-outline-primary: var(--color-primary);
 }
 
 /* Estilos generales */
@@ -33,6 +36,17 @@ a:hover {
 .btn-primary {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
+  
+}
+
+.btn-outline-primary{
+  border-color: var(--color-primary);
+  color: var(--color-primary)
+}
+
+.btn-outline-primary:hover{
+  background-color: var(--color-primary);
+  border-color: var(--color-primary)
 }
 
 .bg-primario {
@@ -247,4 +261,120 @@ main.main-tablet .wrapper {
   max-width: 1122px !important;
 }
 
+
+/* Sobrescribe el bg-primary y border-primary al verde corporativo */
+.bg-primary {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.border-primary {
+    border-color: var(--color-primary) !important;
+}
+
+/* Botones primarios */
+.btn-primary {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #007f76 !important;  /* tono más oscuro para hover */
+    border-color: #007066 !important;
+    color: white !important;
+}
+
+/* Títulos de modal con bg-primary */
+.modal-header.bg-primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    border-bottom: none;
+}
+
+/* Si quieres también que .text-primary herede el verde */
+.text-primary {
+    color: var(--color-primary) !important;
+}
+
+/* Opcional: badge primario */
+.badge.bg-primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+
+/* Tamaño y centrado del modal */
+.modal-dialog {
+    max-width: 900px;
+    width: 90%;
+    margin: 1.75rem auto;  /* centra horizontalmente */
+}
+
+.modal-content {
+    border: 3px solid var(--color-primary);
+    border-radius: 0.5rem;
+}
+
+.modal-backdrop.show {
+    opacity: 0.6;
+    background-color: rgba(0,0,0,0.5);
+}
+
+/* Centrado vertical */
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal {
+    display: none;
+    overflow: hidden;
+}
+
+/* Sobreescribir .modal.show para evitar desplazamientos */
+.modal.show {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Opcional: para ajustar el modal más compacto */
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    justify-content: flex-end;
+}
+
+.modal-header.bg-primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    border-bottom: none;
+}
+/* Labels con ancho fijo para alinear inputs */
+.info-cliente-label {
+    display: inline-block;
+    min-width: 120px;
+    font-weight: 500;
+}
+
+/* Ajuste de tamaño de fuente en etiquetas largas */
+.info-cliente-label.small-text {
+    font-size: 0.85rem;
+}
+
+/* Alinear verticalmente los inputs */
+.info-cliente-input {
+    vertical-align: middle;
+}
+
+/* Mejor separación entre columnas */
+.info-cliente-col {
+    margin-bottom: 0.5rem;
+}
 

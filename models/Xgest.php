@@ -19,6 +19,31 @@ class Xgest
         return $stmt->fetchAll();
     }
 
+    public static function getClientePorId($id)
+    {
+        global $pdo_xgest;
+
+        $stmt = $pdo_xgest->prepare("
+            SELECT 
+                CCODCL AS id,
+                CNOM AS nombre,
+                CMAIL1 AS email,
+                CTEL1 AS telefono,
+                CDNI AS dni,
+                CDOM AS direccion,
+                CPOB AS ciudad,
+
+                CCODPO AS cp,
+                CPAIS AS provincia
+            FROM fccli001
+            WHERE CCODCL = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public static function getArticulo($codigo)
     {
         global $pdo_xgest;
@@ -231,6 +256,8 @@ class Xgest
             ORDER BY CNOM ASC
             LIMIT 15
         ");
+
+        
         $stmt->execute([$filtro, $filtro, $filtro]); // Elimina el tercer parámetro si quitas CNIF
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

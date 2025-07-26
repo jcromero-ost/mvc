@@ -84,6 +84,23 @@ public static function buscarClientes()
     echo json_encode($clientes);
 }
 
+public static function infoClienteModal()
+{
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+        echo '<p class="text-danger">ID de cliente inválido.</p>';
+        return;
+    }
+
+    $clienteId = intval($_GET['id']);
+    $cliente = Xgest::getClientePorId($clienteId);
+
+    if (!$cliente) {
+        echo '<p class="text-danger">Cliente no encontrado.</p>';
+        return;
+    }
+
+    include __DIR__ . '/../views/cliente/info_cliente_content.php';
+}
 
 
 public static function index()

@@ -12,11 +12,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <!-- Estilos personalizados -->
+    
     <link rel="stylesheet" href="/public/css/styles.css">
     <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2">
+    <link rel="stylesheet" href="/public/css/cronometro.css">
     <link rel="stylesheet" href="/public/css/print.css" media="print">
     <link rel="stylesheet" href="/public/css/styles.css" media="print">
-    <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2" media="print">
+    <link rel="stylesheet" href="/public/css/styles_osttech.css?v=2" media="print">    
     <link rel="stylesheet" href="/public/css/calendario.css">
     <link rel="stylesheet" href="/public/css/pagination.css">
 
